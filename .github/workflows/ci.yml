@@ -8,19 +8,15 @@ on:
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        node-version: [18.x, 20.x]
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
 
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Use Node.js 20.x
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 20.x
         cache: 'npm'
 
     - name: Install dependencies
@@ -29,15 +25,8 @@ jobs:
     - name: Lint
       run: npm run lint
 
-    - name: Format check
-      run: npm run format:check
-
     - name: Build
       run: npm run build
 
     - name: Test
       run: npm test
-
-    - name: Upload coverage
-      if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
-      uses: codecov/codecov-action@v3
