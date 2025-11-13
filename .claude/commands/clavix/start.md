@@ -1,4 +1,5 @@
 ---
+name: "Clavix: Start"
 description: Start conversational mode for iterative prompt development
 ---
 

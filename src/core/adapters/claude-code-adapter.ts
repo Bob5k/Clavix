@@ -22,7 +22,7 @@ export class ClaudeCodeAdapter implements AgentAdapter {
    * Get command path for Claude Code
    */
   getCommandPath(): string {
-    return '.claude/commands';
+    return '.claude/commands/clavix';
   }
 
   /**

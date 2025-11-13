@@ -1,4 +1,5 @@
 ---
+name: "Clavix: PRD"
 description: Generate a PRD through guided Socratic questioning
 ---
 

@@ -1,4 +1,5 @@
 ---
+name: "Clavix: Deep"
 description: Comprehensive deep analysis for prompt improvement
 ---
 

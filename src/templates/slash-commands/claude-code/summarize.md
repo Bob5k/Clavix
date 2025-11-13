@@ -1,4 +1,5 @@
 ---
+name: "Clavix: Summarize"
 description: Extract and optimize requirements from conversation
 ---
 

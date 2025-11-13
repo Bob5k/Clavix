@@ -83,8 +83,11 @@ export default class Init extends Command {
       // Generate INSTRUCTIONS.md
       await this.generateInstructions();
 
-      // Generate slash commands
+      // Migrate from old command structure if needed
       const adapter = agentManager.requireAdapter(selectedAgent);
+      await this.migrateOldCommands(adapter);
+
+      // Generate slash commands
       console.log(chalk.cyan(`📝 Generating ${adapter.displayName} slash commands...`));
       await this.generateSlashCommands(adapter);
 
@@ -215,6 +218,42 @@ See documentation for template format details.
     if (adapter.name === 'claude-code') {
       const claudeContent = DocInjector.getDefaultClaudeContent();
       await DocInjector.injectBlock('CLAUDE.md', this.extractClavixBlock(claudeContent));
+    }
+  }
+
+  private async migrateOldCommands(adapter: any): Promise<void> {
+    // Check for old command structure (.claude/commands/clavix:*.md)
+    const oldCommandsPath = '.claude/commands';
+
+    if (!await FileSystem.exists(oldCommandsPath)) {
+      return;
+    }
+
+    try {
+      const files = await FileSystem.listFiles(oldCommandsPath, /^clavix:.*\.md$/);
+
+      if (files.length === 0) {
+        return;
+      }
+
+      console.log(chalk.cyan('🔄 Migrating old command structure...'));
+
+      let removed = 0;
+      for (const file of files) {
+        const filePath = path.join(oldCommandsPath, file);
+        if (await FileSystem.exists(filePath)) {
+          await FileSystem.remove(filePath);
+          console.log(chalk.gray(`  ✓ Removed old command: ${file}`));
+          removed++;
+        }
+      }
+
+      if (removed > 0) {
+        console.log(chalk.green(`  ✓ Migration complete: removed ${removed} old command file(s)`));
+      }
+    } catch (error) {
+      // Non-fatal error - log but continue
+      console.log(chalk.yellow('  ⚠ Could not migrate old commands (non-fatal)'));
     }
   }
 

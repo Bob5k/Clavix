@@ -1,4 +1,5 @@
 ---
+name: "Clavix: Fast"
 description: Quick prompt improvements with smart triage
 ---
 

@@ -18,20 +18,33 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 <!-- OPENSPEC:END -->
 
 <!-- CLAVIX:START -->
-# Clavix - Prompt Improvement Assistant
+## Clavix Integration
 
-Clavix is installed in this project. Use the following slash commands:
+This project uses Clavix for prompt improvement and PRD generation.
 
-- `/clavix:fast [prompt]` - Quick prompt improvements with smart triage
-- `/clavix:deep [prompt]` - Comprehensive prompt analysis
-- `/clavix:prd` - Generate a PRD through guided questions
-- `/clavix:start` - Start conversational mode for iterative refinement
-- `/clavix:summarize` - Extract optimized prompt from conversation
+### Available Commands
+- `clavix prd` - Generate a comprehensive PRD through guided questions
+- `clavix fast [prompt]` - Quick prompt improvements with smart triage
+- `clavix deep [prompt]` - Comprehensive prompt analysis
+- `clavix start` - Start a conversational session for iterative development
+- `clavix summarize` - Extract requirements from conversation history
+- `clavix list` - List all sessions and outputs
+- `clavix show [session-id]` - Show detailed session information
 
-**When to use:**
-- **Fast mode**: Quick cleanup for simple prompts
-- **Deep mode**: Comprehensive analysis for complex requirements
-- **PRD mode**: Strategic planning with architecture and business impact
+### Quick Start
+```bash
+# Generate a PRD
+clavix prd
 
-For more information, run `clavix --help` in your terminal.
+# Quick prompt improvement
+clavix fast "Build a user auth system"
+
+# Deep prompt analysis
+clavix deep "Build a user auth system"
+
+# Start conversational mode
+clavix start
+```
+
+Learn more: https://github.com/Bob5k/Clavix
 <!-- CLAVIX:END -->
