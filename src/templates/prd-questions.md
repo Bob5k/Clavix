@@ -1,55 +1,37 @@
 # PRD Question Flow
 
-Generate a comprehensive Product Requirements Document through strategic Socratic questioning.
+Generate a focused Product Requirements Document optimized for vibecoding.
+Built with CLEAR framework principles for fast iteration without losing quality.
 
 ## Question 1
 
-**text:** What problem are you solving? Who experiences this problem?
+**text:** 🎯 What are we building and why? (Problem + goal in 2-3 sentences)
 **type:** text
 **required:** true
 **validation:** minLength:20
 
 ## Question 2
 
-**text:** Who are the target users? Describe their key characteristics and needs.
-**type:** text
-**required:** true
-**validation:** minLength:15
-
-## Question 3
-
-**text:** What are the must-have core features? (List 3-5 critical features)
+**text:** ⚡ What are the must-have core features? (List 3-5 critical features)
 **type:** text
 **required:** true
 **validation:** minLength:30
 
+## Question 3
+
+**text:** 🔧 Tech stack and requirements? (Technologies, integrations, constraints - press Enter to skip if extending existing project)
+**type:** text
+**required:** false
+
 ## Question 4
 
-**text:** How will you measure success? What are the key success criteria?
+**text:** 🚫 What is explicitly OUT of scope? (What are we NOT building?)
 **type:** text
 **required:** true
-**validation:** minLength:20
+**validation:** minLength:15
 
 ## Question 5
 
-**text:** What are the technical constraints? (Technologies, integrations, performance requirements)
-**type:** text
-**required:** false
-
-## Question 6
-
-**text:** What is explicitly OUT of scope for this project?
-**type:** text
-**required:** false
-
-## Question 7
-
-**text:** Are there any deadlines or key milestones?
-**type:** text
-**required:** false
-
-## Question 8
-
-**text:** Do you have any additional context or requirements?
+**text:** 💡 Any additional context or requirements? (Optional - press Enter to skip)
 **type:** text
 **required:** false

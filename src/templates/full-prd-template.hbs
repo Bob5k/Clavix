@@ -9,57 +9,31 @@
 
 ---
 
-## 1. Problem Statement
+## 1. Problem & Goal
 
 {{problem}}
 
-## 2. Target Users
-
-{{users}}
-
-## 3. Core Features
+## 2. Core Features
 
 {{features}}
 
-## 4. Success Criteria
-
-{{success}}
-
 {{#if technical}}
-## 5. Technical Constraints
+## 3. Technical Requirements
 
 {{technical}}
 {{/if}}
 
 {{#if outOfScope}}
-## 6. Out of Scope
+## 4. Out of Scope
 
 {{outOfScope}}
 {{/if}}
 
-{{#if timeline}}
-## 7. Timeline & Milestones
-
-{{timeline}}
-{{/if}}
-
 {{#if additional}}
-## 8. Additional Context
+## 5. Additional Context
 
 {{additional}}
 {{/if}}
-
----
-
-## User Stories
-
-Based on the requirements above, here are preliminary user stories:
-
-**As a** target user,
-**I want to** use the core features,
-**So that** the problem is solved.
-
-*Note: Expand these user stories based on specific features and user needs.*
 
 ---
 
@@ -68,12 +42,14 @@ Based on the requirements above, here are preliminary user stories:
 The following criteria must be met for this project to be considered complete:
 
 1. ✓ All core features are implemented and functional
-2. ✓ Success criteria are measurably achieved
+2. ✓ Solution addresses the stated problem and goal
 {{#if technical}}
-3. ✓ Technical constraints are satisfied
+3. ✓ Technical requirements are satisfied
 {{/if}}
-4. ✓ Solution addresses the stated problem
-5. ✓ Target users can successfully accomplish their goals
+{{#if outOfScope}}
+4. ✓ Out-of-scope items are explicitly not included
+{{/if}}
+5. ✓ Implementation is well-structured, maintainable, and tested
 
 ---
 

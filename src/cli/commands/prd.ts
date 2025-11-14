@@ -61,6 +61,8 @@ export default class Prd extends Command {
       // Collect answers through Socratic questioning
       const answers: Record<string, any> = {};
       let question = engine.getNextQuestion();
+      let detectedStack: string | null = null;
+      let stackDetectionDone = false;
 
       while (question) {
         const progress = engine.getProgress();
@@ -91,11 +93,23 @@ export default class Prd extends Command {
           // Text input
           // Capture question reference for closure
           const currentQuestion = question;
+          let messageText = currentQuestion.text;
+
+          // Smart tech stack detection for Q3
+          if (currentQuestion.id === 'q3' && !stackDetectionDone) {
+            detectedStack = await this.detectProjectTechStack();
+            stackDetectionDone = true;
+
+            if (detectedStack) {
+              messageText = `${currentQuestion.text}\n  ${chalk.cyan('Detected:')} ${chalk.green(detectedStack)} ${chalk.dim('(press Enter to use, or type to override)')}`;
+            }
+          }
+
           const response = await inquirer.prompt([
             {
               type: 'input',
               name: 'answer',
-              message: currentQuestion.text,
+              message: messageText,
               default: currentQuestion.default as string,
               validate: (input: string) => {
                 // Check if required
@@ -116,10 +130,16 @@ export default class Prd extends Command {
             },
           ]);
           answer = response.answer;
+
+          // If Q3 and answer is empty but we have detected stack, use it
+          if (currentQuestion.id === 'q3' && !answer.trim() && detectedStack) {
+            answer = detectedStack;
+            console.log(chalk.dim(`  Using detected: ${detectedStack}`));
+          }
         }
 
-        // Submit answer
-        if (answer && question) {
+        // Submit answer (only if not empty or if it's a detected stack for Q3)
+        if (answer && answer.toString().trim() && question) {
           const submitResult = engine.submitAnswer(question.id, answer);
           if (submitResult !== true) {
             console.log(chalk.red(`\n✗ ${submitResult}\n`));
@@ -170,6 +190,77 @@ export default class Prd extends Command {
         console.log(chalk.red('\n✗ An unexpected error occurred\n'));
       }
       this.exit(1);
+    }
+  }
+
+  /**
+   * Detect project tech stack from common config files
+   * Returns a string describing detected technologies or null if none found
+   */
+  private async detectProjectTechStack(): Promise<string | null> {
+    const detectedTech: string[] = [];
+
+    try {
+      // Check package.json (Node.js/JavaScript)
+      if (await fs.pathExists('package.json')) {
+        const pkg = await fs.readJson('package.json');
+        const deps = { ...pkg.dependencies, ...pkg.devDependencies };
+
+        // Detect popular frameworks
+        if (deps.react) detectedTech.push('React');
+        if (deps.vue) detectedTech.push('Vue');
+        if (deps.angular) detectedTech.push('Angular');
+        if (deps.next) detectedTech.push('Next.js');
+        if (deps.astro) detectedTech.push('Astro');
+        if (deps.tailwindcss) detectedTech.push('Tailwind CSS');
+        if (deps.typescript) detectedTech.push('TypeScript');
+        if (deps.express) detectedTech.push('Express');
+        if (deps.fastify) detectedTech.push('Fastify');
+
+        if (detectedTech.length === 0) detectedTech.push('Node.js');
+      }
+
+      // Check requirements.txt (Python)
+      if (await fs.pathExists('requirements.txt')) {
+        const content = await fs.readFile('requirements.txt', 'utf-8');
+        if (content.includes('django')) detectedTech.push('Django');
+        if (content.includes('flask')) detectedTech.push('Flask');
+        if (content.includes('fastapi')) detectedTech.push('FastAPI');
+        if (detectedTech.length === 0) detectedTech.push('Python');
+      }
+
+      // Check Gemfile (Ruby)
+      if (await fs.pathExists('Gemfile')) {
+        const content = await fs.readFile('Gemfile', 'utf-8');
+        if (content.includes('rails')) detectedTech.push('Rails');
+        if (detectedTech.length === 0) detectedTech.push('Ruby');
+      }
+
+      // Check go.mod (Go)
+      if (await fs.pathExists('go.mod')) {
+        detectedTech.push('Go');
+      }
+
+      // Check Cargo.toml (Rust)
+      if (await fs.pathExists('Cargo.toml')) {
+        detectedTech.push('Rust');
+      }
+
+      // Check composer.json (PHP)
+      if (await fs.pathExists('composer.json')) {
+        const composer = await fs.readJson('composer.json');
+        if (composer.require?.['laravel/framework']) detectedTech.push('Laravel');
+        if (composer.require?.['symfony/symfony']) detectedTech.push('Symfony');
+        if (detectedTech.length === 0) detectedTech.push('PHP');
+      }
+
+      if (detectedTech.length > 0) {
+        return detectedTech.join(', ');
+      }
+
+      return null;
+    } catch {
+      return null;
     }
   }
 

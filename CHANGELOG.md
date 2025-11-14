@@ -5,6 +5,97 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2025-11-14
+
+### 🚀 Major Features
+
+#### Vibecoding-Optimized PRD Generation
+- **Streamlined Questions**: Reduced from 8 questions to 5 focused questions for faster workflow
+- **Smart Tech Detection**: Auto-detects tech stack from project files (package.json, requirements.txt, Gemfile, go.mod, Cargo.toml, composer.json)
+- **CLEAR Framework Integration**: Questions designed with CLEAR principles (Concise, Logical, Explicit)
+- **Maintained Quality**: All essential information captured without ceremony
+
+### 🎯 New PRD Question Structure
+
+**5 Focused Questions:**
+1. 🎯 **Problem & Goal** (Required) - What are we building and why?
+2. ⚡ **Core Features** (Required) - Must-have functionality (3-5 features)
+3. 🔧 **Tech Stack** (Smart/Optional) - Auto-detected or manual input
+4. 🚫 **Out of Scope** (Required) - Explicit boundaries
+5. 💡 **Additional Context** (Optional) - Bonus information
+
+**Removed Questions:**
+- ❌ Target users - Unnecessary for personal projects and vibecoding
+- ❌ Success metrics - Too "corporate" for fast iteration
+- ❌ Deadlines/milestones - Not applicable for AI-driven development
+
+### ✨ Smart Tech Stack Detection
+
+**Automatic Detection:**
+- Scans common config files in project root
+- Detects frameworks from package.json dependencies (React, Vue, Next.js, Astro, etc.)
+- Supports Python (Django, Flask, FastAPI), Ruby (Rails), Go, Rust, PHP (Laravel, Symfony)
+- Shows detected stack with option to press Enter to accept or type to override
+- Gracefully skips if extending existing project
+
+**User Experience:**
+```
+🔧 Tech stack and requirements?
+  Detected: TypeScript, Astro, Tailwind CSS (press Enter to use, or type to override)
+```
+
+### 🔧 Technical Improvements
+
+**PRD Generator:**
+- Added `detectProjectTechStack()` method in `prd.ts` for intelligent stack detection
+- Updated question mapping: q1 → problem, q2 → features, q3 → technical, q4 → outOfScope, q5 → additional
+- Enhanced question flow with conditional smart detection for Q3
+- Auto-populates Q3 with detected stack if user presses Enter
+
+**Templates:**
+- Updated `prd-questions.md` with 5 streamlined questions and emoji indicators
+- Simplified `full-prd-template.hbs` - removed users, success, timeline sections
+- Optimized `quick-prd-template.hbs` for vibecoding workflow
+- Updated acceptance criteria to reflect new structure
+
+**Documentation:**
+- Updated `.claude/commands/clavix/prd.md` slash command description
+- Enhanced `CLAUDE.md` with vibecoding-optimized workflow details
+- Updated `README.md` features and command descriptions
+
+### 📊 Impact
+
+**Time Savings:**
+- ~40% reduction in question count (8 → 5 questions)
+- Smart defaults for tech stack reduce manual input
+- Optional questions can be skipped entirely
+
+**Quality Maintained:**
+- CLEAR validation still applies (C, L, E components)
+- All essential project context captured
+- Out-of-scope boundaries remain required for clarity
+
+### 🎨 UX Enhancements
+
+- Emoji indicators for each question type
+- Clear "(Required)" vs "(Optional)" labels
+- Helpful inline hints (e.g., "press Enter to skip if extending existing project")
+- Color-coded detected tech stack display
+
+### 📝 Migration Notes
+
+**No Breaking Changes:**
+- Existing PRD templates continue to work
+- Custom templates in `.clavix/templates/` still supported
+- CLEAR validation unchanged (C, L, E only for PRDs)
+
+**New Behavior:**
+- Q3 (tech stack) now auto-detects from project files
+- Users can press Enter to skip optional questions
+- Generated PRDs have simpler section structure
+
+---
+
 ## [1.4.1] - 2025-11-14
 
 ### 🐛 Bug Fixes

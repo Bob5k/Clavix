@@ -1,43 +1,31 @@
 # Quick PRD: {{metadata.projectName}}
 
-*Optimized for AI-assisted development*
+*Optimized for vibecoding and AI-assisted development*
 
 ---
 
-## Problem & Context
+## Problem & Goal
 
 {{problem}}
 
-**Target Users:** {{users}}
-
-## Core Requirements
+## Core Features
 
 {{features}}
 
-## Success Criteria
-
-{{success}}
-
 {{#if technical}}
-## Technical Constraints
+## Technical Requirements
 
 {{technical}}
 {{/if}}
 
 {{#if outOfScope}}
-## Explicitly Out of Scope
+## Out of Scope
 
 {{outOfScope}}
 {{/if}}
 
-{{#if timeline}}
-## Timeline
-
-{{timeline}}
-{{/if}}
-
 {{#if additional}}
-## Additional Notes
+## Additional Context
 
 {{additional}}
 {{/if}}
@@ -46,12 +34,14 @@
 
 **Development Instructions:**
 
-Please implement the solution described above, ensuring:
-- All core requirements are addressed
-- Success criteria are measurable and achievable
-- Technical constraints are respected
+Implement the solution described above, ensuring:
+- All core features are fully functional
+- Solution addresses the stated problem and goal
+{{#if technical}}
+- Technical requirements are satisfied
+{{/if}}
 {{#if outOfScope}}
-- Out-of-scope items are not included
+- Out-of-scope items are explicitly not included
 {{/if}}
 
 Focus on creating a well-structured, maintainable, and tested implementation.

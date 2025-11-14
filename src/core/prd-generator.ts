@@ -150,16 +150,13 @@ export class PrdGenerator {
   private prepareAnswersForTemplate(answers: Record<string, any>): Record<string, any> {
     const prepared: Record<string, any> = {};
 
-    // Map question IDs to friendly names
+    // Map question IDs to friendly names (updated for CLEAR-optimized 5-question flow)
     const questionMap: Record<string, string> = {
-      q1: 'problem',
-      q2: 'users',
-      q3: 'features',
-      q4: 'success',
-      q5: 'technical',
-      q6: 'outOfScope',
-      q7: 'timeline',
-      q8: 'additional',
+      q1: 'problem',      // What are we building and why?
+      q2: 'features',     // Core features
+      q3: 'technical',    // Tech stack (optional, smart-detected)
+      q4: 'outOfScope',   // Out of scope
+      q5: 'additional',   // Additional context (optional)
     };
 
     for (const [questionId, value] of Object.entries(answers)) {

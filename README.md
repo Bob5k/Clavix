@@ -41,7 +41,8 @@ Lo, L. S. (2023). "The CLEAR Path: A Framework for Enhancing Information Literac
 
 ### 📋 CLEAR-Validated PRD Generation
 
-- **Interactive Workflow** - Guided Socratic questioning with sequential and conditional flows
+- **Vibecoding-Optimized** - 5 focused questions instead of lengthy requirement gathering
+- **Smart Tech Detection** - Auto-detects stack from project files (package.json, requirements.txt, etc.)
 - **CLEAR Validation** - Generated PRDs are analyzed for AI consumption quality (C, L, E components)
 - **Dual Output Format** - Comprehensive team PRD (`full-prd.md`) + CLEAR-optimized AI-ready version (`quick-prd.md`)
 - **Handlebars Templates** - Fully customizable PRD formats with template override support
@@ -252,11 +253,16 @@ clavix deep "Build an API for user management"
 
 ### `clavix prd`
 
-Generate a comprehensive PRD through guided Socratic questioning.
+Generate a comprehensive PRD through 5 focused questions (optimized for vibecoding).
 
 ```bash
 clavix prd
 ```
+
+Features:
+- **5 streamlined questions** - Fast workflow without losing quality
+- **Smart tech detection** - Auto-detects stack from package.json, requirements.txt, etc.
+- **CLEAR validated** - Automatic quality analysis for AI consumption
 
 Creates two files:
 - `full-prd.md` - Comprehensive document for team alignment
