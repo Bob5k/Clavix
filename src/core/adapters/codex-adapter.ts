@@ -29,6 +29,10 @@ export class CodexAdapter extends BaseAdapter {
     return path.join(this.getHomeDir(), '.codex', 'prompts');
   }
 
+  getTargetFilename(name: string): string {
+    return `clavix-${name}${this.fileExtension}`;
+  }
+
   protected formatCommand(template: CommandTemplate): string {
     const frontmatter = `---\ndescription: ${template.description}\nargument-hint: [prompt]\n---\n\n`;
     const content = template.content.replace(/\{\{ARGS\}\}/g, '$ARGUMENTS');

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2025-11-15
+
+### ⚠️ Breaking Changes / Migrations
+- Standardized flat-provider command filenames to `clavix-<command>` and relocated Cline workflows to `.clinerules/workflows/`; legacy filenames are auto-detected with an opt-out cleanup prompt during `clavix init` and `clavix update`.
+
+### ✨ Enhancements
+- Added adapter filename overrides and shared template loader so all providers respect the new naming scheme while keeping namespaced folders (e.g., `.claude/commands/clavix/`).
+- Implemented legacy command cleanup utilities reused by init/update flows, preserving provider-specific formatting and supporting Gemini/Qwen namespace opt-outs.
+
+### 🧪 Testing
+- `NODE_OPTIONS="--localstorage-file=.jest-localstorage" npm test`
+
 ## [1.8.3] - 2025-11-15
 
 ### 🐛 Fixes

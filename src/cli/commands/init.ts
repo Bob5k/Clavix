@@ -12,7 +12,8 @@ import { ClavixConfig, DEFAULT_CONFIG } from '../../types/config';
 import { CommandTemplate, AgentAdapter } from '../../types/agent';
 import { GeminiAdapter } from '../../core/adapters/gemini-adapter';
 import { QwenAdapter } from '../../core/adapters/qwen-adapter';
-import { parseTomlSlashCommand } from '../../utils/toml-templates';
+import { loadCommandTemplates } from '../../utils/template-loader';
+import { collectLegacyCommandFiles } from '../../utils/legacy-command-cleanup';
 
 export default class Init extends Command {
   static description = 'Initialize Clavix in the current project';
@@ -60,7 +61,7 @@ export default class Init extends Command {
               value: 'claude-code',
             },
             {
-              name: 'Cline (.cline/workflows/)',
+              name: 'Cline (.clinerules/workflows/)',
               value: 'cline',
             },
             {
@@ -247,21 +248,24 @@ export default class Init extends Command {
           }
         }
 
-        // Migrate from old command structure if needed (Claude Code only)
-        if (providerName === 'claude-code') {
-          await this.migrateOldCommands(adapter);
-        }
-
         // Generate slash commands
         const generatedTemplates = await this.generateSlashCommands(adapter);
+
+        await this.handleLegacyCommands(adapter, generatedTemplates);
 
         if (adapter.name === 'gemini' || adapter.name === 'qwen') {
           const commandPath = adapter.getCommandPath();
           const isNamespaced = commandPath.endsWith(path.join('commands', 'clavix'));
           const namespace = isNamespaced ? path.basename(commandPath) : undefined;
-          const commandNames = generatedTemplates.map((template) =>
-            isNamespaced ? `/${namespace}:${template.name}` : `/${template.name}`
-          );
+          const commandNames = generatedTemplates.map((template) => {
+            if (isNamespaced) {
+              return `/${namespace}:${template.name}`;
+            }
+
+            const filename = adapter.getTargetFilename(template.name);
+            const slashName = filename.slice(0, -adapter.fileExtension.length);
+            return `/${slashName}`;
+          });
 
           console.log(chalk.green(`    → Registered ${commandNames.join(', ')}`));
           console.log(chalk.gray(`    Commands saved to ${commandPath}`));
@@ -371,35 +375,47 @@ See documentation for template format details.
   }
 
   private async generateSlashCommands(adapter: AgentAdapter): Promise<CommandTemplate[]> {
-    const templateDir = path.join(__dirname, '../../templates/slash-commands', adapter.name);
-    const files = await FileSystem.listFiles(templateDir);
-    const extension = adapter.fileExtension;
-    const commandFiles = files.filter((file) => file.endsWith(extension));
-
-    const templates: CommandTemplate[] = [];
-
-    for (const file of commandFiles) {
-      const content = await FileSystem.readFile(path.join(templateDir, file));
-      const name = file.slice(0, -extension.length);
-
-      if (extension === '.toml') {
-        const parsed = parseTomlSlashCommand(content, name, adapter.name);
-        templates.push({
-          name,
-          content: parsed.prompt,
-          description: parsed.description,
-        });
-      } else {
-        templates.push({
-          name,
-          content,
-          description: this.extractDescription(content),
-        });
-      }
-    }
+    const templates = await loadCommandTemplates(adapter);
 
     await adapter.generateCommands(templates);
     return templates;
+  }
+
+  private async handleLegacyCommands(adapter: AgentAdapter, templates: CommandTemplate[]): Promise<void> {
+    const commandNames = templates.map((template) => template.name);
+    const legacyFiles = await collectLegacyCommandFiles(adapter, commandNames);
+
+    if (legacyFiles.length === 0) {
+      return;
+    }
+
+    const relativePaths = legacyFiles
+      .map((file) => path.relative(process.cwd(), file))
+      .sort((a, b) => a.localeCompare(b));
+
+    console.log(chalk.gray(`    ⚠ Found ${relativePaths.length} deprecated command file(s):`));
+    for (const file of relativePaths) {
+      console.log(chalk.gray(`      • ${file}`));
+    }
+
+    const { removeLegacy } = await inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'removeLegacy',
+        message: `Remove deprecated files for ${adapter.displayName}? Functionality is unchanged; filenames are being standardized.`,
+        default: true,
+      },
+    ]);
+
+    if (!removeLegacy) {
+      console.log(chalk.gray('    ⊗ Kept legacy files (deprecated naming retained)'));
+      return;
+    }
+
+    for (const file of legacyFiles) {
+      await FileSystem.remove(file);
+      console.log(chalk.gray(`    ✓ Removed ${path.relative(process.cwd(), file)}`));
+    }
   }
 
   private async injectDocumentation(adapter: AgentAdapter): Promise<void> {
@@ -412,56 +428,6 @@ See documentation for template format details.
       const claudeContent = DocInjector.getDefaultClaudeContent();
       await DocInjector.injectBlock('CLAUDE.md', this.extractClavixBlock(claudeContent));
     }
-  }
-
-  private async migrateOldCommands(_adapter: AgentAdapter): Promise<void> {
-    // Check for old command structure (.claude/commands/clavix:*.md)
-    const oldCommandsPath = '.claude/commands';
-
-    if (!await FileSystem.exists(oldCommandsPath)) {
-      return;
-    }
-
-    try {
-      const files = await FileSystem.listFiles(oldCommandsPath, /^clavix:.*\.md$/);
-
-      if (files.length === 0) {
-        return;
-      }
-
-      console.log(chalk.cyan('🔄 Migrating old command structure...'));
-
-      let removed = 0;
-      for (const file of files) {
-        const filePath = path.join(oldCommandsPath, file);
-        if (await FileSystem.exists(filePath)) {
-          await FileSystem.remove(filePath);
-          console.log(chalk.gray(`  ✓ Removed old command: ${file}`));
-          removed++;
-        }
-      }
-
-      if (removed > 0) {
-        console.log(chalk.green(`  ✓ Migration complete: removed ${removed} old command file(s)`));
-      }
-    } catch {
-      // Non-fatal error - log but continue
-      console.log(chalk.yellow('  ⚠ Could not migrate old commands (non-fatal)'));
-    }
-  }
-
-  private extractDescription(content: string): string {
-    const yamlMatch = content.match(/description:\s*(.+)/);
-    if (yamlMatch) {
-      return yamlMatch[1].trim().replace(/^['"]|['"]$/g, '');
-    }
-
-    const tomlMatch = content.match(/description\s*=\s*['"]?(.+?)['"]?(?:\r?\n|$)/);
-    if (tomlMatch) {
-      return tomlMatch[1].trim().replace(/^['"]|['"]$/g, '');
-    }
-
-    return '';
   }
 
 

@@ -204,10 +204,10 @@ describe('Multi-Provider Workflow Integration', () => {
       const adapter = agentManager.requireAdapter('cursor');
       await adapter.generateCommands(testTemplates);
 
-      expect(await fs.pathExists('.cursor/commands/fast.md')).toBe(true);
-      expect(await fs.pathExists('.cursor/commands/deep.md')).toBe(true);
+      expect(await fs.pathExists('.cursor/commands/clavix-fast.md')).toBe(true);
+      expect(await fs.pathExists('.cursor/commands/clavix-deep.md')).toBe(true);
 
-      const content = await fs.readFile('.cursor/commands/fast.md', 'utf-8');
+      const content = await fs.readFile('.cursor/commands/clavix-fast.md', 'utf-8');
       expect(content).toContain('Fast Mode');
       expect(content).not.toContain('---'); // No frontmatter
     });
@@ -216,9 +216,9 @@ describe('Multi-Provider Workflow Integration', () => {
       const adapter = agentManager.requireAdapter('droid');
       await adapter.generateCommands(testTemplates);
 
-      expect(await fs.pathExists('.factory/commands/fast.md')).toBe(true);
+      expect(await fs.pathExists('.factory/commands/clavix-fast.md')).toBe(true);
 
-      const content = await fs.readFile('.factory/commands/fast.md', 'utf-8');
+      const content = await fs.readFile('.factory/commands/clavix-fast.md', 'utf-8');
       expect(content).toContain('---');
       expect(content).toContain('description: Fast improvements');
       expect(content).toContain('argument-hint: [prompt]');
@@ -228,9 +228,9 @@ describe('Multi-Provider Workflow Integration', () => {
       const adapter = agentManager.requireAdapter('opencode');
       await adapter.generateCommands(testTemplates);
 
-      expect(await fs.pathExists('.opencode/command/fast.md')).toBe(true);
+      expect(await fs.pathExists('.opencode/command/clavix-fast.md')).toBe(true);
 
-      const content = await fs.readFile('.opencode/command/fast.md', 'utf-8');
+      const content = await fs.readFile('.opencode/command/clavix-fast.md', 'utf-8');
       expect(content).toContain('---');
       expect(content).toContain('description: Fast improvements');
     });
@@ -239,9 +239,9 @@ describe('Multi-Provider Workflow Integration', () => {
       const adapter = agentManager.requireAdapter('amp');
       await adapter.generateCommands(testTemplates);
 
-      expect(await fs.pathExists('.agents/commands/fast.md')).toBe(true);
+      expect(await fs.pathExists('.agents/commands/clavix-fast.md')).toBe(true);
 
-      const content = await fs.readFile('.agents/commands/fast.md', 'utf-8');
+      const content = await fs.readFile('.agents/commands/clavix-fast.md', 'utf-8');
       expect(content).toContain('Fast Mode');
       expect(content).not.toContain('---'); // No frontmatter
     });
@@ -262,10 +262,10 @@ describe('Multi-Provider Workflow Integration', () => {
 
       // All should have the commands
       expect(await fs.pathExists('.claude/commands/clavix/fast.md')).toBe(true);
-      expect(await fs.pathExists('.cursor/commands/fast.md')).toBe(true);
-      expect(await fs.pathExists('.factory/commands/fast.md')).toBe(true);
-      expect(await fs.pathExists('.opencode/command/fast.md')).toBe(true);
-      expect(await fs.pathExists('.agents/commands/fast.md')).toBe(true);
+      expect(await fs.pathExists('.cursor/commands/clavix-fast.md')).toBe(true);
+      expect(await fs.pathExists('.factory/commands/clavix-fast.md')).toBe(true);
+      expect(await fs.pathExists('.opencode/command/clavix-fast.md')).toBe(true);
+      expect(await fs.pathExists('.agents/commands/clavix-fast.md')).toBe(true);
     });
   });
 
@@ -437,8 +437,8 @@ describe('Multi-Provider Workflow Integration', () => {
 
       // Verify all have the command (checking core content)
       const claudeContent = await fs.readFile('.claude/commands/clavix/shared-cmd.md', 'utf-8');
-      const cursorContent = await fs.readFile('.cursor/commands/shared-cmd.md', 'utf-8');
-      const ampContent = await fs.readFile('.agents/commands/shared-cmd.md', 'utf-8');
+      const cursorContent = await fs.readFile('.cursor/commands/clavix-shared-cmd.md', 'utf-8');
+      const ampContent = await fs.readFile('.agents/commands/clavix-shared-cmd.md', 'utf-8');
 
       // Core content should be present in all (even if formatted differently)
       expect(claudeContent).toContain('shared across all providers');
@@ -460,10 +460,10 @@ describe('Multi-Provider Workflow Integration', () => {
       }
 
       expect(await fs.pathExists('.claude/commands/clavix/duplicate.md')).toBe(true);
-      expect(await fs.pathExists('.cursor/commands/duplicate.md')).toBe(true);
-      expect(await fs.pathExists('.factory/commands/duplicate.md')).toBe(true);
-      expect(await fs.pathExists('.opencode/command/duplicate.md')).toBe(true);
-      expect(await fs.pathExists('.agents/commands/duplicate.md')).toBe(true);
+      expect(await fs.pathExists('.cursor/commands/clavix-duplicate.md')).toBe(true);
+      expect(await fs.pathExists('.factory/commands/clavix-duplicate.md')).toBe(true);
+      expect(await fs.pathExists('.opencode/command/clavix-duplicate.md')).toBe(true);
+      expect(await fs.pathExists('.agents/commands/clavix-duplicate.md')).toBe(true);
     });
 
     it('should handle provider directory conflicts gracefully', async () => {

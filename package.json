@@ -1,11 +1,11 @@
 {
   "name": "clavix",
-  "version": "1.8.3",
+  "version": "1.9.0",
   "description": "AI prompt improvement and PRD generation CLI tool for developers",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "clavix": "./bin/clavix.js"
+    "clavix": "bin/clavix.js"
   },
   "scripts": {
     "build": "tsc && npm run copy-templates",

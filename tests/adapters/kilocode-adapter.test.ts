@@ -71,7 +71,7 @@ describe('KilocodeAdapter', () => {
 
       await adapter.generateCommands(templates);
 
-      const commandPath = path.join(testDir, '.kilocode/workflows/test.md');
+      const commandPath = path.join(testDir, '.kilocode/workflows/clavix-test.md');
       const exists = await fs.pathExists(commandPath);
       expect(exists).toBe(true);
 

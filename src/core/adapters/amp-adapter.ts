@@ -31,5 +31,9 @@ export class AmpAdapter extends BaseAdapter {
     return this.directory;
   }
 
+  getTargetFilename(name: string): string {
+    return `clavix-${name}${this.fileExtension}`;
+  }
+
   // Uses default formatCommand from BaseAdapter (no special formatting)
 }

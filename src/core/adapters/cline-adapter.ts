@@ -16,7 +16,7 @@ import { FileSystem } from '../../utils/file-system';
 export class ClineAdapter extends BaseAdapter {
   readonly name = 'cline';
   readonly displayName = 'Cline';
-  readonly directory = '.cline/workflows';
+  readonly directory = '.clinerules/workflows';
   readonly fileExtension = '.md';
   readonly features = {
     supportsSubdirectories: false,
@@ -28,6 +28,10 @@ export class ClineAdapter extends BaseAdapter {
    * Checks for .cline directory
    */
   async detectProject(): Promise<boolean> {
+    if (await FileSystem.exists('.clinerules')) {
+      return true;
+    }
+
     return await FileSystem.exists('.cline');
   }
 
@@ -36,6 +40,10 @@ export class ClineAdapter extends BaseAdapter {
    */
   getCommandPath(): string {
     return this.directory;
+  }
+
+  getTargetFilename(name: string): string {
+    return `clavix-${name}${this.fileExtension}`;
   }
 
   // Uses default formatCommand and generateCommands from BaseAdapter

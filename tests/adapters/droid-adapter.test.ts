@@ -206,7 +206,7 @@ describe('DroidAdapter', () => {
       await adapter.generateCommands(templates);
 
       const content = await fs.readFile(
-        '.factory/commands/fast.md',
+        '.factory/commands/clavix-fast.md',
         'utf-8'
       );
 
@@ -236,8 +236,8 @@ describe('DroidAdapter', () => {
       await adapter.generateCommands(templates);
 
       const files = await fs.readdir('.factory/commands');
-      expect(files).toContain('cmd1.md');
-      expect(files).toContain('cmd2.md');
+      expect(files).toContain('clavix-cmd1.md');
+      expect(files).toContain('clavix-cmd2.md');
     });
 
     it('should replace placeholders in generated files', async () => {
@@ -252,7 +252,7 @@ describe('DroidAdapter', () => {
       await adapter.generateCommands(templates);
 
       const content = await fs.readFile(
-        '.factory/commands/process.md',
+        '.factory/commands/clavix-process.md',
         'utf-8'
       );
 
@@ -272,7 +272,7 @@ describe('DroidAdapter', () => {
       await adapter.generateCommands(templates);
 
       const content = await fs.readFile(
-        '.factory/commands/test.md',
+        '.factory/commands/clavix-test.md',
         'utf-8'
       );
 
@@ -324,7 +324,7 @@ describe('DroidAdapter', () => {
       await adapter.generateCommands(templates);
 
       const content = await fs.readFile(
-        '.factory/commands/unicode.md',
+        '.factory/commands/clavix-unicode.md',
         'utf-8'
       );
 

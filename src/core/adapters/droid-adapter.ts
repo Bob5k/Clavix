@@ -33,6 +33,10 @@ export class DroidAdapter extends BaseAdapter {
     return this.directory;
   }
 
+  getTargetFilename(name: string): string {
+    return `clavix-${name}${this.fileExtension}`;
+  }
+
   /**
    * Format command with YAML frontmatter for Droid CLI
    */

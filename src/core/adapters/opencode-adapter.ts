@@ -33,6 +33,10 @@ export class OpenCodeAdapter extends BaseAdapter {
     return this.directory;
   }
 
+  getTargetFilename(name: string): string {
+    return `clavix-${name}${this.fileExtension}`;
+  }
+
   /**
    * Format command with frontmatter for OpenCode
    */

@@ -200,7 +200,7 @@ describe('OpenCodeAdapter', () => {
       await adapter.generateCommands(templates);
 
       const content = await fs.readFile(
-        '.opencode/command/fast.md',
+        '.opencode/command/clavix-fast.md',
         'utf-8'
       );
 
@@ -229,8 +229,8 @@ describe('OpenCodeAdapter', () => {
       await adapter.generateCommands(templates);
 
       const files = await fs.readdir('.opencode/command');
-      expect(files).toContain('cmd1.md');
-      expect(files).toContain('cmd2.md');
+      expect(files).toContain('clavix-cmd1.md');
+      expect(files).toContain('clavix-cmd2.md');
     });
 
     it('should replace placeholders in generated files', async () => {
@@ -245,7 +245,7 @@ describe('OpenCodeAdapter', () => {
       await adapter.generateCommands(templates);
 
       const content = await fs.readFile(
-        '.opencode/command/process.md',
+        '.opencode/command/clavix-process.md',
         'utf-8'
       );
 
@@ -265,7 +265,7 @@ describe('OpenCodeAdapter', () => {
       await adapter.generateCommands(templates);
 
       const content = await fs.readFile(
-        '.opencode/command/test.md',
+        '.opencode/command/clavix-test.md',
         'utf-8'
       );
 
@@ -274,7 +274,7 @@ describe('OpenCodeAdapter', () => {
 
     it('should overwrite existing commands', async () => {
       await fs.ensureDir('.opencode/command');
-      await fs.writeFile('.opencode/command/test.md', 'Old content');
+      await fs.writeFile('.opencode/command/clavix-test.md', 'Old content');
 
       const templates: CommandTemplate[] = [
         { name: 'test', description: 'Test', content: 'New content' },
@@ -283,7 +283,7 @@ describe('OpenCodeAdapter', () => {
       await adapter.generateCommands(templates);
 
       const content = await fs.readFile(
-        '.opencode/command/test.md',
+        '.opencode/command/clavix-test.md',
         'utf-8'
       );
       expect(content).toContain('New content');
@@ -305,7 +305,7 @@ describe('OpenCodeAdapter', () => {
       await adapter.generateCommands(templates);
 
       const files = await fs.readdir('.opencode/command');
-      expect(files).toEqual(['a.md', 'b.md']);
+      expect(files).toEqual(['clavix-a.md', 'clavix-b.md']);
     });
   });
 
@@ -353,7 +353,7 @@ describe('OpenCodeAdapter', () => {
       await adapter.generateCommands(templates);
 
       const content = await fs.readFile(
-        '.opencode/command/unicode.md',
+        '.opencode/command/clavix-unicode.md',
         'utf-8'
       );
 
@@ -379,7 +379,7 @@ describe('OpenCodeAdapter', () => {
 
       await adapter.generateCommands(templates);
 
-      expect(await fs.pathExists('.opencode/command/my-command.md')).toBe(true);
+      expect(await fs.pathExists('.opencode/command/clavix-my-command.md')).toBe(true);
     });
   });
 

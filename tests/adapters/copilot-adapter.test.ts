@@ -93,7 +93,7 @@ describe('CopilotAdapter', () => {
 
       await adapter.generateCommands(templates);
 
-      const filePath = path.join('.github/agents', 'fast.agent.md');
+      const filePath = path.join('.github/agents', 'clavix-fast.agent.md');
       const content = await fs.readFile(filePath, 'utf8');
 
       expect(content).toContain('name: Clavix: Fast');

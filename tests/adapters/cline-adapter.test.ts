@@ -26,7 +26,7 @@ describe('ClineAdapter', () => {
     it('should have correct metadata', () => {
       expect(adapter.name).toBe('cline');
       expect(adapter.displayName).toBe('Cline');
-      expect(adapter.directory).toBe('.cline/workflows');
+      expect(adapter.directory).toBe('.clinerules/workflows');
       expect(adapter.fileExtension).toBe('.md');
     });
 
@@ -46,6 +46,12 @@ describe('ClineAdapter', () => {
       expect(detected).toBe(true);
     });
 
+    it('should return true when .clinerules exists', async () => {
+      await fs.ensureDir('.clinerules');
+      const detected = await adapter.detectProject();
+      expect(detected).toBe(true);
+    });
+
     it('should return false when .cline does not exist', async () => {
       const detected = await adapter.detectProject();
       expect(detected).toBe(false);
@@ -55,7 +61,7 @@ describe('ClineAdapter', () => {
   describe('getCommandPath', () => {
     it('should return correct command directory', () => {
       const path = adapter.getCommandPath();
-      expect(path).toBe('.cline/workflows');
+      expect(path).toBe('.clinerules/workflows');
     });
   });
 
@@ -71,7 +77,7 @@ describe('ClineAdapter', () => {
 
       await adapter.generateCommands(templates);
 
-      const commandPath = path.join(testDir, '.cline/workflows/test.md');
+      const commandPath = path.join(testDir, '.clinerules/workflows/clavix-test.md');
       const exists = await fs.pathExists(commandPath);
       expect(exists).toBe(true);
 

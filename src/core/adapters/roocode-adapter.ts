@@ -39,6 +39,10 @@ export class RoocodeAdapter extends BaseAdapter {
     return this.directory;
   }
 
+  getTargetFilename(name: string): string {
+    return `clavix-${name}${this.fileExtension}`;
+  }
+
   /**
    * Format command content for Roocode
    * Adds frontmatter with description and argument-hint if not already present

@@ -33,6 +33,10 @@ export class CodeBuddyAdapter extends BaseAdapter {
     return this.directory;
   }
 
+  getTargetFilename(name: string): string {
+    return `clavix-${name}${this.fileExtension}`;
+  }
+
   protected formatCommand(template: CommandTemplate): string {
     const frontmatter = `---\ndescription: ${template.description}\nargument-hint: [prompt]\n---\n\n`;
     const content = template.content.replace(/\{\{ARGS\}\}/g, '$1');

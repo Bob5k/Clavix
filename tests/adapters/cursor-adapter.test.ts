@@ -104,11 +104,11 @@ describe('CursorAdapter', () => {
 
       const commandPath = adapter.getCommandPath();
       const file1 = await fs.readFile(
-        path.join(commandPath, 'fast.md'),
+        path.join(commandPath, 'clavix-fast.md'),
         'utf-8'
       );
       const file2 = await fs.readFile(
-        path.join(commandPath, 'deep.md'),
+        path.join(commandPath, 'clavix-deep.md'),
         'utf-8'
       );
 
@@ -128,7 +128,7 @@ describe('CursorAdapter', () => {
 
       // Verify it's a flat structure
       const files = await fs.readdir(commandPath);
-      expect(files).toContain('test.md');
+      expect(files).toContain('clavix-test.md');
     });
 
     it('should create parent .cursor directory', async () => {
@@ -149,14 +149,14 @@ describe('CursorAdapter', () => {
 
       await adapter.generateCommands(templates);
 
-      const filePath = path.join('.cursor/commands', 'example.md');
+      const filePath = path.join('.cursor/commands', 'clavix-example.md');
       expect(await fs.pathExists(filePath)).toBe(true);
     });
 
     it('should overwrite existing commands', async () => {
       await fs.ensureDir('.cursor/commands');
       await fs.writeFile(
-        '.cursor/commands/test.md',
+        '.cursor/commands/clavix-test.md',
         'Old content'
       );
 
@@ -167,7 +167,7 @@ describe('CursorAdapter', () => {
       await adapter.generateCommands(templates);
 
       const content = await fs.readFile(
-        '.cursor/commands/test.md',
+        '.cursor/commands/clavix-test.md',
         'utf-8'
       );
       expect(content).toBe('New content');
@@ -185,8 +185,8 @@ describe('CursorAdapter', () => {
 
       const files = await fs.readdir('.cursor/commands');
       expect(files.length).toBe(5);
-      expect(files).toContain('cmd-0.md');
-      expect(files).toContain('cmd-4.md');
+      expect(files).toContain('clavix-cmd-0.md');
+      expect(files).toContain('clavix-cmd-4.md');
     });
 
     it('should preserve content format without frontmatter', async () => {
@@ -198,7 +198,7 @@ describe('CursorAdapter', () => {
       await adapter.generateCommands(templates);
 
       const fileContent = await fs.readFile(
-        '.cursor/commands/test.md',
+        '.cursor/commands/clavix-test.md',
         'utf-8'
       );
       expect(fileContent).toBe(content);
@@ -235,7 +235,7 @@ describe('CursorAdapter', () => {
       const commandPath = adapter.getCommandPath();
       const files = await fs.readdir(commandPath);
 
-      expect(files).toEqual(['a.md', 'b.md', 'c.md']);
+      expect(files).toEqual(['clavix-a.md', 'clavix-b.md', 'clavix-c.md']);
     });
   });
 
@@ -254,7 +254,7 @@ describe('CursorAdapter', () => {
 
       await adapter.generateCommands(templates);
 
-      const filePath = path.join('.cursor/commands', 'my-command_v2.md');
+      const filePath = path.join('.cursor/commands', 'clavix-my-command_v2.md');
       expect(await fs.pathExists(filePath)).toBe(true);
     });
 
@@ -267,7 +267,7 @@ describe('CursorAdapter', () => {
       await adapter.generateCommands(templates);
 
       const content = await fs.readFile(
-        '.cursor/commands/long.md',
+        '.cursor/commands/clavix-long.md',
         'utf-8'
       );
       expect(content.length).toBe(10000);
@@ -285,7 +285,7 @@ describe('CursorAdapter', () => {
       await adapter.generateCommands(templates);
 
       const content = await fs.readFile(
-        '.cursor/commands/unicode.md',
+        '.cursor/commands/clavix-unicode.md',
         'utf-8'
       );
       expect(content).toContain('émojis');
@@ -300,7 +300,7 @@ describe('CursorAdapter', () => {
       await adapter.generateCommands(templates);
 
       const content = await fs.readFile(
-        '.cursor/commands/empty.md',
+        '.cursor/commands/clavix-empty.md',
         'utf-8'
       );
       expect(content).toBe('');
@@ -315,7 +315,7 @@ describe('CursorAdapter', () => {
       await adapter.generateCommands(templates);
 
       const fileContent = await fs.readFile(
-        '.cursor/commands/newlines.md',
+        '.cursor/commands/clavix-newlines.md',
         'utf-8'
       );
       expect(fileContent).toBe(content);

@@ -38,5 +38,9 @@ export class KilocodeAdapter extends BaseAdapter {
     return this.directory;
   }
 
+  getTargetFilename(name: string): string {
+    return `clavix-${name}${this.fileExtension}`;
+  }
+
   // Uses default formatCommand and generateCommands from BaseAdapter
 }

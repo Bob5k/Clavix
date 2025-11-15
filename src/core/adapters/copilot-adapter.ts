@@ -32,6 +32,10 @@ export class CopilotAdapter extends BaseAdapter {
     return this.directory;
   }
 
+  getTargetFilename(name: string): string {
+    return `clavix-${name}${this.fileExtension}`;
+  }
+
   protected formatCommand(template: CommandTemplate): string {
     const displayName = `Clavix: ${this.toTitle(template.name)}`;
     const frontmatter = `---\nname: ${displayName}\ndescription: ${template.description}\n---\n\n`;

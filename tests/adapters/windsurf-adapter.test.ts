@@ -71,7 +71,7 @@ describe('WindsurfAdapter', () => {
 
       await adapter.generateCommands(templates);
 
-      const commandPath = path.join(testDir, '.windsurf/workflows/fast.md');
+      const commandPath = path.join(testDir, '.windsurf/workflows/clavix-fast.md');
       const exists = await fs.pathExists(commandPath);
       expect(exists).toBe(true);
 

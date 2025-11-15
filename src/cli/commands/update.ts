@@ -1,5 +1,6 @@
 import { Command, Flags } from '@oclif/core';
 import chalk from 'chalk';
+import inquirer from 'inquirer';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import JSON5 from 'json5';
@@ -8,6 +9,7 @@ import { AgentManager } from '../../core/agent-manager';
 import { AgentsMdGenerator } from '../../core/adapters/agents-md-generator';
 import { OctoMdGenerator } from '../../core/adapters/octo-md-generator';
 import { AgentAdapter } from '../../types/agent';
+import { collectLegacyCommandFiles } from '../../utils/legacy-command-cleanup';
 
 export default class Update extends Command {
   static description = 'Update managed blocks and slash commands';
@@ -194,7 +196,8 @@ export default class Update extends Command {
     let updated = 0;
 
     for (const command of templateFiles) {
-      const commandFile = path.join(commandsPath, `${command}${extension}`);
+      const filename = adapter.getTargetFilename(command);
+      const commandFile = path.join(commandsPath, filename);
       const templatePath = path.join(templatesDir, `${command}${extension}`);
 
       const newContent = fs.readFileSync(templatePath, 'utf-8');
@@ -204,19 +207,65 @@ export default class Update extends Command {
 
         if (force || currentContent !== newContent) {
           fs.writeFileSync(commandFile, newContent);
-          this.log(chalk.gray(`  ✓ Updated ${command}.md`));
+          this.log(chalk.gray(`  ✓ Updated ${filename}`));
           updated++;
         } else {
-          this.log(chalk.gray(`  • ${command}.md already up to date`));
+          this.log(chalk.gray(`  • ${filename} already up to date`));
         }
       } else {
         fs.writeFileSync(commandFile, newContent);
-        this.log(chalk.gray(`  ✓ Created ${command}.md`));
+        this.log(chalk.gray(`  ✓ Created ${filename}`));
         updated++;
       }
     }
 
+    updated += await this.handleLegacyCommands(adapter, templateFiles);
+
     return updated;
+  }
+
+  private async handleLegacyCommands(adapter: AgentAdapter, commandNames: string[]): Promise<number> {
+    if (commandNames.length === 0) {
+      return 0;
+    }
+
+    const legacyFiles = await collectLegacyCommandFiles(adapter, commandNames);
+
+    if (legacyFiles.length === 0) {
+      return 0;
+    }
+
+    const relativePaths = legacyFiles
+      .map((file) => path.relative(process.cwd(), file))
+      .sort((a, b) => a.localeCompare(b));
+
+    this.log(chalk.gray(`  ⚠ Found ${relativePaths.length} deprecated command file(s):`));
+    for (const file of relativePaths) {
+      this.log(chalk.gray(`    • ${file}`));
+    }
+
+    const { removeLegacy } = await inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'removeLegacy',
+        message: `Remove deprecated files for ${adapter.displayName}? Functionality is unchanged; filenames are being standardized.`,
+        default: true,
+      },
+    ]);
+
+    if (!removeLegacy) {
+      this.log(chalk.gray('  ⊗ Kept legacy files (deprecated naming retained)'));
+      return 0;
+    }
+
+    let removed = 0;
+    for (const file of legacyFiles) {
+      await fs.remove(file);
+      this.log(chalk.gray(`  ✓ Removed ${path.relative(process.cwd(), file)}`));
+      removed++;
+    }
+
+    return removed;
   }
 
   private getAgentsContent(): string {

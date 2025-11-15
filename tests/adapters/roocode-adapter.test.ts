@@ -113,7 +113,7 @@ describe('RoocodeAdapter', () => {
 
       await adapter.generateCommands(templates);
 
-      const commandPath = path.join(testDir, '.roo/commands/test.md');
+      const commandPath = path.join(testDir, '.roo/commands/clavix-test.md');
       const exists = await fs.pathExists(commandPath);
       expect(exists).toBe(true);
 

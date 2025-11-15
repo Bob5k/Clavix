@@ -84,7 +84,7 @@ describe('CodeBuddyAdapter', () => {
 
       await adapter.generateCommands(templates);
 
-      const fileContent = await fs.readFile(path.join('.codebuddy/commands', 'fast.md'), 'utf8');
+      const fileContent = await fs.readFile(path.join('.codebuddy/commands', 'clavix-fast.md'), 'utf8');
 
       expect(fileContent).toContain('description: Fast improvements');
       expect(fileContent).toContain('argument-hint: [prompt]');

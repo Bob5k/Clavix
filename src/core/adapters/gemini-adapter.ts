@@ -40,6 +40,13 @@ export class GeminiAdapter extends BaseAdapter {
     return this.directory;
   }
 
+  getTargetFilename(name: string): string {
+    const commandPath = this.getCommandPath();
+    const namespaced = commandPath.endsWith(path.join('commands', 'clavix'));
+    const baseName = namespaced ? name : `clavix-${name}`;
+    return `${baseName}${this.fileExtension}`;
+  }
+
   protected formatCommand(template: CommandTemplate): string {
     const description = template.description.trim().length > 0
       ? `description = ${JSON.stringify(template.description)}\n\n`

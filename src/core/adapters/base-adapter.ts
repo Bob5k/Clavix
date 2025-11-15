@@ -24,6 +24,14 @@ export abstract class BaseAdapter implements AgentAdapter {
   abstract getCommandPath(): string;
 
   /**
+   * Determine the target filename for a generated command
+   * Providers can override to customize filename conventions
+   */
+  getTargetFilename(name: string): string {
+    return `${name}${this.fileExtension}`;
+  }
+
+  /**
    * Default validation logic - can be overridden
    * Checks if directory can be created and is writable
    */
@@ -91,7 +99,7 @@ export abstract class BaseAdapter implements AgentAdapter {
       // Generate each command file
       for (const template of templates) {
         const content = this.formatCommand(template);
-        const filename = `${template.name}${this.fileExtension}`;
+        const filename = this.getTargetFilename(template.name);
         const filePath = path.join(commandPath, filename);
         await FileSystem.writeFileAtomic(filePath, content);
       }

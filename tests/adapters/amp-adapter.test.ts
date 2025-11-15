@@ -109,11 +109,11 @@ describe('AmpAdapter', () => {
 
       const commandPath = adapter.getCommandPath();
       const file1 = await fs.readFile(
-        path.join(commandPath, 'fast.md'),
+        path.join(commandPath, 'clavix-fast.md'),
         'utf-8'
       );
       const file2 = await fs.readFile(
-        path.join(commandPath, 'deep.md'),
+        path.join(commandPath, 'clavix-deep.md'),
         'utf-8'
       );
 
@@ -133,7 +133,7 @@ describe('AmpAdapter', () => {
 
       // Verify it's a flat structure
       const files = await fs.readdir(commandPath);
-      expect(files).toContain('test.md');
+      expect(files).toContain('clavix-test.md');
     });
 
     it('should create parent .agents directory', async () => {
@@ -154,14 +154,14 @@ describe('AmpAdapter', () => {
 
       await adapter.generateCommands(templates);
 
-      const filePath = path.join('.agents/commands', 'example.md');
+      const filePath = path.join('.agents/commands', 'clavix-example.md');
       expect(await fs.pathExists(filePath)).toBe(true);
     });
 
     it('should overwrite existing commands', async () => {
       await fs.ensureDir('.agents/commands');
       await fs.writeFile(
-        '.agents/commands/test.md',
+        '.agents/commands/clavix-test.md',
         'Old content'
       );
 
@@ -172,7 +172,7 @@ describe('AmpAdapter', () => {
       await adapter.generateCommands(templates);
 
       const content = await fs.readFile(
-        '.agents/commands/test.md',
+        '.agents/commands/clavix-test.md',
         'utf-8'
       );
       expect(content).toBe('New content');
@@ -190,8 +190,8 @@ describe('AmpAdapter', () => {
 
       const files = await fs.readdir('.agents/commands');
       expect(files.length).toBe(5);
-      expect(files).toContain('cmd-0.md');
-      expect(files).toContain('cmd-4.md');
+      expect(files).toContain('clavix-cmd-0.md');
+      expect(files).toContain('clavix-cmd-4.md');
     });
 
     it('should preserve content format without frontmatter', async () => {
@@ -203,7 +203,7 @@ describe('AmpAdapter', () => {
       await adapter.generateCommands(templates);
 
       const fileContent = await fs.readFile(
-        '.agents/commands/test.md',
+        '.agents/commands/clavix-test.md',
         'utf-8'
       );
       expect(fileContent).toBe(content);
@@ -222,7 +222,7 @@ describe('AmpAdapter', () => {
       await adapter.generateCommands(templates);
 
       const content = await fs.readFile(
-        '.agents/commands/simple.md',
+        '.agents/commands/clavix-simple.md',
         'utf-8'
       );
 
@@ -259,8 +259,7 @@ describe('AmpAdapter', () => {
 
       const commandPath = adapter.getCommandPath();
       const files = await fs.readdir(commandPath);
-
-      expect(files).toEqual(['a.md', 'b.md', 'c.md']);
+      expect(files).toEqual(['clavix-a.md', 'clavix-b.md', 'clavix-c.md']);
     });
   });
 
@@ -279,7 +278,7 @@ describe('AmpAdapter', () => {
 
       await adapter.generateCommands(templates);
 
-      const filePath = path.join('.agents/commands', 'my-command_v2.md');
+      const filePath = path.join('.agents/commands', 'clavix-my-command_v2.md');
       expect(await fs.pathExists(filePath)).toBe(true);
     });
 
@@ -292,7 +291,7 @@ describe('AmpAdapter', () => {
       await adapter.generateCommands(templates);
 
       const content = await fs.readFile(
-        '.agents/commands/long.md',
+        '.agents/commands/clavix-long.md',
         'utf-8'
       );
       expect(content.length).toBe(10000);
@@ -310,7 +309,7 @@ describe('AmpAdapter', () => {
       await adapter.generateCommands(templates);
 
       const content = await fs.readFile(
-        '.agents/commands/unicode.md',
+        '.agents/commands/clavix-unicode.md',
         'utf-8'
       );
       expect(content).toContain('émojis');
@@ -325,7 +324,7 @@ describe('AmpAdapter', () => {
       await adapter.generateCommands(templates);
 
       const content = await fs.readFile(
-        '.agents/commands/empty.md',
+        '.agents/commands/clavix-empty.md',
         'utf-8'
       );
       expect(content).toBe('');
@@ -340,7 +339,7 @@ describe('AmpAdapter', () => {
       await adapter.generateCommands(templates);
 
       const fileContent = await fs.readFile(
-        '.agents/commands/newlines.md',
+        '.agents/commands/clavix-newlines.md',
         'utf-8'
       );
       expect(fileContent).toBe(content);
@@ -355,7 +354,7 @@ describe('AmpAdapter', () => {
       await adapter.generateCommands(templates);
 
       const fileContent = await fs.readFile(
-        '.agents/commands/code.md',
+        '.agents/commands/clavix-code.md',
         'utf-8'
       );
       expect(fileContent).toBe(content);
@@ -425,7 +424,7 @@ describe('AmpAdapter', () => {
       await adapter.generateCommands(templates);
 
       const content = await fs.readFile(
-        '.agents/commands/build.md',
+        '.agents/commands/clavix-build.md',
         'utf-8'
       );
 

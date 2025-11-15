@@ -77,7 +77,7 @@ describe('CodexAdapter', () => {
 
       await adapter.generateCommands(templates);
 
-      const fileContent = await fs.readFile(path.join(testDir, '.codex', 'prompts', 'plan.md'), 'utf8');
+      const fileContent = await fs.readFile(path.join(testDir, '.codex', 'prompts', 'clavix-plan.md'), 'utf8');
 
       expect(fileContent).toContain('description: Planning command');
       expect(fileContent).toContain('Plan for $ARGUMENTS');
