@@ -9,7 +9,6 @@ import { AgentManager } from '../../core/agent-manager';
 import { AgentsMdGenerator } from '../../core/adapters/agents-md-generator';
 import { OctoMdGenerator } from '../../core/adapters/octo-md-generator';
 import { WarpMdGenerator } from '../../core/adapters/warp-md-generator';
-import { WarpMdGenerator } from '../../core/adapters/warp-md-generator';
 import { AgentAdapter } from '../../types/agent';
 import { collectLegacyCommandFiles } from '../../utils/legacy-command-cleanup';
 

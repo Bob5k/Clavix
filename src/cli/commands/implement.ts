@@ -246,7 +246,7 @@ export default class Implement extends Command {
       // Check if tasks.md exists
       const hasTasks = await fs.pathExists(tasksPath);
 
-      let stats = null;
+      let stats: { total: number; completed: number; remaining: number; percentage: number } | undefined;
       if (hasTasks) {
         try {
           const phases = await manager.readTasksFile(tasksPath);
