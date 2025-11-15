@@ -7,6 +7,7 @@ import * as path from 'path';
 import { AgentManager } from '../../src/core/agent-manager';
 import { FileSystem } from '../../src/utils/file-system';
 import { DEFAULT_CONFIG } from '../../src/types/config';
+import { parseTomlSlashCommand } from '../../src/utils/toml-templates';
 
 describe('Init command', () => {
   const testDir = path.join(__dirname, '../fixtures/test-init');
@@ -374,6 +375,22 @@ describe('Init command', () => {
     it('should have boolean preferences', () => {
       expect(typeof DEFAULT_CONFIG.preferences.autoOpenOutputs).toBe('boolean');
       expect(typeof DEFAULT_CONFIG.preferences.verboseLogging).toBe('boolean');
+    });
+  });
+
+  describe('TOML template parsing', () => {
+    it('extracts description and prompt body without duplicating headers', async () => {
+      const templatePath = path.join(__dirname, '../../src/templates/slash-commands/gemini/archive.toml');
+      const templateContent = await fs.readFile(templatePath, 'utf8');
+
+      const parsed = parseTomlSlashCommand(templateContent, 'archive', 'gemini');
+
+      expect(parsed.description).toBe('Archive completed PRD projects');
+      expect(parsed.prompt.startsWith('# Clavix Archive')).toBe(true);
+      expect(parsed.prompt).not.toMatch(/^description\s*=/m);
+      expect(parsed.prompt).not.toMatch(/^prompt\s*=/m);
+      const occurrences = (parsed.prompt.match(/prompt\s*=\s*"""/g) ?? []).length;
+      expect(occurrences).toBe(0);
     });
   });
 

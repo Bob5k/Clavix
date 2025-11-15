@@ -161,7 +161,7 @@ export default class Update extends Command {
   }
 
   private async updateCommands(adapter: AgentAdapter, force: boolean): Promise<number> {
-    this.log(chalk.cyan('\n🔧 Updating slash commands...'));
+    this.log(chalk.cyan(`\n🔧 Updating slash commands for ${adapter.displayName}...`));
 
     const commandsDir = adapter.getCommandPath();
     const commandsPath = path.join(process.cwd(), commandsDir);

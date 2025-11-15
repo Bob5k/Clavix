@@ -12,6 +12,7 @@ import { ClavixConfig, DEFAULT_CONFIG } from '../../types/config';
 import { CommandTemplate, AgentAdapter } from '../../types/agent';
 import { GeminiAdapter } from '../../core/adapters/gemini-adapter';
 import { QwenAdapter } from '../../core/adapters/qwen-adapter';
+import { parseTomlSlashCommand } from '../../utils/toml-templates';
 
 export default class Init extends Command {
   static description = 'Initialize Clavix in the current project';
@@ -382,7 +383,7 @@ See documentation for template format details.
       const name = file.slice(0, -extension.length);
 
       if (extension === '.toml') {
-        const parsed = this.parseTomlTemplate(content, name, adapter.name);
+        const parsed = parseTomlSlashCommand(content, name, adapter.name);
         templates.push({
           name,
           content: parsed.prompt,
@@ -463,19 +464,6 @@ See documentation for template format details.
     return '';
   }
 
-  private parseTomlTemplate(content: string, templateName: string, providerName: string): { description: string; prompt: string } {
-    const descriptionMatch = content.match(/^\s*description\s*=\s*(['"])(.*?)\1/m);
-    const promptMatch = content.match(/^\s*prompt\s*=\s*"""([\s\S]*?)"""/m);
-
-    if (!promptMatch) {
-      throw new Error(`Template ${templateName}.toml for ${providerName} is missing a prompt = """ ... """ block.`);
-    }
-
-    const description = descriptionMatch ? descriptionMatch[2] : '';
-    const prompt = promptMatch[1];
-
-    return { description, prompt };
-  }
 
   private extractClavixBlock(content: string): string {
     const match = content.match(/<!-- CLAVIX:START -->([\s\S]*?)<!-- CLAVIX:END -->/);
