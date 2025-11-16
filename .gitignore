@@ -51,3 +51,6 @@ CLAUDE.md
 
 # OpenSpec (local spec working files)
 openspec/
+
+# GitHub workflows and config (local)
+.github/
