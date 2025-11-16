@@ -39,7 +39,7 @@ export default class Prd extends Command {
   async run(): Promise<void> {
     const { flags } = await this.parse(Prd);
 
-    console.log(chalk.bold.cyan('\n📋 PRD Generator\n'));
+    console.log(chalk.bold.cyan('\nPRD Generator\n'));
     console.log(chalk.gray("Let's create a comprehensive Product Requirements Document through strategic questions.\n"));
 
     try {
@@ -142,7 +142,7 @@ export default class Prd extends Command {
         if (answer && answer.toString().trim() && question) {
           const submitResult = engine.submitAnswer(question.id, answer);
           if (submitResult !== true) {
-            console.log(chalk.red(`\n✗ ${submitResult}\n`));
+            console.log(chalk.red(`\nError: ${submitResult}\n`));
             continue; // Ask again
           }
           answers[question.id] = answer;
@@ -153,7 +153,7 @@ export default class Prd extends Command {
       }
 
       // All questions answered
-      console.log(chalk.bold.green('\n✓ All questions answered!\n'));
+      console.log(chalk.bold.green('\nAll questions answered!\n'));
 
       // Generate PRDs
       console.log(chalk.dim('Generating PRD documents...\n'));
@@ -167,7 +167,7 @@ export default class Prd extends Command {
       });
 
       // Display success message
-      console.log(chalk.bold.green('✨ PRD documents generated successfully!\n'));
+      console.log(chalk.bold.green('PRD documents generated successfully!\n'));
       console.log(chalk.bold('Output location:'));
       console.log(chalk.cyan(`  ${outputPath}`));
       console.log();
@@ -181,15 +181,11 @@ export default class Prd extends Command {
         await this.validatePrdWithClear(outputPath);
       }
 
-      console.log(chalk.gray('💡 Tip: Use quick-prd.md as input for your AI agent to start development\n'));
+      console.log(chalk.gray('Tip: Use quick-prd.md as input for your AI agent to start development\n'));
 
     } catch (error) {
-      if (error instanceof Error) {
-        console.log(chalk.red(`\n✗ Error: ${error.message}\n`));
-      } else {
-        console.log(chalk.red('\n✗ An unexpected error occurred\n'));
-      }
-      this.exit(1);
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      this.error(chalk.red(`Error: ${errorMessage}`));
     }
   }
 

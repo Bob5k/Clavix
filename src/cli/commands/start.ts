@@ -67,12 +67,8 @@ export default class Start extends Command {
         await this.displayExitInfo();
       }
     } catch (error) {
-      if (error instanceof Error) {
-        console.log(chalk.red(`\n✗ Error: ${error.message}\n`));
-      } else {
-        console.log(chalk.red('\n✗ An unexpected error occurred\n'));
-      }
-      this.exit(1);
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      this.error(chalk.red(`Error: ${errorMessage}`));
     }
   }
 
@@ -215,7 +211,7 @@ export default class Start extends Command {
     const session = await this.sessionManager.getSession(this.sessionId);
 
     if (session) {
-      console.log(chalk.bold.green('✓ Session saved successfully!\n'));
+      console.log(chalk.bold.green('Session saved successfully!\n'));
       console.log(chalk.bold('Session Details:'));
       console.log(chalk.gray('  Session ID:'), chalk.cyan(session.id));
       console.log(chalk.gray('  Project:'), chalk.cyan(session.projectName));
@@ -241,7 +237,7 @@ export default class Start extends Command {
       console.log(chalk.gray('  • View: ') + chalk.cyan(`clavix show ${session.id}`));
       console.log();
     } else {
-      console.log(chalk.yellow('⚠ Could not retrieve session information\n'));
+      console.log(chalk.yellow('Warning: Could not retrieve session information\n'));
     }
 
     console.log(chalk.gray('━'.repeat(60)));

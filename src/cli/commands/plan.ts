@@ -52,7 +52,7 @@ export default class Plan extends Command {
   async run(): Promise<void> {
     const { flags } = await this.parse(Plan);
 
-    console.log(chalk.bold.cyan('\n📋 Task Plan Generator\n'));
+    console.log(chalk.bold.cyan('\nTask Plan Generator\n'));
     console.log(chalk.gray('Analyzing PRD and generating implementation tasks...\n'));
 
     try {
@@ -86,14 +86,13 @@ export default class Plan extends Command {
         selectedProject = await this.resolveProjectDirectory(manager, flags.project);
 
         if (!selectedProject) {
-          console.log(chalk.red('✗ No PRD projects found in .clavix/outputs/.\n'));
-          console.log(
+          this.error(
+            chalk.red('Error: No PRD projects found in .clavix/outputs/') +
+            '\n\n' +
             chalk.gray(
-              "Run 'clavix prd' to generate a PRD, 'clavix summarize' to create a mini-PRD, or use 'clavix plan --session <id>'.\n"
+              "Hint: Run 'clavix prd' to generate a PRD, 'clavix summarize' to create a mini-PRD, or use 'clavix plan --session <id>'"
             )
           );
-          this.exit(1);
-          return;
         }
 
         prdPath = selectedProject.path;
@@ -110,7 +109,7 @@ export default class Plan extends Command {
       const tasksPath = path.join(prdPath, 'tasks.md');
 
       if (await fs.pathExists(tasksPath) && !flags.overwrite) {
-        console.log(chalk.yellow('⚠ tasks.md already exists.'));
+        console.log(chalk.yellow('Warning: tasks.md already exists.'));
         console.log(chalk.gray(`Location: ${tasksPath}`));
         console.log(chalk.gray('Use --overwrite to regenerate tasks.md.\n'));
         return;
@@ -120,29 +119,23 @@ export default class Plan extends Command {
       const availableSources = await manager.detectAvailableSources(prdPath);
 
       if (availableSources.length === 0) {
-        console.log(chalk.red('\n✗ No PRD artifacts found in this directory.\n'));
-        console.log(
+        this.error(
+          chalk.red('Error: No PRD artifacts found in this directory') +
+          '\n\n' +
           chalk.gray(
-            'Generate a PRD with clavix prd, run clavix summarize, or supply a session via --session.\n'
+            'Hint: Generate a PRD with clavix prd, run clavix summarize, or supply a session via --session'
           )
         );
-        this.exit(1);
-        return;
       }
 
       if (sourcePreference !== 'auto' && !availableSources.includes(sourcePreference)) {
-        console.log(
-          chalk.red(
-            `\n✗ Preferred source "${sourcePreference}" not found in ${prdPath}.\n`
-          )
-        );
-        console.log(
+        this.error(
+          chalk.red(`Error: Preferred source "${sourcePreference}" not found in ${prdPath}`) +
+          '\n\n' +
           chalk.gray(
-            `Available sources: ${availableSources.join(', ') || 'none'}. Override with --source.\n`
+            `Hint: Available sources: ${availableSources.join(', ') || 'none'}. Override with --source`
           )
         );
-        this.exit(1);
-        return;
       }
 
       if (availableSources.length > 1 && sourcePreference === 'auto') {
@@ -176,7 +169,7 @@ export default class Plan extends Command {
       }
 
       // Display results
-      console.log(chalk.bold.green('\n✨ Task plan generated successfully!\n'));
+      console.log(chalk.bold.green('\nTask plan generated successfully!\n'));
 
       if (generatedFromSession) {
         console.log(chalk.bold('Generated artifacts:'));
@@ -220,36 +213,32 @@ export default class Plan extends Command {
       console.log(chalk.gray('  3. Run'), chalk.cyan('clavix implement'), chalk.gray('to start implementation'));
       console.log();
 
-      console.log(chalk.dim('💡 Tip: Tasks follow CLEAR framework principles for optimal AI execution\n'));
+      console.log(chalk.dim('Tip: Tasks follow CLEAR framework principles for optimal AI execution\n'));
 
     } catch (error) {
-      if (error instanceof Error) {
-        console.log(chalk.red(`\n✗ Error: ${error.message}\n`));
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      let fullMessage = chalk.red(`Error: ${errorMessage}`);
 
+      if (error instanceof Error) {
         if (error.message.includes('Session has no messages')) {
-          console.log(
-            chalk.gray(
-              'Add conversation messages with clavix start before running plan --session.\n'
-            )
+          fullMessage += '\n\n' + chalk.gray(
+            'Hint: Add conversation messages with clavix start before running plan --session'
           );
         } else if (error.message.includes('Session not found')) {
-          console.log(chalk.gray('Check the session ID with clavix list.\n'));
+          fullMessage += '\n\n' + chalk.gray('Hint: Check the session ID with clavix list');
         } else if (error.message.includes('No active session')) {
-          console.log(chalk.gray('Start a session with clavix start before using --active-session.\n'));
+          fullMessage += '\n\n' + chalk.gray('Hint: Start a session with clavix start before using --active-session');
         } else if (error.message.includes('PRD project not found')) {
-          console.log(
-            chalk.gray(
-              "Run 'clavix list' to see available outputs or specify a valid project name.\n"
-            )
+          fullMessage += '\n\n' + chalk.gray(
+            "Hint: Run 'clavix list' to see available outputs or specify a valid project name"
           );
         } else if (error.message.includes('No PRD')) {
-          console.log(chalk.yellow('💡 Create a PRD first:'));
-          console.log(chalk.gray('   Run'), chalk.cyan('clavix prd'), chalk.gray('to generate a new PRD.\n'));
+          fullMessage += '\n\n' + chalk.yellow('Hint: Create a PRD first') +
+            '\n' + chalk.gray('Run ') + chalk.cyan('clavix prd') + chalk.gray(' to generate a new PRD');
         }
-      } else {
-        console.log(chalk.red('\n✗ An unexpected error occurred\n'));
       }
-      this.exit(1);
+
+      this.error(fullMessage);
     }
   }
 

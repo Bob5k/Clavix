@@ -36,7 +36,7 @@ export default class Implement extends Command {
   async run(): Promise<void> {
     const { flags } = await this.parse(Implement);
 
-    console.log(chalk.bold.cyan('\n🚀 Task Implementation\n'));
+    console.log(chalk.bold.cyan('\nTask Implementation\n'));
 
     try {
       const manager = new TaskManager();
@@ -61,10 +61,11 @@ export default class Implement extends Command {
         tasksPath = path.join(prdPath, 'tasks.md');
 
         if (!(await fs.pathExists(tasksPath))) {
-          console.log(chalk.red('\n✗ No tasks.md found!\n'));
-          console.log(chalk.yellow('💡 Run'), chalk.cyan('clavix plan'), chalk.yellow('first to generate task breakdown\n'));
-          this.exit(1);
-          return;
+          this.error(
+            chalk.red('Error: No tasks.md found!') +
+            '\n\n' +
+            chalk.yellow('Hint: Run ') + chalk.cyan('clavix plan') + chalk.yellow(' first to generate task breakdown')
+          );
         }
 
         console.log(chalk.dim(`Found: ${tasksPath}\n`));
@@ -82,7 +83,7 @@ export default class Implement extends Command {
 
       // Check if all tasks are done
       if (stats.remaining === 0) {
-        console.log(chalk.bold.green('✨ All tasks completed!\n'));
+        console.log(chalk.bold.green('All tasks completed!\n'));
         console.log(chalk.gray('Great work! All implementation tasks are done.\n'));
         return;
       }
@@ -91,7 +92,7 @@ export default class Implement extends Command {
       const nextTask = manager.findFirstIncompleteTask(phases);
 
       if (!nextTask) {
-        console.log(chalk.yellow('⚠ No incomplete tasks found\n'));
+        console.log(chalk.yellow('Warning: No incomplete tasks found\n'));
         return;
       }
 
@@ -149,12 +150,12 @@ export default class Implement extends Command {
           }
 
           if (commitStrategy !== 'none') {
-            console.log(chalk.green(`✓ Auto-commit enabled: ${commitStrategy}\n`));
+            console.log(chalk.green(`Auto-commit enabled: ${commitStrategy}\n`));
           } else {
             console.log(chalk.dim('Auto-commit disabled\n'));
           }
         } else {
-          console.log(chalk.yellow('⚠ Not a git repository - auto-commits disabled\n'));
+          console.log(chalk.yellow('Warning: Not a git repository - auto-commits disabled\n'));
         }
       }
 
@@ -180,12 +181,12 @@ export default class Implement extends Command {
         timestamp: new Date().toISOString(),
       }, { spaces: 2 });
 
-      console.log(chalk.bold.green('✓ Ready to implement!\n'));
+      console.log(chalk.bold.green('Ready to implement!\n'));
 
       console.log(chalk.dim('Configuration saved to:'));
       console.log(chalk.dim(`  ${configPath}\n`));
 
-      console.log(chalk.yellow('📝 Important Notes for AI Agent:\n'));
+      console.log(chalk.yellow('Important Notes for AI Agent:\n'));
       console.log(chalk.gray('  • Follow the tasks in order from tasks.md'));
       console.log(chalk.gray('  • Mark each completed task: change [ ] to [x]'));
       console.log(chalk.gray(`  • Current task: ${nextTask.description}`));
@@ -195,21 +196,19 @@ export default class Implement extends Command {
       console.log(chalk.gray('  • Use PRD as reference for implementation details'));
       console.log();
 
-      console.log(chalk.dim('💡 Tip: The AI agent can run "clavix implement" again to resume progress\n'));
+      console.log(chalk.dim('Tip: The AI agent can run "clavix implement" again to resume progress\n'));
 
     } catch (error) {
-      if (error instanceof Error) {
-        console.log(chalk.red(`\n✗ Error: ${error.message}\n`));
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      let fullMessage = chalk.red(`Error: ${errorMessage}`);
 
-        // Provide helpful hints
-        if (error.message.includes('tasks.md')) {
-          console.log(chalk.yellow('💡 Make sure you have generated a task plan first:'));
-          console.log(chalk.gray('   Run'), chalk.cyan('clavix plan'), chalk.gray('to create tasks.md\n'));
-        }
-      } else {
-        console.log(chalk.red('\n✗ An unexpected error occurred\n'));
+      // Provide helpful hints
+      if (error instanceof Error && error.message.includes('tasks.md')) {
+        fullMessage += '\n\n' + chalk.yellow('Hint: Make sure you have generated a task plan first') +
+          '\n' + chalk.gray('Run ') + chalk.cyan('clavix plan') + chalk.gray(' to create tasks.md');
       }
-      this.exit(1);
+
+      this.error(fullMessage);
     }
   }
 
@@ -265,10 +264,11 @@ export default class Implement extends Command {
 
     // No PRD projects found
     if (prdProjects.length === 0) {
-      console.log(chalk.yellow('⚠ No PRD projects found in .clavix/outputs/\n'));
-      console.log(chalk.gray('💡 Create a PRD first using:'), chalk.cyan('clavix prd\n'));
-      this.exit(1);
-      return null;
+      this.error(
+        chalk.yellow('Warning: No PRD projects found in .clavix/outputs/') +
+        '\n\n' +
+        chalk.gray('Hint: Create a PRD first using ') + chalk.cyan('clavix prd')
+      );
     }
 
     // Only one PRD - auto-select
@@ -332,7 +332,7 @@ export default class Implement extends Command {
    * @param projectName Name of the PRD project
    */
   private async handleNoTasks(projectName: string): Promise<void> {
-    console.log(chalk.yellow(`\n⚠ Project "${projectName}" has no tasks generated yet.\n`));
+    console.log(chalk.yellow(`\nWarning: Project "${projectName}" has no tasks generated yet.\n`));
 
     const response = await inquirer.prompt([
       {
@@ -364,12 +364,10 @@ export default class Implement extends Command {
         }
 
         // After plan completes, continue with implementation
-        console.log(chalk.green('\n✓ Tasks generated! Continuing with implementation...\n'));
+        console.log(chalk.green('\nTasks generated! Continuing with implementation...\n'));
       } catch (error) {
-        if (error instanceof Error) {
-          console.log(chalk.red(`\n✗ Error running clavix plan: ${error.message}\n`));
-        }
-        this.exit(1);
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        this.error(chalk.red(`Error running clavix plan: ${errorMessage}`));
       }
     } else {
       console.log(chalk.dim('\nExiting. Run "clavix plan" when ready to generate tasks.\n'));

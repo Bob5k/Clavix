@@ -41,7 +41,7 @@ export default class Summarize extends Command {
   async run(): Promise<void> {
     const { args, flags } = await this.parse(Summarize);
 
-    console.log(chalk.bold.cyan('\n📊 Conversation Summarizer\n'));
+    console.log(chalk.bold.cyan('\nConversation Summarizer\n'));
 
     try {
       const manager = new SessionManager();
@@ -54,29 +54,32 @@ export default class Summarize extends Command {
         session = await manager.getSession(args.sessionId);
 
         if (!session) {
-          console.log(chalk.red(`✗ Session not found: ${args.sessionId}\n`));
-          this.exit(1);
+          this.error(chalk.red(`Error: Session not found: ${args.sessionId}`));
         }
       } else if (flags.active) {
         console.log(chalk.dim('Loading most recent active session...\n'));
         session = await manager.getActiveSession();
 
         if (!session) {
-          console.log(chalk.red('✗ No active session found\n'));
-          console.log(chalk.gray('Tip: Use ') + chalk.cyan('clavix list') + chalk.gray(' to see all sessions\n'));
-          this.exit(1);
+          this.error(
+            chalk.red('Error: No active session found') +
+            '\n\n' +
+            chalk.gray('Hint: Use ') + chalk.cyan('clavix list') + chalk.gray(' to see all sessions')
+          );
         }
       } else {
         // Try to get active session by default
         session = await manager.getActiveSession();
 
         if (!session) {
-          console.log(chalk.yellow('⚠ No active session found\n'));
-          console.log(chalk.gray('Usage:'));
-          console.log(chalk.gray('  • ') + chalk.cyan('clavix summarize <session-id>') + chalk.gray(' - Summarize specific session'));
-          console.log(chalk.gray('  • ') + chalk.cyan('clavix summarize --active') + chalk.gray(' - Summarize most recent active session'));
-          console.log(chalk.gray('  • ') + chalk.cyan('clavix list') + chalk.gray(' - View all sessions\n'));
-          this.exit(1);
+          this.error(
+            chalk.yellow('Warning: No active session found') +
+            '\n\n' +
+            chalk.gray('Usage:') +
+            '\n' + chalk.gray('  • ') + chalk.cyan('clavix summarize <session-id>') + chalk.gray(' - Summarize specific session') +
+            '\n' + chalk.gray('  • ') + chalk.cyan('clavix summarize --active') + chalk.gray(' - Summarize most recent active session') +
+            '\n' + chalk.gray('  • ') + chalk.cyan('clavix list') + chalk.gray(' - View all sessions')
+          );
         }
       }
 
@@ -90,8 +93,7 @@ export default class Summarize extends Command {
 
       // Check if session has messages
       if (session.messages.length === 0) {
-        console.log(chalk.yellow('⚠ Session has no messages to analyze\n'));
-        this.exit(1);
+        this.error(chalk.yellow('Warning: Session has no messages to analyze'));
       }
 
       // Analyze conversation
@@ -125,7 +127,7 @@ export default class Summarize extends Command {
       }
 
       // Display success
-      console.log(chalk.bold.green('✨ Analysis complete!\n'));
+      console.log(chalk.bold.green('Analysis complete!\n'));
       console.log(chalk.bold('Generated files:'));
       console.log(chalk.gray('  • ') + chalk.cyan('mini-prd.md') + chalk.dim(' - Structured requirements document'));
       console.log(chalk.gray('  • ') + chalk.cyan('optimized-prompt.md') + chalk.dim(' - AI-ready development prompt'));
@@ -146,12 +148,8 @@ export default class Summarize extends Command {
       console.log(chalk.gray('  • Share ') + chalk.cyan('mini-prd.md') + chalk.gray(' with your team for alignment'));
       console.log();
     } catch (error) {
-      if (error instanceof Error) {
-        console.log(chalk.red(`\n✗ Error: ${error.message}\n`));
-      } else {
-        console.log(chalk.red('\n✗ An unexpected error occurred\n'));
-      }
-      this.exit(1);
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      this.error(chalk.red(`Error: ${errorMessage}`));
     }
   }
 
