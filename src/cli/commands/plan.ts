@@ -87,7 +87,7 @@ export default class Plan extends Command {
 
         if (!selectedProject) {
           this.error(
-            chalk.red('Error: No PRD projects found in .clavix/outputs/') +
+            chalk.red('No PRD projects found in .clavix/outputs/') +
             '\n\n' +
             chalk.gray(
               "Hint: Run 'clavix prd' to generate a PRD, 'clavix summarize' to create a mini-PRD, or use 'clavix plan --session <id>'"
@@ -120,7 +120,7 @@ export default class Plan extends Command {
 
       if (availableSources.length === 0) {
         this.error(
-          chalk.red('Error: No PRD artifacts found in this directory') +
+          chalk.red('No PRD artifacts found in this directory') +
           '\n\n' +
           chalk.gray(
             'Hint: Generate a PRD with clavix prd, run clavix summarize, or supply a session via --session'
@@ -130,7 +130,7 @@ export default class Plan extends Command {
 
       if (sourcePreference !== 'auto' && !availableSources.includes(sourcePreference)) {
         this.error(
-          chalk.red(`Error: Preferred source "${sourcePreference}" not found in ${prdPath}`) +
+          chalk.red(`Preferred source "${sourcePreference}" not found in ${prdPath}`) +
           '\n\n' +
           chalk.gray(
             `Hint: Available sources: ${availableSources.join(', ') || 'none'}. Override with --source`
@@ -217,28 +217,7 @@ export default class Plan extends Command {
 
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
-      let fullMessage = chalk.red(`Error: ${errorMessage}`);
-
-      if (error instanceof Error) {
-        if (error.message.includes('Session has no messages')) {
-          fullMessage += '\n\n' + chalk.gray(
-            'Hint: Add conversation messages with clavix start before running plan --session'
-          );
-        } else if (error.message.includes('Session not found')) {
-          fullMessage += '\n\n' + chalk.gray('Hint: Check the session ID with clavix list');
-        } else if (error.message.includes('No active session')) {
-          fullMessage += '\n\n' + chalk.gray('Hint: Start a session with clavix start before using --active-session');
-        } else if (error.message.includes('PRD project not found')) {
-          fullMessage += '\n\n' + chalk.gray(
-            "Hint: Run 'clavix list' to see available outputs or specify a valid project name"
-          );
-        } else if (error.message.includes('No PRD')) {
-          fullMessage += '\n\n' + chalk.yellow('Hint: Create a PRD first') +
-            '\n' + chalk.gray('Run ') + chalk.cyan('clavix prd') + chalk.gray(' to generate a new PRD');
-        }
-      }
-
-      this.error(fullMessage);
+      this.error(chalk.red(errorMessage));
     }
   }
 

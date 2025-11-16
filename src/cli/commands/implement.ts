@@ -62,7 +62,7 @@ export default class Implement extends Command {
 
         if (!(await fs.pathExists(tasksPath))) {
           this.error(
-            chalk.red('Error: No tasks.md found!') +
+            chalk.red('No tasks.md found!') +
             '\n\n' +
             chalk.yellow('Hint: Run ') + chalk.cyan('clavix plan') + chalk.yellow(' first to generate task breakdown')
           );
@@ -200,15 +200,7 @@ export default class Implement extends Command {
 
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
-      let fullMessage = chalk.red(`Error: ${errorMessage}`);
-
-      // Provide helpful hints
-      if (error instanceof Error && error.message.includes('tasks.md')) {
-        fullMessage += '\n\n' + chalk.yellow('Hint: Make sure you have generated a task plan first') +
-          '\n' + chalk.gray('Run ') + chalk.cyan('clavix plan') + chalk.gray(' to create tasks.md');
-      }
-
-      this.error(fullMessage);
+      this.error(chalk.red(errorMessage));
     }
   }
 
@@ -367,7 +359,7 @@ export default class Implement extends Command {
         console.log(chalk.green('\nTasks generated! Continuing with implementation...\n'));
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        this.error(chalk.red(`Error running clavix plan: ${errorMessage}`));
+        this.error(chalk.red(`Running clavix plan failed: ${errorMessage}`));
       }
     } else {
       console.log(chalk.dim('\nExiting. Run "clavix plan" when ready to generate tasks.\n'));

@@ -54,7 +54,7 @@ export default class Summarize extends Command {
         session = await manager.getSession(args.sessionId);
 
         if (!session) {
-          this.error(chalk.red(`Error: Session not found: ${args.sessionId}`));
+          this.error(chalk.red(`Session not found: ${args.sessionId}`));
         }
       } else if (flags.active) {
         console.log(chalk.dim('Loading most recent active session...\n'));
@@ -62,7 +62,7 @@ export default class Summarize extends Command {
 
         if (!session) {
           this.error(
-            chalk.red('Error: No active session found') +
+            chalk.red('No active session found') +
             '\n\n' +
             chalk.gray('Hint: Use ') + chalk.cyan('clavix list') + chalk.gray(' to see all sessions')
           );
@@ -149,7 +149,7 @@ export default class Summarize extends Command {
       console.log();
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
-      this.error(chalk.red(`Error: ${errorMessage}`));
+      this.error(chalk.red(errorMessage));
     }
   }
 

@@ -68,7 +68,7 @@ export default class Start extends Command {
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
-      this.error(chalk.red(`Error: ${errorMessage}`));
+      this.error(chalk.red(errorMessage));
     }
   }
 

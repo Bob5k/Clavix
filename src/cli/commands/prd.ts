@@ -142,7 +142,7 @@ export default class Prd extends Command {
         if (answer && answer.toString().trim() && question) {
           const submitResult = engine.submitAnswer(question.id, answer);
           if (submitResult !== true) {
-            console.log(chalk.red(`\nError: ${submitResult}\n`));
+            console.log(chalk.red(`\n${submitResult}\n`));
             continue; // Ask again
           }
           answers[question.id] = answer;
@@ -185,7 +185,7 @@ export default class Prd extends Command {
 
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
-      this.error(chalk.red(`Error: ${errorMessage}`));
+      this.error(chalk.red(errorMessage));
     }
   }
 
