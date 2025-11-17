@@ -834,6 +834,7 @@ export class TaskManager {
         const checkbox = task.completed ? '[x]' : '[ ]';
         const reference = task.prdReference ? ` (ref: ${task.prdReference})` : '';
         content += `- ${checkbox} ${task.description}${reference}\n`;
+        content += `  Task ID: ${task.id}\n`;
       }
 
       content += '\n';
@@ -868,7 +869,9 @@ export class TaskManager {
     let currentPhase: TaskPhase | null = null;
     let taskCounter = 0;
 
-    for (const line of lines) {
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+
       // Check for phase header (## Phase Name)
       const phaseMatch = line.match(/^##\s+(.+)$/);
       if (phaseMatch) {
@@ -892,8 +895,23 @@ export class TaskManager {
         const reference = taskMatch[3]?.trim();
 
         taskCounter++;
+
+        // Check next line for Task ID
+        let taskId: string;
+        const nextLine = i + 1 < lines.length ? lines[i + 1] : null;
+        const taskIdMatch = nextLine?.trim().match(/^Task ID:\s+(.+)$/);
+
+        if (taskIdMatch) {
+          // Use Task ID from file (preferred)
+          taskId = taskIdMatch[1].trim();
+          i++; // Skip the Task ID line in next iteration
+        } else {
+          // Fallback: regenerate ID from phase name (backward compatibility)
+          taskId = `${this.sanitizeId(currentPhase.name)}-${taskCounter}`;
+        }
+
         currentPhase.tasks.push({
-          id: `${this.sanitizeId(currentPhase.name)}-${taskCounter}`,
+          id: taskId,
           description,
           phase: currentPhase.name,
           completed,

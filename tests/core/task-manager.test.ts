@@ -846,4 +846,149 @@ Out of scope items
       expect(content).toContain('[x] Implement user login (ref: User Management)');
     });
   });
+
+  describe('Task ID Persistence', () => {
+    it('should write Task IDs to tasks.md', async () => {
+      const prdContent = `# Test Project
+
+## Requirements
+
+### Must-Have Features
+
+#### 1. User Authentication
+
+**Behavior**:
+- Users can register with email and password
+- Users can log in with credentials
+`;
+
+      const prdPath = path.join(testPrdDir, 'full-prd.md');
+      await fs.writeFile(prdPath, prdContent);
+
+      const result = await manager.generateTasksFromPrd(testPrdDir);
+
+      // Read generated tasks.md
+      const tasksContent = await fs.readFile(result.outputPath, 'utf-8');
+
+      // Verify Task IDs are written
+      expect(tasksContent).toContain('Task ID:');
+      expect(tasksContent).toMatch(/Task ID:\s+[\w-]+/);
+    });
+
+    it('should read Task IDs from tasks.md', async () => {
+      const tasksContent = `# Implementation Tasks
+
+## Phase 1: Setup
+
+- [ ] Initialize project (ref: Requirements)
+  Task ID: phase-1-setup-1
+- [ ] Configure database (ref: Requirements)
+  Task ID: phase-1-setup-2
+`;
+
+      const tasksPath = path.join(testPrdDir, 'tasks.md');
+      await fs.writeFile(tasksPath, tasksContent);
+
+      const phases = await manager.readTasksFile(tasksPath);
+
+      expect(phases.length).toBe(1);
+      expect(phases[0].tasks.length).toBe(2);
+      expect(phases[0].tasks[0].id).toBe('phase-1-setup-1');
+      expect(phases[0].tasks[1].id).toBe('phase-1-setup-2');
+    });
+
+    it('should preserve Task IDs through write-read cycle', async () => {
+      const prdContent = `# Test Project
+
+## Requirements
+
+### Must-Have Features
+
+#### 1. Authentication System
+
+**Behavior**:
+- User login functionality
+- Password reset feature
+`;
+
+      const prdPath = path.join(testPrdDir, 'full-prd.md');
+      await fs.writeFile(prdPath, prdContent);
+
+      // Generate tasks
+      const result = await manager.generateTasksFromPrd(testPrdDir);
+      const originalPhases = result.phases;
+
+      // Read tasks back
+      const readPhases = await manager.readTasksFile(result.outputPath);
+
+      // Verify IDs are preserved
+      expect(readPhases.length).toBe(originalPhases.length);
+      for (let i = 0; i < originalPhases.length; i++) {
+        expect(readPhases[i].tasks.length).toBe(originalPhases[i].tasks.length);
+        for (let j = 0; j < originalPhases[i].tasks.length; j++) {
+          expect(readPhases[i].tasks[j].id).toBe(originalPhases[i].tasks[j].id);
+        }
+      }
+    });
+
+    it('should fallback to regenerated IDs for backward compatibility', async () => {
+      // Tasks.md without Task IDs (old format)
+      const tasksContent = `# Implementation Tasks
+
+## Phase 1: Project Setup & Configuration
+
+- [ ] Initialize React project
+- [ ] Setup TypeScript
+`;
+
+      const tasksPath = path.join(testPrdDir, 'tasks.md');
+      await fs.writeFile(tasksPath, tasksContent);
+
+      const phases = await manager.readTasksFile(tasksPath);
+
+      expect(phases.length).toBe(1);
+      expect(phases[0].tasks.length).toBe(2);
+      // IDs should be regenerated from phase name
+      expect(phases[0].tasks[0].id).toBe('phase-1-project-setup-configur-1');
+      expect(phases[0].tasks[1].id).toBe('phase-1-project-setup-configur-2');
+    });
+
+    it('should use Task ID from file over regenerated ID', async () => {
+      const tasksContent = `# Implementation Tasks
+
+## Phase 1: Very Long Phase Name That Would Be Truncated
+
+- [ ] First task
+  Task ID: custom-short-id-1
+- [ ] Second task
+  Task ID: another-custom-id
+`;
+
+      const tasksPath = path.join(testPrdDir, 'tasks.md');
+      await fs.writeFile(tasksPath, tasksContent);
+
+      const phases = await manager.readTasksFile(tasksPath);
+
+      expect(phases[0].tasks[0].id).toBe('custom-short-id-1');
+      expect(phases[0].tasks[1].id).toBe('another-custom-id');
+    });
+
+    it('should mark task complete using readable Task ID', async () => {
+      const tasksContent = `# Implementation Tasks
+
+## Phase 1: Setup
+
+- [ ] Initialize project
+  Task ID: phase-1-setup-1
+`;
+
+      const tasksPath = path.join(testPrdDir, 'tasks.md');
+      await fs.writeFile(tasksPath, tasksContent);
+
+      await manager.markTaskCompleted(tasksPath, 'phase-1-setup-1');
+
+      const content = await fs.readFile(tasksPath, 'utf-8');
+      expect(content).toContain('[x] Initialize project');
+    });
+  });
 });
