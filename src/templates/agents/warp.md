@@ -16,7 +16,7 @@ Clavix helps Warp developers turn rough ideas into CLEAR, AI-ready prompts and P
 - `clavix prompts clear [--executed|--stale|--fast|--deep]` – cleanup executed or old prompts
 - `clavix prd` – answer focused questions to create full/quick PRDs
 - `clavix plan` – transform PRDs or sessions into task lists
-- `clavix implement` – progress through tasks with optional git auto-commit
+- `clavix implement [--commit-strategy=<type>]` – execute tasks (git: per-task, per-5-tasks, per-phase, none [default])
 - `clavix start` – capture requirement conversations in Warp
 - `clavix summarize [session-id]` – extract mini PRDs and optimized prompts
 - `clavix list` – list sessions/outputs (`--sessions`, `--outputs`, `--archived`)

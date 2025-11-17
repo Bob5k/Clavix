@@ -32,6 +32,11 @@ export default class Archive extends Command {
       description: 'Force archive even if tasks are incomplete',
       default: false,
     }),
+    yes: Flags.boolean({
+      char: 'y',
+      description: 'Skip all confirmation prompts (agent-friendly)',
+      default: false,
+    }),
     restore: Flags.string({
       char: 'r',
       description: 'Restore an archived project',
@@ -45,7 +50,7 @@ export default class Archive extends Command {
     try {
       // Handle restore flag
       if (flags.restore) {
-        await this.restoreProject(flags.restore, archiveManager);
+        await this.restoreProject(flags.restore, archiveManager, flags.yes);
         return;
       }
 
@@ -57,12 +62,12 @@ export default class Archive extends Command {
 
       // Handle direct project archival
       if (args.project) {
-        await this.archiveSpecificProject(args.project, flags.force, archiveManager);
+        await this.archiveSpecificProject(args.project, flags.force, flags.yes, archiveManager);
         return;
       }
 
       // Interactive mode
-      await this.interactiveArchive(archiveManager);
+      await this.interactiveArchive(archiveManager, flags.yes);
     } catch (error: unknown) {
       const { getErrorMessage } = await import('../../utils/error-utils.js');
       this.error(chalk.red(`Archive failed: ${getErrorMessage(error)}`));
@@ -72,7 +77,7 @@ export default class Archive extends Command {
   /**
    * Interactive archive mode - show list of archivable projects
    */
-  private async interactiveArchive(archiveManager: ArchiveManager): Promise<void> {
+  private async interactiveArchive(archiveManager: ArchiveManager, yes: boolean): Promise<void> {
     this.log(chalk.bold.cyan('\n📦 Archive PRD Projects\n'));
 
     // Get all archivable projects (100% tasks completed)
@@ -117,19 +122,21 @@ export default class Archive extends Command {
       return;
     }
 
-    // Confirm archival
-    const { confirm } = await inquirer.prompt([
-      {
-        type: 'confirm',
-        name: 'confirm',
-        message: `Archive "${selectedProject}"? (This will move it to .clavix/outputs/archive/)`,
-        default: false,
-      },
-    ]);
+    // Confirm archival (unless --yes)
+    if (!yes) {
+      const { confirm } = await inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'confirm',
+          message: `Archive "${selectedProject}"? (This will move it to .clavix/outputs/archive/)`,
+          default: false,
+        },
+      ]);
 
-    if (!confirm) {
-      this.log(chalk.yellow('\n✗ Archive cancelled\n'));
-      return;
+      if (!confirm) {
+        this.log(chalk.yellow('\n✗ Archive cancelled\n'));
+        return;
+      }
     }
 
     // Archive the project
@@ -148,6 +155,7 @@ export default class Archive extends Command {
   private async archiveSpecificProject(
     projectName: string,
     force: boolean,
+    yes: boolean,
     archiveManager: ArchiveManager
   ): Promise<void> {
     this.log(chalk.cyan(`\nArchiving project: ${chalk.bold(projectName)}\n`));
@@ -156,23 +164,25 @@ export default class Archive extends Command {
     const projectPath = `.clavix/outputs/${projectName}`;
     const taskStatus = await archiveManager.checkTasksStatus(projectPath);
 
-    // If not forcing and tasks are incomplete, ask for confirmation
+    // If not forcing and tasks are incomplete, ask for confirmation (unless --yes)
     if (!force && !taskStatus.allCompleted) {
       if (!taskStatus.hasTasksFile) {
         this.log(chalk.yellow(`⚠ Project has no tasks.md file\n`));
 
-        const { proceed } = await inquirer.prompt([
-          {
-            type: 'confirm',
-            name: 'proceed',
-            message: 'Archive anyway?',
-            default: false,
-          },
-        ]);
+        if (!yes) {
+          const { proceed } = await inquirer.prompt([
+            {
+              type: 'confirm',
+              name: 'proceed',
+              message: 'Archive anyway?',
+              default: false,
+            },
+          ]);
 
-        if (!proceed) {
-          this.log(chalk.yellow('\n✗ Archive cancelled\n'));
-          return;
+          if (!proceed) {
+            this.log(chalk.yellow('\n✗ Archive cancelled\n'));
+            return;
+          }
         }
       } else if (taskStatus.remaining > 0) {
         this.log(chalk.yellow(`⚠ Project has ${taskStatus.remaining} incomplete task(s):\n`));
@@ -189,18 +199,20 @@ export default class Archive extends Command {
           this.log('');
         }
 
-        const { proceed } = await inquirer.prompt([
-          {
-            type: 'confirm',
-            name: 'proceed',
-            message: 'Archive anyway?',
-            default: false,
-          },
-        ]);
+        if (!yes) {
+          const { proceed } = await inquirer.prompt([
+            {
+              type: 'confirm',
+              name: 'proceed',
+              message: 'Archive anyway?',
+              default: false,
+            },
+          ]);
 
-        if (!proceed) {
-          this.log(chalk.yellow('\n✗ Archive cancelled\n'));
-          return;
+          if (!proceed) {
+            this.log(chalk.yellow('\n✗ Archive cancelled\n'));
+            return;
+          }
         }
       }
     }
@@ -257,23 +269,26 @@ export default class Archive extends Command {
    */
   private async restoreProject(
     projectName: string,
-    archiveManager: ArchiveManager
+    archiveManager: ArchiveManager,
+    yes: boolean
   ): Promise<void> {
     this.log(chalk.cyan(`\nRestoring project: ${chalk.bold(projectName)}\n`));
 
-    // Confirm restoration
-    const { confirm } = await inquirer.prompt([
-      {
-        type: 'confirm',
-        name: 'confirm',
-        message: `Restore "${projectName}" from archive?`,
-        default: false,
-      },
-    ]);
+    // Confirm restoration (unless --yes)
+    if (!yes) {
+      const { confirm } = await inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'confirm',
+          message: `Restore "${projectName}" from archive?`,
+          default: false,
+        },
+      ]);
 
-    if (!confirm) {
-      this.log(chalk.yellow('\n✗ Restore cancelled\n'));
-      return;
+      if (!confirm) {
+        this.log(chalk.yellow('\n✗ Restore cancelled\n'));
+        return;
+      }
     }
 
     const result = await archiveManager.restoreProject(projectName);

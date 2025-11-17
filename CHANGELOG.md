@@ -5,6 +5,106 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.8.1] - 2025-11-17
+
+### ⚠️ Breaking Changes
+
+- **`clavix implement`**: Now defaults to `--commit-strategy=none` (manual git workflow) instead of showing interactive prompt
+  - **Migration**: To enable auto-commits, explicitly specify: `clavix implement --commit-strategy=<type>`
+  - **Options**: `per-task`, `per-5-tasks`, `per-phase`, `none`
+  - **Rationale**: Enables AI agents to execute implementation workflows without blocking on interactive prompts
+
+### ✨ New Features - Agent-Friendly Execution
+
+Transform Clavix into a fully non-blocking tool for AI agent automation.
+
+**Agent-First Commands:**
+- **`clavix implement --commit-strategy=<type>`**: Explicit git strategy selection (no interactive prompt)
+  - Defaults to `'none'` (manual git workflow) if flag not provided
+  - Agents can optionally ask users for git preference when tasks.md has >3 phases
+  - Maintains all existing git automation capabilities
+
+- **`clavix archive --yes` / `-y`**: Skip all confirmation prompts
+  - Archive projects without user interaction: `clavix archive my-project --yes`
+  - Restore projects without confirmation: `clavix archive --restore project-1 --yes`
+
+- **`clavix update --force`**: Skip legacy cleanup confirmation (fixed)
+  - Previously `--force` didn't skip all prompts
+  - Now fully non-interactive: `clavix update --force`
+
+### 🤖 Agent Template Updates
+
+Updated all agent integration templates with git strategy workflow guidance:
+- `src/templates/slash-commands/_canonical/implement.md` - Added git strategy selection workflow
+- `src/templates/agents/agents.md` - Added "Implementation with Git Strategy" section
+- `src/templates/agents/octo.md` - Added git auto-commit strategy guidance
+- `src/templates/agents/warp.md` - Updated command list with flags
+- `src/templates/agents/copilot-instructions.md` - Updated strategic planning section
+
+### 🔧 Bug Fixes & Improvements
+
+- **`task-complete.ts`**: Fixed stale in-memory bug preventing task advancement
+  - Root cause: `phases` object not refreshed after marking task complete in file
+  - Fix: Re-read tasks.md after successful completion to sync in-memory state
+  - Impact: `clavix task-complete` now correctly shows NEXT task instead of same task
+
+- **`prompts/clear.ts`**: `--force` flag already correctly skips all prompts ✅
+- **`archive.ts`**: Added comprehensive `--yes` flag support across all confirmation prompts
+
+### 📚 Modified Files (12 total)
+
+**CLI Commands (6)**:
+- `src/cli/commands/implement.ts` - Removed git prompt, default to 'none'
+- `src/cli/commands/task-complete.ts` - Fixed stale phases bug
+- `src/cli/commands/archive.ts` - Added --yes flag
+- `src/cli/commands/update.ts` - Fixed --force to skip legacy cleanup
+- `src/cli/commands/prompts/clear.ts` - Verified --force works correctly
+
+**Templates (5)**:
+- `src/templates/slash-commands/_canonical/implement.md`
+- `src/templates/agents/agents.md`
+- `src/templates/agents/octo.md`
+- `src/templates/agents/warp.md`
+- `src/templates/agents/copilot-instructions.md`
+
+### 🎯 Why This Matters
+
+**Before v2.8.1:**
+```bash
+# Agent executes /clavix:implement
+clavix implement
+# ❌ BLOCKS on interactive git strategy prompt
+# Agent workflow cannot continue
+```
+
+**After v2.8.1:**
+```bash
+# Agent executes with default
+clavix implement
+# ✅ Proceeds immediately (default: manual git)
+
+# Or agent asks user, then specifies:
+clavix implement --commit-strategy=per-phase
+# ✅ No prompts, full automation
+```
+
+**Example Agent Workflow (Now Possible):**
+```bash
+# Full automation without blocking
+clavix prd                                  # Human-guided PRD
+clavix plan                                 # Generate tasks
+clavix implement --commit-strategy=none     # Agent implements (no prompts)
+clavix task-complete phase-1-setup-1        # Mark complete
+clavix archive my-project --yes             # Archive (no confirmation)
+```
+
+### 📖 Documentation
+
+Agent integration patterns documented in all provider templates. After running `clavix init`, see:
+- `.claude/commands/clavix/implement.md` - Implementation workflow with git strategy
+- `docs/agents.md` - Universal agent instructions
+- Provider-specific templates (Octofriend, Warp, Copilot)
+
 ## [2.7.1] - 2025-11-17
 
 ### 🔧 Updates

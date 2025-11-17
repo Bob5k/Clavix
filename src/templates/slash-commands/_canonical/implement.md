@@ -9,21 +9,43 @@ You are helping the user implement tasks from their task plan with AI assistance
 
 ## Instructions
 
-1. **First-time setup - Run CLI command if needed**:
+1. **First-time setup - Run CLI command with optional git strategy**:
 
    Check if `.clavix-implement-config.json` exists in the PRD output folder.
 
    **If config file does NOT exist** (first time running implement):
-   - Run the CLI command to initialize:
-     ```bash
-     clavix implement
-     ```
-   - This will:
-     - Show current progress
-     - Display the next incomplete task
-     - Prompt user for git auto-commit preferences
-     - Create `.clavix-implement-config.json` file
-   - Wait for command to complete, then proceed with step 2
+
+   a. **Check if user wants git auto-commits** (optional, only if tasks.md has >3 phases):
+      ```
+      "I notice this implementation has [X] phases with [Y] tasks total.
+
+      Would you like me to create git commits automatically as I complete tasks?
+
+      Options:
+      - per-task: Commit after each task (frequent commits, detailed history)
+      - per-5-tasks: Commit every 5 tasks (balanced approach)
+      - per-phase: Commit when each phase completes (milestone commits)
+      - none: Manual git workflow (I won't create commits)
+
+      Please choose one, or I'll proceed with 'none' (manual commits)."
+      ```
+
+   b. **Run the CLI command to initialize**:
+      ```bash
+      # With git strategy (if user specified):
+      clavix implement --commit-strategy=per-phase
+
+      # Or without (defaults to 'none' - manual commits):
+      clavix implement
+      ```
+
+   c. **This will**:
+      - Show current progress
+      - Display the next incomplete task
+      - Create `.clavix-implement-config.json` file
+      - Set git auto-commit strategy (or default to 'none')
+
+   d. Wait for command to complete, then proceed with step 2
 
    **If config file already exists**:
    - Skip to step 2 (implementation loop)

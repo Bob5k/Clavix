@@ -227,12 +227,12 @@ export default class Update extends Command {
       }
     }
 
-    updated += await this.handleLegacyCommands(adapter, templateFiles);
+    updated += await this.handleLegacyCommands(adapter, templateFiles, force);
 
     return updated;
   }
 
-  private async handleLegacyCommands(adapter: AgentAdapter, commandNames: string[]): Promise<number> {
+  private async handleLegacyCommands(adapter: AgentAdapter, commandNames: string[], force: boolean): Promise<number> {
     if (commandNames.length === 0) {
       return 0;
     }
@@ -252,18 +252,20 @@ export default class Update extends Command {
       this.log(chalk.gray(`    • ${file}`));
     }
 
-    const { removeLegacy } = await inquirer.prompt([
-      {
-        type: 'confirm',
-        name: 'removeLegacy',
-        message: `Remove deprecated files for ${adapter.displayName}? Functionality is unchanged; filenames are being standardized.`,
-        default: true,
-      },
-    ]);
+    if (!force) {
+      const { removeLegacy } = await inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'removeLegacy',
+          message: `Remove deprecated files for ${adapter.displayName}? Functionality is unchanged; filenames are being standardized.`,
+          default: true,
+        },
+      ]);
 
-    if (!removeLegacy) {
-      this.log(chalk.gray('  ⊗ Kept legacy files (deprecated naming retained)'));
-      return 0;
+      if (!removeLegacy) {
+        this.log(chalk.gray('  ⊗ Kept legacy files (deprecated naming retained)'));
+        return 0;
+      }
     }
 
     let removed = 0;

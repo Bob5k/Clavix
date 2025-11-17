@@ -29,7 +29,7 @@ export default class Implement extends Command {
       default: false,
     }),
     'commit-strategy': Flags.string({
-      description: 'Auto-commit strategy (per-task, per-5-tasks, per-phase, none)',
+      description: 'Auto-commit strategy: per-task, per-5-tasks, per-phase, none (default: none)',
       options: ['per-task', 'per-5-tasks', 'per-phase', 'none'],
     }),
   };
@@ -113,47 +113,21 @@ export default class Implement extends Command {
           console.log(chalk.dim(`Git repository detected (branch: ${gitStatus.currentBranch})`));
           console.log();
 
-          // Prompt for commit strategy (unless provided via flag)
+          // Use commit strategy from flag, or default to 'none' (agent-friendly)
           if (flags['commit-strategy']) {
             commitStrategy = flags['commit-strategy'] as CommitStrategy;
           } else {
-            const response = await inquirer.prompt([
-              {
-                type: 'list',
-                name: 'strategy',
-                message: 'Do you want the AI agent to create local git commits automatically?',
-                choices: [
-                  {
-                    name: 'After each phase/section completes',
-                    value: 'per-phase',
-                  },
-                  {
-                    name: 'After every 5 tasks',
-                    value: 'per-5-tasks',
-                  },
-                  {
-                    name: 'After each task',
-                    value: 'per-task',
-                  },
-                  {
-                    name: "No, don't create commits for me",
-                    value: 'none',
-                  },
-                ],
-                default: 'per-phase',
-              },
-            ]);
-
-            commitStrategy = response.strategy as CommitStrategy;
+            commitStrategy = 'none';
+            console.log(chalk.dim('ℹ  No git strategy specified. Use --commit-strategy flag to enable auto-commits.'));
           }
 
           if (commitStrategy !== 'none') {
-            console.log(chalk.green(`Auto-commit enabled: ${commitStrategy}\n`));
+            console.log(chalk.green(`✓ Auto-commit enabled: ${commitStrategy}\n`));
           } else {
-            console.log(chalk.dim('Auto-commit disabled\n'));
+            console.log(chalk.dim('  Auto-commits disabled (manual git workflow)\n'));
           }
         } else {
-          console.log(chalk.yellow('Warning: Not a git repository - auto-commits disabled\n'));
+          console.log(chalk.yellow('⚠ Warning: Not a git repository - auto-commits disabled\n'));
         }
       }
 

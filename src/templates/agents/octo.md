@@ -196,6 +196,25 @@ Detect user intent from keywords and trigger appropriate workflow. Use Octofrien
 - Switch to thinking models when encountering complex architectural decisions or debugging
 - Your autofix capabilities help recover from tool call failures automatically
 
+**Git Auto-Commit Strategy (Agent-Friendly):**
+
+When starting implementation with `clavix implement`:
+
+1. **Check task complexity** (optional, only if >3 phases in tasks.md):
+   - Ask user: "Git auto-commit preferences? (per-task, per-5-tasks, per-phase, none)"
+   - Default to 'none' if user doesn't specify
+
+2. **Run with explicit strategy**:
+   ```bash
+   # If user wants commits:
+   clavix implement --commit-strategy=per-phase
+
+   # Otherwise (or no preference):
+   clavix implement
+   ```
+
+3. **Default behavior**: No `--commit-strategy` flag → defaults to 'none' (manual git workflow)
+
 ---
 
 ### Archive Workflow
@@ -250,7 +269,7 @@ Detect user intent from keywords and trigger appropriate workflow. Use Octofrien
 | `clavix prompts clear` | Cleanup executed/stale prompts (`--executed`, `--stale`, `--fast`, `--deep`). |
 | `clavix prd` | Guided questions to create PRDs. |
 | `clavix plan` | Convert PRD artifacts into task lists. |
-| `clavix implement` | Step through tasks with optional git automation. |
+| `clavix implement [--commit-strategy=<type>]` | Start task execution (git: per-task, per-5-tasks, per-phase, none [default]). |
 | `clavix start` | Capture conversational requirements. |
 | `clavix summarize` | Extract mini PRDs and prompts from sessions. |
 | `clavix list` | List sessions or outputs (use `--sessions`, `--outputs`, `--archived`). |
