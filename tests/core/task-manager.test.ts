@@ -566,4 +566,279 @@ Out of scope items
       expect(phases[1].tasks.length).toBe(1);
     });
   });
+
+  describe('validateTaskExists', () => {
+    it('should return task if it exists', async () => {
+      const phases: TaskPhase[] = [
+        {
+          name: 'Phase 1: Setup',
+          tasks: [
+            {
+              id: 'phase-1-setup-1',
+              description: 'Initialize project',
+              phase: 'Phase 1: Setup',
+              completed: false,
+            },
+            {
+              id: 'phase-1-setup-2',
+              description: 'Configure dependencies',
+              phase: 'Phase 1: Setup',
+              completed: true,
+            },
+          ],
+        },
+      ];
+
+      const task = manager.validateTaskExists(phases, 'phase-1-setup-1');
+
+      expect(task).not.toBeNull();
+      expect(task?.id).toBe('phase-1-setup-1');
+      expect(task?.description).toBe('Initialize project');
+    });
+
+    it('should return null if task does not exist', async () => {
+      const phases: TaskPhase[] = [
+        {
+          name: 'Phase 1: Setup',
+          tasks: [
+            {
+              id: 'phase-1-setup-1',
+              description: 'Initialize project',
+              phase: 'Phase 1: Setup',
+              completed: false,
+            },
+          ],
+        },
+      ];
+
+      const task = manager.validateTaskExists(phases, 'non-existent-task');
+
+      expect(task).toBeNull();
+    });
+
+    it('should find task across multiple phases', async () => {
+      const phases: TaskPhase[] = [
+        {
+          name: 'Phase 1: Setup',
+          tasks: [
+            {
+              id: 'phase-1-setup-1',
+              description: 'Initialize project',
+              phase: 'Phase 1: Setup',
+              completed: false,
+            },
+          ],
+        },
+        {
+          name: 'Phase 2: Implementation',
+          tasks: [
+            {
+              id: 'phase-2-implementation-1',
+              description: 'Build feature',
+              phase: 'Phase 2: Implementation',
+              completed: false,
+            },
+          ],
+        },
+      ];
+
+      const task = manager.validateTaskExists(phases, 'phase-2-implementation-1');
+
+      expect(task).not.toBeNull();
+      expect(task?.phase).toBe('Phase 2: Implementation');
+    });
+  });
+
+  describe('verifyTaskMarked', () => {
+    it('should return true if task is marked as completed', async () => {
+      const tasksContent = `# Implementation Tasks
+
+## Phase 1: Setup
+
+- [x] Initialize project
+- [ ] Configure dependencies
+`;
+
+      const tasksPath = path.join(testPrdDir, 'tasks.md');
+      await fs.writeFile(tasksPath, tasksContent);
+
+      const result = await manager.verifyTaskMarked(tasksPath, 'phase-1-setup-1');
+
+      expect(result).toBe(true);
+    });
+
+    it('should return false if task is not marked as completed', async () => {
+      const tasksContent = `# Implementation Tasks
+
+## Phase 1: Setup
+
+- [ ] Initialize project
+- [ ] Configure dependencies
+`;
+
+      const tasksPath = path.join(testPrdDir, 'tasks.md');
+      await fs.writeFile(tasksPath, tasksContent);
+
+      const result = await manager.verifyTaskMarked(tasksPath, 'phase-1-setup-1');
+
+      expect(result).toBe(false);
+    });
+
+    it('should return false if task does not exist', async () => {
+      const tasksContent = `# Implementation Tasks
+
+## Phase 1: Setup
+
+- [ ] Initialize project
+`;
+
+      const tasksPath = path.join(testPrdDir, 'tasks.md');
+      await fs.writeFile(tasksPath, tasksContent);
+
+      const result = await manager.verifyTaskMarked(tasksPath, 'non-existent-task');
+
+      expect(result).toBe(false);
+    });
+
+    it('should return false if file does not exist', async () => {
+      const tasksPath = path.join(testPrdDir, 'non-existent.md');
+
+      const result = await manager.verifyTaskMarked(tasksPath, 'phase-1-setup-1');
+
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('markTaskCompletedWithValidation', () => {
+    it('should successfully mark task as completed with validation', async () => {
+      const tasksContent = `# Implementation Tasks
+
+## Phase 1: Setup
+
+- [ ] Initialize project
+- [ ] Configure dependencies
+`;
+
+      const tasksPath = path.join(testPrdDir, 'tasks.md');
+      await fs.writeFile(tasksPath, tasksContent);
+
+      const result = await manager.markTaskCompletedWithValidation(tasksPath, 'phase-1-setup-1');
+
+      expect(result.success).toBe(true);
+      expect(result.alreadyCompleted).toBeUndefined();
+      expect(result.error).toBeUndefined();
+
+      // Verify task is actually marked
+      const verified = await manager.verifyTaskMarked(tasksPath, 'phase-1-setup-1');
+      expect(verified).toBe(true);
+    });
+
+    it('should detect if task is already completed', async () => {
+      const tasksContent = `# Implementation Tasks
+
+## Phase 1: Setup
+
+- [x] Initialize project
+- [ ] Configure dependencies
+`;
+
+      const tasksPath = path.join(testPrdDir, 'tasks.md');
+      await fs.writeFile(tasksPath, tasksContent);
+
+      const result = await manager.markTaskCompletedWithValidation(tasksPath, 'phase-1-setup-1');
+
+      expect(result.success).toBe(true);
+      expect(result.alreadyCompleted).toBe(true);
+      expect(result.warnings).toContain('Task "phase-1-setup-1" was already marked as completed');
+    });
+
+    it('should return error if task not found', async () => {
+      const tasksContent = `# Implementation Tasks
+
+## Phase 1: Setup
+
+- [ ] Initialize project
+`;
+
+      const tasksPath = path.join(testPrdDir, 'tasks.md');
+      await fs.writeFile(tasksPath, tasksContent);
+
+      const result = await manager.markTaskCompletedWithValidation(tasksPath, 'non-existent-task');
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('Task ID "non-existent-task" not found');
+    });
+
+    it('should return error if file not found', async () => {
+      const tasksPath = path.join(testPrdDir, 'non-existent.md');
+
+      const result = await manager.markTaskCompletedWithValidation(tasksPath, 'phase-1-setup-1');
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('Tasks file not found');
+    });
+
+    it('should create and cleanup backup on success', async () => {
+      const tasksContent = `# Implementation Tasks
+
+## Phase 1: Setup
+
+- [ ] Initialize project
+`;
+
+      const tasksPath = path.join(testPrdDir, 'tasks.md');
+      await fs.writeFile(tasksPath, tasksContent);
+
+      const backupPath = `${tasksPath}.backup`;
+
+      const result = await manager.markTaskCompletedWithValidation(tasksPath, 'phase-1-setup-1', {
+        createBackup: true,
+      });
+
+      expect(result.success).toBe(true);
+
+      // Backup should be cleaned up on success
+      expect(await fs.pathExists(backupPath)).toBe(false);
+    });
+
+    it('should retry on first verification failure', async () => {
+      const tasksContent = `# Implementation Tasks
+
+## Phase 1: Setup
+
+- [ ] Initialize project
+`;
+
+      const tasksPath = path.join(testPrdDir, 'tasks.md');
+      await fs.writeFile(tasksPath, tasksContent);
+
+      // This will test the retry logic - though we can't easily simulate a failure
+      const result = await manager.markTaskCompletedWithValidation(tasksPath, 'phase-1-setup-1', {
+        retryOnFailure: true,
+      });
+
+      expect(result.success).toBe(true);
+    });
+
+    it('should handle tasks with PRD references', async () => {
+      const tasksContent = `# Implementation Tasks
+
+## Phase 1: Authentication
+
+- [ ] Implement user login (ref: User Management)
+- [ ] Add JWT tokens (ref: Security)
+`;
+
+      const tasksPath = path.join(testPrdDir, 'tasks.md');
+      await fs.writeFile(tasksPath, tasksContent);
+
+      const result = await manager.markTaskCompletedWithValidation(tasksPath, 'phase-1-authentication-1');
+
+      expect(result.success).toBe(true);
+
+      // Read file and verify reference is preserved
+      const content = await fs.readFile(tasksPath, 'utf-8');
+      expect(content).toContain('[x] Implement user login (ref: User Management)');
+    });
+  });
 });

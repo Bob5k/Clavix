@@ -772,6 +772,166 @@ export class TaskManager {
   }
 
   /**
+   * Validate that a task exists in the phases
+   * @param phases - Array of task phases
+   * @param taskId - Task ID to validate
+   * @returns The task if found, null otherwise
+   */
+  validateTaskExists(phases: TaskPhase[], taskId: string): Task | null {
+    for (const phase of phases) {
+      const task = phase.tasks.find(t => t.id === taskId);
+      if (task) {
+        return task;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Verify that a task was successfully marked as completed in the file
+   * @param tasksPath - Path to tasks.md file
+   * @param taskId - Task ID to verify
+   * @returns true if task is marked completed, false otherwise
+   */
+  async verifyTaskMarked(tasksPath: string, taskId: string): Promise<boolean> {
+    try {
+      const phases = await this.readTasksFile(tasksPath);
+      const task = this.validateTaskExists(phases, taskId);
+      return task ? task.completed : false;
+    } catch (error) {
+      // If we can't read the file, verification failed
+      return false;
+    }
+  }
+
+  /**
+   * Mark a task as completed with validation and error recovery
+   * Enhanced version with pre/post validation
+   * @param tasksPath - Path to tasks.md file
+   * @param taskId - Task ID to mark as completed
+   * @param options - Optional configuration for error recovery
+   * @returns Object with success status and any warnings/errors
+   */
+  async markTaskCompletedWithValidation(
+    tasksPath: string,
+    taskId: string,
+    options: { retryOnFailure?: boolean; createBackup?: boolean } = {}
+  ): Promise<{ success: boolean; alreadyCompleted?: boolean; error?: string; warnings?: string[] }> {
+    const { retryOnFailure = true, createBackup = true } = options;
+    const warnings: string[] = [];
+
+    // Pre-validation: Check if file exists
+    if (!(await fs.pathExists(tasksPath))) {
+      return {
+        success: false,
+        error: `Tasks file not found: ${tasksPath}`,
+      };
+    }
+
+    // Create backup if requested
+    let backupPath: string | null = null;
+    if (createBackup) {
+      backupPath = `${tasksPath}.backup`;
+      try {
+        await fs.copyFile(tasksPath, backupPath);
+      } catch (error) {
+        warnings.push('Failed to create backup file');
+      }
+    }
+
+    try {
+      // Read and validate task exists
+      const phases = await this.readTasksFile(tasksPath);
+      const task = this.validateTaskExists(phases, taskId);
+
+      if (!task) {
+        // Task not found - provide helpful error
+        const allTaskIds = phases.flatMap(p => p.tasks.map(t => t.id));
+        return {
+          success: false,
+          error: `Task ID "${taskId}" not found. Available task IDs:\n${allTaskIds.join('\n')}`,
+        };
+      }
+
+      // Check if already completed
+      if (task.completed) {
+        return {
+          success: true,
+          alreadyCompleted: true,
+          warnings: [`Task "${taskId}" was already marked as completed`],
+        };
+      }
+
+      // Attempt to mark task completed
+      await this.markTaskCompleted(tasksPath, taskId);
+
+      // Post-validation: Verify the checkbox was actually changed
+      const verified = await this.verifyTaskMarked(tasksPath, taskId);
+
+      if (!verified) {
+        // Verification failed - attempt recovery if enabled
+        if (retryOnFailure && backupPath) {
+          warnings.push('First attempt failed verification, retrying...');
+
+          // Restore from backup and try again
+          await fs.copyFile(backupPath, tasksPath);
+          await this.markTaskCompleted(tasksPath, taskId);
+
+          // Verify again
+          const secondVerification = await this.verifyTaskMarked(tasksPath, taskId);
+
+          if (!secondVerification) {
+            // Still failed - restore backup and return error
+            await fs.copyFile(backupPath, tasksPath);
+            return {
+              success: false,
+              error: 'Failed to mark task as completed even after retry. File has been restored from backup.',
+              warnings,
+            };
+          }
+
+          warnings.push('Task marked successfully on retry');
+        } else {
+          // No retry - just fail
+          return {
+            success: false,
+            error: 'Task completion verification failed',
+            warnings,
+          };
+        }
+      }
+
+      // Clean up backup on success
+      if (backupPath && await fs.pathExists(backupPath)) {
+        await fs.remove(backupPath);
+      }
+
+      return {
+        success: true,
+        warnings: warnings.length > 0 ? warnings : undefined,
+      };
+
+    } catch (error) {
+      // Restore from backup if available
+      if (backupPath && await fs.pathExists(backupPath)) {
+        try {
+          await fs.copyFile(backupPath, tasksPath);
+          warnings.push('Restored tasks.md from backup due to error');
+        } catch (restoreError) {
+          warnings.push('Failed to restore from backup');
+        }
+      }
+
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      return {
+        success: false,
+        error: `Error marking task as completed: ${errorMessage}`,
+        warnings: warnings.length > 0 ? warnings : undefined,
+      };
+    }
+  }
+
+  /**
    * Get task completion statistics
    */
   getTaskStats(phases: TaskPhase[]): {
