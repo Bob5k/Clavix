@@ -219,7 +219,7 @@ export class TaskManager {
    */
   private generatePhasesFromCoreFeatures(
     coreContent: string,
-    options: TaskGenerationOptions
+    _options: TaskGenerationOptions
   ): TaskPhase[] {
     const bullets = this.extractListItems(coreContent);
 
@@ -290,8 +290,6 @@ export class TaskManager {
     };
 
     features.forEach((feature) => {
-      const lower = feature.toLowerCase();
-
       // Config/setup phase
       if (
         /\b(config|configuration|setup|install|package|tsconfig|dependencies|environment)\b/i.test(feature)
@@ -418,7 +416,6 @@ export class TaskManager {
    */
   private buildFeatureTaskDescriptions(feature: string): string[] {
     const formattedFeature = this.formatInlineText(feature);
-    const featureLower = feature.toLowerCase();
 
     // Detect task type
     const isConfig = /\b(config|configuration|setup|install|update.*json|tsconfig|package\.json)\b/i.test(feature);
