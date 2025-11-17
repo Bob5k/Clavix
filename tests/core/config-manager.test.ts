@@ -381,13 +381,40 @@ describe('ConfigManager', () => {
   });
 
   describe('validation', () => {
-    it('should validate required fields', async () => {
+    it('should validate commitStrategy is required', async () => {
       const invalidConfig = { ...mockConfig };
       delete (invalidConfig as any).commitStrategy;
 
       await expect(async () => {
         await manager.write(testConfigPath, invalidConfig, { validate: true });
       }).rejects.toThrow('commitStrategy is required');
+    });
+
+    it('should validate tasksPath is required', async () => {
+      const invalidConfig = { ...mockConfig };
+      delete (invalidConfig as any).tasksPath;
+
+      await expect(async () => {
+        await manager.write(testConfigPath, invalidConfig, { validate: true });
+      }).rejects.toThrow('tasksPath is required');
+    });
+
+    it('should validate currentTask is required', async () => {
+      const invalidConfig = { ...mockConfig };
+      delete (invalidConfig as any).currentTask;
+
+      await expect(async () => {
+        await manager.write(testConfigPath, invalidConfig, { validate: true });
+      }).rejects.toThrow('currentTask is required');
+    });
+
+    it('should validate stats is required', async () => {
+      const invalidConfig = { ...mockConfig };
+      delete (invalidConfig as any).stats;
+
+      await expect(async () => {
+        await manager.write(testConfigPath, invalidConfig, { validate: true });
+      }).rejects.toThrow('stats is required');
     });
 
     it('should validate commitStrategy values', async () => {

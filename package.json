@@ -57,6 +57,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@oclif/test": "^4.1.15",
     "@types/fs-extra": "^11.0.4",
     "@types/handlebars": "^4.0.40",
     "@types/inquirer": "^9.0.9",
