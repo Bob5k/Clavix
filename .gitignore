@@ -43,6 +43,7 @@ yarn-error.log*
 .factory/
 .opencode/
 .agents/
+.codebuddy/
 
 # Generated documentation files
 AGENTS.md
