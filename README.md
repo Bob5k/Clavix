@@ -12,10 +12,10 @@
 
 | Version | Highlights | Details |
 | --- | --- | --- |
-| **v3.1.0** (Latest) | Clavix Intelligence™ brand evolution | [Changelog](CHANGELOG.md#310---2025-11-23) |
-| **v3.0.1** | Enhanced intent detection (95%+ accuracy) | [Changelog](CHANGELOG.md#301---2025-11-22) |
-| **v2.8.0** | Pure ESM package (breaking change) | [Changelog](CHANGELOG.md#280---2025-11-17) |
-| **v2.7.0** | Prompt lifecycle management | [Changelog](CHANGELOG.md#270---2025-11-15) |
+| **v3.4.0** (Latest) | Provider categorization fixes | [Changelog](CHANGELOG.md#340---2025-11-24) |
+| **v3.3.1** | JSON5/JSON config bug fix | [Changelog](CHANGELOG.md#331---2025-11-23) |
+| **v3.3.0** | Provider management & interactive config | [Changelog](CHANGELOG.md#330---2025-11-23) |
+| **v3.1.0** | Clavix Intelligence™ brand evolution | [Changelog](CHANGELOG.md#310---2025-11-23) |
 
 **Requirements:** Node.js ≥ 16.0.0 (ESM support required)
 
@@ -44,7 +44,7 @@ Clavix uses **Clavix Intelligence™** (v3.0+) to automatically:
 | Category | Providers |
 | --- | --- |
 | IDE & editor extensions | Cursor · Windsurf · Kilocode · Roocode · Cline |
-| CLI agents | Claude Code · Droid CLI · CodeBuddy CLI · OpenCode · Gemini CLI · Qwen Code · Amp · Crush CLI · Codex CLI · Augment CLI |
+| CLI agents | Claude Code · Droid CLI · CodeBuddy CLI · OpenCode · Gemini CLI · Qwen Code · LLXPRT · Amp · Crush CLI · Codex CLI · Augment CLI |
 | Universal adapters | AGENTS.md · GitHub Copilot · OCTO.md · WARP.md |
 
 Provider paths and argument placeholders are listed in [docs/providers.md](docs/providers.md).
@@ -81,7 +81,7 @@ clavix implement         # Start implementation workflow
 clavix task-complete <taskId>  # Mark tasks done with auto-commit
 ```
 
-**Supported agents**: Claude Code, Cursor, Windsurf, and [15+ more providers](docs/providers.md)
+**Supported agents**: Claude Code, Cursor, Windsurf, and [17+ more providers](docs/providers.md)
 
 Learn more: [Complete prompt lifecycle documentation](docs/commands/execute.md)
 
