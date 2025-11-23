@@ -21,6 +21,12 @@ coverage/
 .DS_Store
 Thumbs.db
 
+# Backup files (macOS/Finder duplicates)
+* 2
+* 2.*
+*\ 2
+*\ 2.*
+
 # Environment
 .env
 .env.local
