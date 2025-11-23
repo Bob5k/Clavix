@@ -56,6 +56,12 @@ export async function collectLegacyCommandFiles(
     for (const file of hyphenFiles) {
       legacyPaths.add(path.resolve(path.join(clavixDir, file)));
     }
+
+    // Remove task-complete.md (CLI-only command, not a user-facing slash command)
+    const taskCompleteFile = path.resolve(clavixDir, 'task-complete.md');
+    if (await FileSystem.exists(taskCompleteFile)) {
+      legacyPaths.add(taskCompleteFile);
+    }
   }
 
   return Array.from(legacyPaths);

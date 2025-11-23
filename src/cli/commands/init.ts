@@ -417,7 +417,6 @@ If using Claude Code, Cursor, or Windsurf, the following slash commands are avai
 
 ### Implementation
 - \`/clavix:implement\` - Execute task workflow with git integration
-- \`/clavix:task-complete\` - Mark task as complete
 
 ### Project Management
 - \`/clavix:archive\` - Archive completed projects

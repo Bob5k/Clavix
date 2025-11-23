@@ -95,8 +95,23 @@ You are helping the user implement tasks from their task plan with AI assistance
 
 **CRITICAL: Always use the `clavix task-complete` command**
 
+### Why task-complete is CLI-Only
+
+The `clavix task-complete` command requires:
+- State validation across config files
+- Atomic checkbox updates in tasks.md
+- Conditional git commit execution
+- Progress tracking and next-task resolution
+
+Therefore it's implemented as a **CLI command** (not a slash command) and called **automatically by the agent** during implementation workflow.
+
+**Agent Responsibility:** Run `clavix task-complete {task-id}` after implementing each task.
+**User Responsibility:** None - agent handles task completion automatically.
+
+### Usage
+
 ```bash
-# After implementing a task
+# After implementing a task, agent runs:
 clavix task-complete {task-id}
 
 # Example
@@ -205,6 +220,12 @@ Which option would you like?"
 | Design/content missing | Need specific assets | Create placeholder OR wait for actual assets |
 
 ## Example Workflow
+
+**CRITICAL WORKFLOW RULE:**
+- Agent implements task → Agent runs `clavix task-complete` → Agent proceeds to next task
+- User NEVER manually runs task-complete
+- User NEVER manually edits tasks.md checkboxes
+- This is an automated workflow, not a manual checklist
 
 ```
 1. User runs: clavix implement
