@@ -24,5 +24,3 @@ Welcome to the Clavix documentation set. This guide provides a structured overvi
 | [Configuration guide](guides/configuration.md) | Work with `.clavix/config.json`, preferences, and legacy migration notes. |
 | [Template customization](guides/templates.md) | Override PRD and slash-command templates safely. |
 | [Workflow guide](guides/workflows.md) | Step-by-step walkthroughs for PRD → Plan → Implement flows. |
-
-All documents are written in English and use relative links, so they render correctly in GitHub and within local editors.
