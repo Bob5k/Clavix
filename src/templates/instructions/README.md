@@ -312,6 +312,6 @@ PRD Creation → Task Planning → Implementation → Archive
 
 ---
 
-**Last updated:** v3.6.1 (January 2025)
+**Last updated:** v3.6.1 (November 2025)
 
 **Maintainers:** Ensure this README stays synchronized with actual instruction hierarchy.
