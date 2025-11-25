@@ -85,7 +85,7 @@ export class EdgeCaseIdentifier extends BasePattern {
     return uniqueEdgeCases.slice(0, 8); // Max 8 edge cases
   }
 
-  private getGeneralEdgeCases(_prompt: string): EdgeCase[] {
+  private getGeneralEdgeCases(prompt: string): EdgeCase[] {
     const cases: EdgeCase[] = [];
 
     // Input validation edge cases
@@ -111,7 +111,7 @@ export class EdgeCaseIdentifier extends BasePattern {
     return cases;
   }
 
-  private getCodeGenerationEdgeCases(_prompt: string): EdgeCase[] {
+  private getCodeGenerationEdgeCases(prompt: string): EdgeCase[] {
     const cases: EdgeCase[] = [];
 
     cases.push({
@@ -219,7 +219,7 @@ export class EdgeCaseIdentifier extends BasePattern {
     ];
   }
 
-  private getDomainEdgeCases(_prompt: string): EdgeCase[] {
+  private getDomainEdgeCases(prompt: string): EdgeCase[] {
     const cases: EdgeCase[] = [];
 
     // Payment/financial domain

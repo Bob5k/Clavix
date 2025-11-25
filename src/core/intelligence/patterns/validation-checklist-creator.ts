@@ -83,7 +83,7 @@ export class ValidationChecklistCreator extends BasePattern {
     return items.slice(0, 12); // Max 12 items
   }
 
-  private getCodeGenerationChecklist(_prompt: string): ChecklistItem[] {
+  private getCodeGenerationChecklist(prompt: string): ChecklistItem[] {
     const items: ChecklistItem[] = [
       { description: 'Code compiles/runs without errors', category: 'functionality' },
       { description: 'All requirements from prompt are implemented', category: 'functionality' },
@@ -162,7 +162,7 @@ export class ValidationChecklistCreator extends BasePattern {
     ];
   }
 
-  private getDomainChecklist(_prompt: string): ChecklistItem[] {
+  private getDomainChecklist(prompt: string): ChecklistItem[] {
     const items: ChecklistItem[] = [];
 
     if (this.hasSection(prompt, ['payment', 'transaction', 'checkout'])) {
