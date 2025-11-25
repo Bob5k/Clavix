@@ -280,9 +280,9 @@ describe('Fast Command', () => {
   // ==========================================================================
 
   describe('deep mode recommendation', () => {
-    // Note: These tests use prompts that trigger deep mode recommendation via
-    // the 'planning' intent detection. The optimizer recommends deep mode for
-    // planning-type prompts.
+    // Note: v4.0 uses multi-factor scoring for escalation (threshold: 50 points).
+    // Escalation uses ORIGINAL prompt quality (not enhanced).
+    // Planning intent (+30 pts) + low original quality factors triggers escalation.
     const planningPrompt =
       'Plan the architecture for a microservices system with authentication, payments, and notifications';
 
@@ -390,7 +390,7 @@ describe('Fast Command', () => {
   // ==========================================================================
 
   describe('deep mode output display', () => {
-    // Use planning prompt to trigger deep mode recommendation
+    // Use planning prompt to trigger deep mode recommendation via multi-factor scoring
     const planningPrompt =
       'Plan the architecture for a microservices system with authentication, payments, and notifications';
 

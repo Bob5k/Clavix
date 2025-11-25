@@ -5,6 +5,133 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0] - 2025-11-25
+
+### Major Release: Clavix Intelligence v4.0
+
+**Comprehensive enhancement of the Clavix Intelligence system with expanded intent detection, improved quality assessment, guardrails for mode enforcement, template modularity, and 8 new optimization patterns.**
+
+#### Phase 1: Enhanced Intent Detection
+
+**New Intents Added (4 new types):**
+- `testing` - Detects test writing, unit tests, integration tests, mocking patterns
+- `migration` - Detects technology migrations, version upgrades, framework switches
+- `security-review` - Detects security audits, vulnerability scanning, OWASP checks
+- `learning` - Detects educational requests, tutorials, concept explanations
+
+**Keyword Enhancements:**
+- Added spec-driven development keywords to PLANNING intent ("write spec", "create specification", "technical spec")
+- Enhanced keyword arrays with strong, medium, and weak indicators for all new intents
+- Added `EnhancedIntentAnalysis` interface for secondary intent tracking
+
+#### Phase 2: Quality Assessment Improvements
+
+**New Quality Dimension:**
+- Added `specificity` as 6th quality dimension (assesses concreteness and precision)
+- Specificity rewards: numbers (+10), file paths (+10), technical terms (+5)
+- Specificity penalties: vague terms (-15 each for "somewhat", "maybe", "probably", etc.)
+
+**Intent-Specific Completeness:**
+- Added `COMPLETENESS_REQUIREMENTS` map with intent-specific criteria
+- Updated `calculateOverall()` with 6-dimension weighted scoring per intent
+- Implemented `EscalationAnalysis` for smart triage decisions with 8 escalation factors
+
+#### Phase 3: Guardrails & Mode Enforcement
+
+**Mode Clarity:**
+- Added CLAVIX MODE blocks to planning templates (plan.md)
+- Added IMPLEMENTATION MODE blocks to implementation templates (implement.md, execute.md)
+- Clear separation between planning (no code changes) and implementation (code changes)
+
+**Self-Correction Protocol:**
+- Added self-correction checklist to all 6 planning templates
+- Automatic mode drift detection and correction guidance
+- Checkpoint patterns for workflow integrity
+
+**New Files:**
+- `src/templates/instructions/core/mode-enforcement.md` - Authoritative mode enforcement reference
+
+#### Phase 4: Template Modularity
+
+**Component System:**
+- Created `_components/` directory structure for reusable template parts
+- Implemented `{{INCLUDE:}}` marker syntax for component inclusion
+- Support for variable interpolation with mustache-style syntax
+
+**TemplateAssembler Class:**
+- New `src/core/template-assembler.ts` with caching and validation
+- Processes includes, handles missing components gracefully
+- Supports nested includes and section blocks for conditionals
+
+**Component Files Created:**
+- `mode-headers/`: planning-mode.md, implementation-mode.md
+- `sections/`: quality-assessment.md, file-saving-protocol.md, workflow-navigation.md, intent-detection.md, self-correction.md
+- `troubleshooting/`: file-not-saved.md, triage-escalation.md, mode-confusion.md
+
+#### Phase 5: New Optimization Patterns (8 patterns)
+
+**Deep Mode Patterns (6):**
+| Pattern | File | Purpose |
+|---------|------|---------|
+| AlternativePhrasingGenerator | `alternative-phrasing-generator.ts` | Generate 2-3 alternative prompt structures |
+| EdgeCaseIdentifier | `edge-case-identifier.ts` | Identify potential edge cases by domain |
+| ValidationChecklistCreator | `validation-checklist-creator.ts` | Create implementation validation checklists |
+| AssumptionExplicitizer | `assumption-explicitizer.ts` | Make implicit assumptions explicit |
+| ScopeDefiner | `scope-definer.ts` | Add explicit scope boundaries |
+| PRDStructureEnforcer | `prd-structure-enforcer.ts` | Ensure PRD completeness |
+
+**Both Mode Patterns (2):**
+| Pattern | File | Purpose |
+|---------|------|---------|
+| StepDecomposer | `step-decomposer.ts` | Break complex prompts into sequential steps |
+| ContextPrecisionBooster | `context-precision.ts` | Add precise context when missing |
+
+**PatternLibrary Updated:**
+- All 8 new patterns registered in `pattern-library.ts`
+- Total patterns increased from 6 to 14
+
+#### Phase 6: Testing & Documentation
+
+**New Tests:**
+- Intent detector tests for all 4 new intents
+- Quality assessor tests for specificity dimension and new intent weights
+- TemplateAssembler comprehensive test suite (20 tests)
+- Updated existing tests for v4.0 API changes
+
+#### Technical Changes
+
+**Files Added:**
+- `src/core/template-assembler.ts`
+- `src/core/intelligence/patterns/alternative-phrasing-generator.ts`
+- `src/core/intelligence/patterns/edge-case-identifier.ts`
+- `src/core/intelligence/patterns/validation-checklist-creator.ts`
+- `src/core/intelligence/patterns/assumption-explicitizer.ts`
+- `src/core/intelligence/patterns/scope-definer.ts`
+- `src/core/intelligence/patterns/prd-structure-enforcer.ts`
+- `src/core/intelligence/patterns/step-decomposer.ts`
+- `src/core/intelligence/patterns/context-precision.ts`
+- `src/templates/instructions/core/mode-enforcement.md`
+- `src/templates/slash-commands/_components/` directory structure
+- `tests/core/template-assembler.test.ts`
+
+**Files Modified:**
+- `src/core/intelligence/types.ts` - New PromptIntent values, QualityDimension, interfaces
+- `src/core/intelligence/intent-detector.ts` - New keyword arrays, getKeywordsForIntent()
+- `src/core/intelligence/quality-assessor.ts` - assessSpecificity(), COMPLETENESS_REQUIREMENTS
+- `src/core/intelligence/universal-optimizer.ts` - analyzeEscalation(), EscalationAnalysis
+- `src/core/intelligence/pattern-library.ts` - 8 new pattern registrations
+- `src/utils/template-loader.ts` - TemplateAssembler integration
+- `src/templates/slash-commands/_canonical/plan.md` - Mode block, self-correction
+- `src/templates/slash-commands/_canonical/implement.md` - Implementation mode block
+- `src/templates/slash-commands/_canonical/execute.md` - Implementation mode block
+- All planning templates - Self-correction protocol
+
+#### Breaking Changes
+
+None - v4.0 maintains backward compatibility with existing configurations.
+
+---
+
 ## [3.6.1] - 2025-11-24
 
 ### 📐 Documentation Hierarchy & Verbosity Reduction

@@ -17,7 +17,7 @@ export class CompletenessValidator extends BasePattern {
   mode: 'fast' | 'deep' | 'both' = 'both';
   priority = 6; // Medium priority
 
-  apply(prompt: string, context: PatternContext): PatternResult {
+  apply(prompt: string, _context: PatternContext): PatternResult {
     const missing = this.findMissingElements(prompt);
 
     if (missing.length === 0) {
@@ -26,9 +26,9 @@ export class CompletenessValidator extends BasePattern {
         improvement: {
           dimension: 'completeness',
           description: 'All required elements present',
-          impact: 'low'
+          impact: 'low',
         },
-        applied: false
+        applied: false,
       };
     }
 
@@ -55,9 +55,9 @@ export class CompletenessValidator extends BasePattern {
       improvement: {
         dimension: 'completeness',
         description: `Added ${missing.length} missing element prompts (${score}% complete)`,
-        impact: missing.length >= 3 ? 'high' : missing.length >= 2 ? 'medium' : 'low'
+        impact: missing.length >= 3 ? 'high' : missing.length >= 2 ? 'medium' : 'low',
       },
-      applied: true
+      applied: true,
     };
   }
 
@@ -95,67 +95,135 @@ export class CompletenessValidator extends BasePattern {
 
   private hasObjective(prompt: string): boolean {
     const objectivePatterns = [
-      'objective', 'goal', 'purpose', 'need to', 'want to',
-      'trying to', 'aim', 'intend'
+      'objective',
+      'goal',
+      'purpose',
+      'need to',
+      'want to',
+      'trying to',
+      'aim',
+      'intend',
     ];
 
-    return objectivePatterns.some(pattern => prompt.includes(pattern));
+    return objectivePatterns.some((pattern) => prompt.includes(pattern));
   }
 
   private hasTechStack(prompt: string): boolean {
     const techPatterns = [
       // Languages
-      'javascript', 'typescript', 'python', 'java', 'rust', 'go',
-      'php', 'ruby', 'swift', 'kotlin', 'c++', 'c#',
+      'javascript',
+      'typescript',
+      'python',
+      'java',
+      'rust',
+      'go',
+      'php',
+      'ruby',
+      'swift',
+      'kotlin',
+      'c++',
+      'c#',
       // Frameworks
-      'react', 'vue', 'angular', 'svelte', 'next', 'nuxt',
-      'express', 'fastapi', 'django', 'flask', 'spring', 'rails',
+      'react',
+      'vue',
+      'angular',
+      'svelte',
+      'next',
+      'nuxt',
+      'express',
+      'fastapi',
+      'django',
+      'flask',
+      'spring',
+      'rails',
       // Databases
-      'postgres', 'mysql', 'mongodb', 'redis', 'sqlite',
+      'postgres',
+      'mysql',
+      'mongodb',
+      'redis',
+      'sqlite',
       // Tools
-      'docker', 'kubernetes', 'aws', 'azure', 'gcp',
+      'docker',
+      'kubernetes',
+      'aws',
+      'azure',
+      'gcp',
       // Generic
-      'tech stack', 'technology', 'framework', 'library', 'using', 'built with'
+      'tech stack',
+      'technology',
+      'framework',
+      'library',
+      'using',
+      'built with',
     ];
 
-    return techPatterns.some(pattern => prompt.includes(pattern));
+    return techPatterns.some((pattern) => prompt.includes(pattern));
   }
 
   private hasSuccessCriteria(prompt: string): boolean {
     const successPatterns = [
-      'success', 'criteria', 'measure', 'metric', 'kpi',
-      'should work', 'expected to', 'result in', 'achieve'
+      'success',
+      'criteria',
+      'measure',
+      'metric',
+      'kpi',
+      'should work',
+      'expected to',
+      'result in',
+      'achieve',
     ];
 
-    return successPatterns.some(pattern => prompt.includes(pattern));
+    return successPatterns.some((pattern) => prompt.includes(pattern));
   }
 
   private hasConstraints(prompt: string): boolean {
     const constraintPatterns = [
-      'constraint', 'limit', 'limitation', 'must not', 'cannot',
-      'should not', 'avoid', 'within', 'budget', 'time', 'deadline'
+      'constraint',
+      'limit',
+      'limitation',
+      'must not',
+      'cannot',
+      'should not',
+      'avoid',
+      'within',
+      'budget',
+      'time',
+      'deadline',
     ];
 
-    return constraintPatterns.some(pattern => prompt.includes(pattern));
+    return constraintPatterns.some((pattern) => prompt.includes(pattern));
   }
 
   private hasOutputFormat(prompt: string): boolean {
     const outputPatterns = [
-      'output', 'format', 'return', 'result', 'deliverable',
-      'component', 'function', 'class', 'api', 'endpoint',
-      'file', 'document', 'report'
+      'output',
+      'format',
+      'return',
+      'result',
+      'deliverable',
+      'component',
+      'function',
+      'class',
+      'api',
+      'endpoint',
+      'file',
+      'document',
+      'report',
     ];
 
-    return outputPatterns.some(pattern => prompt.includes(pattern));
+    return outputPatterns.some((pattern) => prompt.includes(pattern));
   }
 
   private getMissingElementPrompt(element: string): string {
     const prompts: Record<string, string> = {
-      'objective': '- **Objective**: What is the primary goal? What problem are you solving?',
-      'tech-stack': '- **Tech Stack**: Which technologies/frameworks? (e.g., React, Node.js, PostgreSQL)',
-      'success-criteria': '- **Success Criteria**: How will you know it works? What metrics matter?',
-      'constraints': '- **Constraints**: Any limitations? (time, budget, performance, compatibility)',
-      'output-format': '- **Expected Output**: What should the result look like? (component, API, file, etc.)'
+      objective: '- **Objective**: What is the primary goal? What problem are you solving?',
+      'tech-stack':
+        '- **Tech Stack**: Which technologies/frameworks? (e.g., React, Node.js, PostgreSQL)',
+      'success-criteria':
+        '- **Success Criteria**: How will you know it works? What metrics matter?',
+      constraints: '- **Constraints**: Any limitations? (time, budget, performance, compatibility)',
+      'output-format':
+        '- **Expected Output**: What should the result look like? (component, API, file, etc.)',
     };
 
     return prompts[element] || `- **${element}**: Please specify`;

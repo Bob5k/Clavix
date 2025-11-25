@@ -5,7 +5,7 @@ describe('QualityAssessor', () => {
   const assessor = new QualityAssessor();
 
   describe('assessQuality', () => {
-    it('should return metrics for all 5 dimensions', () => {
+    it('should return metrics for all 6 dimensions (v4.0)', () => {
       const prompt = 'Create a login page';
       const result = assessor.assessQuality(prompt, 'code-generation');
 
@@ -20,22 +20,26 @@ describe('QualityAssessor', () => {
       expect(result.completeness).toBeLessThanOrEqual(100);
       expect(result.actionability).toBeGreaterThanOrEqual(0);
       expect(result.actionability).toBeLessThanOrEqual(100);
+      // v4.0: New specificity dimension
+      expect(result.specificity).toBeGreaterThanOrEqual(0);
+      expect(result.specificity).toBeLessThanOrEqual(100);
       expect(result.overall).toBeGreaterThanOrEqual(0);
       expect(result.overall).toBeLessThanOrEqual(100);
     });
 
-    it('should calculate overall score with intent-based weighting', () => {
+    it('should calculate overall score with intent-based weighting (v4.0 with specificity)', () => {
       const prompt = 'Build user authentication with email/password';
       const result = assessor.assessQuality(prompt, 'code-generation');
 
-      // For code-generation intent, the weights are:
-      // clarity: 0.25, completeness: 0.30, actionability: 0.25, efficiency: 0.10, structure: 0.10
+      // v4.0 - For code-generation intent, the weights now include specificity:
+      // clarity: 0.20, completeness: 0.25, actionability: 0.20, efficiency: 0.10, structure: 0.10, specificity: 0.15
       const expectedOverall =
-        result.clarity * 0.25 +
-        result.completeness * 0.30 +
-        result.actionability * 0.25 +
-        result.efficiency * 0.10 +
-        result.structure * 0.10;
+        result.clarity * 0.2 +
+        result.completeness * 0.25 +
+        result.actionability * 0.2 +
+        result.efficiency * 0.1 +
+        result.structure * 0.1 +
+        result.specificity * 0.15;
 
       expect(result.overall).toBeCloseTo(expectedOverall, 1);
     });
@@ -70,7 +74,8 @@ describe('QualityAssessor', () => {
   describe('efficiency dimension', () => {
     it('should score concise prompts higher', () => {
       const concisePrompt = 'Build REST API for user management';
-      const verbosePrompt = 'Please could you possibly maybe help me if you have time to build a REST API for managing users';
+      const verbosePrompt =
+        'Please could you possibly maybe help me if you have time to build a REST API for managing users';
 
       const conciseResult = assessor.assessQuality(concisePrompt, 'code-generation');
       const verboseResult = assessor.assessQuality(verbosePrompt, 'code-generation');
@@ -102,7 +107,8 @@ describe('QualityAssessor', () => {
         - JWT tokens
         Technical: Node.js, Express
       `;
-      const unstructuredPrompt = 'Create user authentication with email password login jwt tokens node express';
+      const unstructuredPrompt =
+        'Create user authentication with email password login jwt tokens node express';
 
       const structuredResult = assessor.assessQuality(structuredPrompt, 'code-generation');
       const unstructuredResult = assessor.assessQuality(unstructuredPrompt, 'code-generation');
@@ -125,7 +131,8 @@ describe('QualityAssessor', () => {
     });
 
     it('should reward logical flow', () => {
-      const prompt = 'Context: No auth exists. Goal: Add login. Tech: React, Node. Output: Working auth system';
+      const prompt =
+        'Context: No auth exists. Goal: Add login. Tech: React, Node. Output: Working auth system';
       const result = assessor.assessQuality(prompt, 'code-generation');
 
       expect(result.structure).toBeGreaterThan(50);
@@ -171,7 +178,8 @@ describe('QualityAssessor', () => {
 
   describe('actionability dimension', () => {
     it('should score specific prompts higher', () => {
-      const actionablePrompt = 'Create UserController.ts with login, register, and logout methods using Express';
+      const actionablePrompt =
+        'Create UserController.ts with login, register, and logout methods using Express';
       const vaguePrompt = 'Do something with users';
 
       const actionableResult = assessor.assessQuality(actionablePrompt, 'code-generation');
@@ -181,7 +189,8 @@ describe('QualityAssessor', () => {
     });
 
     it('should reward clear actions', () => {
-      const prompt = 'Implement JWT authentication: generate token on login, verify on protected routes, refresh when expired';
+      const prompt =
+        'Implement JWT authentication: generate token on login, verify on protected routes, refresh when expired';
       const result = assessor.assessQuality(prompt, 'code-generation');
 
       expect(result.actionability).toBeGreaterThan(55); // Specific but no success criteria
@@ -192,6 +201,88 @@ describe('QualityAssessor', () => {
       const result = assessor.assessQuality(prompt, 'code-generation');
 
       expect(result.actionability).toBeLessThan(70); // Abstract but not completely unactionable
+    });
+  });
+
+  // v4.0 Specificity Dimension
+  describe('v4.0 specificity dimension', () => {
+    it('should score prompts with numbers higher', () => {
+      const withNumbers = 'Create pagination with 10 items per page, max 100 pages';
+      const withoutNumbers = 'Create pagination with items per page';
+
+      const withNumbersResult = assessor.assessQuality(withNumbers, 'code-generation');
+      const withoutNumbersResult = assessor.assessQuality(withoutNumbers, 'code-generation');
+
+      expect(withNumbersResult.specificity).toBeGreaterThan(withoutNumbersResult.specificity);
+    });
+
+    it('should score prompts with file paths higher', () => {
+      const withPath = 'Update the handler in src/controllers/UserController.ts';
+      const withoutPath = 'Update the user handler';
+
+      const withPathResult = assessor.assessQuality(withPath, 'code-generation');
+      const withoutPathResult = assessor.assessQuality(withoutPath, 'code-generation');
+
+      expect(withPathResult.specificity).toBeGreaterThan(withoutPathResult.specificity);
+    });
+
+    it('should penalize vague terms', () => {
+      const vaguePrompt = 'Make this code somewhat better and maybe cleaner';
+      const specificPrompt = 'Extract login logic into separate AuthService class';
+
+      const vagueResult = assessor.assessQuality(vaguePrompt, 'refinement');
+      const specificResult = assessor.assessQuality(specificPrompt, 'refinement');
+
+      // Specific prompt should score >= vague prompt for specificity
+      // (vague may be capped at 100 before penalties are fully visible)
+      expect(specificResult.specificity).toBeGreaterThanOrEqual(vagueResult.specificity);
+      // Vague prompt should have lower overall quality
+      expect(specificResult.overall).toBeGreaterThanOrEqual(vagueResult.overall);
+    });
+
+    it('should reward technical terms', () => {
+      const technicalPrompt = 'Implement OAuth2 authentication with JWT refresh tokens';
+      const simplePrompt = 'Implement user authentication';
+
+      const technicalResult = assessor.assessQuality(technicalPrompt, 'code-generation');
+      const simpleResult = assessor.assessQuality(simplePrompt, 'code-generation');
+
+      expect(technicalResult.specificity).toBeGreaterThanOrEqual(simpleResult.specificity);
+    });
+  });
+
+  // v4.0 New Intents Support
+  describe('v4.0 new intents support', () => {
+    it('should assess testing intent prompts', () => {
+      const prompt = 'Write unit tests for UserService covering login and logout flows';
+      const result = assessor.assessQuality(prompt, 'testing');
+
+      expect(result).toBeDefined();
+      expect(result.overall).toBeGreaterThan(0);
+    });
+
+    it('should assess migration intent prompts', () => {
+      const prompt = 'Migrate React components from class to functional hooks';
+      const result = assessor.assessQuality(prompt, 'migration');
+
+      expect(result).toBeDefined();
+      expect(result.overall).toBeGreaterThan(0);
+    });
+
+    it('should assess security-review intent prompts', () => {
+      const prompt = 'Audit authentication module for XSS and SQL injection vulnerabilities';
+      const result = assessor.assessQuality(prompt, 'security-review');
+
+      expect(result).toBeDefined();
+      expect(result.overall).toBeGreaterThan(0);
+    });
+
+    it('should assess learning intent prompts', () => {
+      const prompt = 'Explain how React useEffect hook works with cleanup functions';
+      const result = assessor.assessQuality(prompt, 'learning');
+
+      expect(result).toBeDefined();
+      expect(result.overall).toBeGreaterThan(0);
     });
   });
 

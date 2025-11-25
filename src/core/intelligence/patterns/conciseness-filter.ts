@@ -5,11 +5,17 @@ export class ConcisenessFilter extends BasePattern {
   id = 'conciseness-filter';
   name = 'Conciseness Filter';
   description = 'Removes unnecessary pleasantries, fluff words, and redundancy';
-  applicableIntents: PromptIntent[] = ['code-generation', 'planning', 'refinement', 'debugging', 'documentation'];
+  applicableIntents: PromptIntent[] = [
+    'code-generation',
+    'planning',
+    'refinement',
+    'debugging',
+    'documentation',
+  ];
   mode: 'fast' | 'deep' | 'both' = 'both';
   priority = 10; // High priority - run early
 
-  apply(prompt: string, context: PatternContext): PatternResult {
+  apply(prompt: string, _context: PatternContext): PatternResult {
     let cleaned = prompt;
     let changesCount = 0;
 
@@ -18,7 +24,7 @@ export class ConcisenessFilter extends BasePattern {
       /^(please|could you|would you mind|I would appreciate if you could|kindly)\s+/gi,
       /thank you/gi,
       /thanks in advance/gi,
-      /I appreciate your help/gi
+      /I appreciate your help/gi,
     ];
 
     for (const pattern of pleasantries) {
@@ -37,14 +43,6 @@ export class ConcisenessFilter extends BasePattern {
     }
 
     // Remove redundant phrases
-    const redundantPhrases = [
-      /in order to/gi,  // Replace with "to"
-      /at this point in time/gi, // Replace with "now"
-      /due to the fact that/gi, // Replace with "because"
-      /for the purpose of/gi, // Replace with "for"
-      /in the event that/gi // Replace with "if"
-    ];
-
     cleaned = cleaned.replace(/in order to/gi, 'to');
     cleaned = cleaned.replace(/at this point in time/gi, 'now');
     cleaned = cleaned.replace(/due to the fact that/gi, 'because');
@@ -61,9 +59,9 @@ export class ConcisenessFilter extends BasePattern {
       improvement: {
         dimension: 'efficiency',
         description: `Removed ${changesCount} unnecessary phrases for conciseness`,
-        impact: changesCount > 3 ? 'high' : changesCount > 1 ? 'medium' : 'low'
+        impact: changesCount > 3 ? 'high' : changesCount > 1 ? 'medium' : 'low',
       },
-      applied
+      applied,
     };
   }
 }

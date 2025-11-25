@@ -9,12 +9,42 @@ exports[`Optimization Output Snapshots deep mode output structure should produce
       "name": "Structure Organizer"
     },
     {
+      "description": "Add precise context when missing",
+      "impact": "high",
+      "name": "Context Precision Booster"
+    },
+    {
+      "description": "Converts vague goals into specific, actionable tasks",
+      "impact": "medium",
+      "name": "Actionability Enhancer"
+    },
+    {
+      "description": "Break complex prompts into clear sequential steps",
+      "impact": "high",
+      "name": "Step-by-Step Decomposer"
+    },
+    {
       "description": "Ensures all necessary requirements are present",
       "impact": "high",
       "name": "Completeness Validator"
+    },
+    {
+      "description": "Make implicit assumptions explicit to prevent misunderstandings",
+      "impact": "high",
+      "name": "Assumption Explicitizer"
+    },
+    {
+      "description": "Generate alternative prompt structures for different approaches",
+      "impact": "medium",
+      "name": "Alternative Phrasing Generator"
+    },
+    {
+      "description": "Add explicit scope boundaries to prevent scope creep",
+      "impact": "medium",
+      "name": "Scope Definer"
     }
   ],
-  "enhanced": "## Objective/n/nAdd dark mode to my app/n/n---/n/n**Completeness Check**: 20% (1/5 elements present)/n/n**Missing Information** (please specify):/n/n- **Tech Stack**: Which technologies/frameworks? (e.g., React, Node.js, PostgreSQL)/n- **Success Criteria**: How will you know it works? What metrics matter?/n- **Constraints**: Any limitations? (time, budget, performance, compatibility)/n- **Expected Output**: What should the result look like? (component, API, file, etc.)",
+  "enhanced": "## Objective/n/nAdd dark mode to my app/n/n### Context Needed/n/nPlease provide additional context for better (e.g., faster (specify: < 100ms, < 1s, etc.)) results:/n/n**1. What are the expected inputs and outputs?**/n   _Suggestion: Define function signature: inputs, return type, and data structures_/n/n**2. Is there existing code this should integrate with?**/n   _Suggestion: Reference existing patterns, imports, or dependencies in the project_/n/n**3. How should errors be handled?**/n   _Suggestion: Specify error handling strategy (throw, return null, default value)_/n/n/n### Implementation Steps/n/n1. Define function signature and types/n2. Implement core logic/n3. Handle edge cases/n4. Add documentation/n5. Write tests/n/n---/n/n**Completeness Check**: 40% (2/5 elements present)/n/n**Missing Information** (please specify):/n/n- **Tech Stack**: Which technologies/frameworks? (e.g., React, Node.js, PostgreSQL)/n- **Success Criteria**: How will you know it works? What metrics matter?/n- **Constraints**: Any limitations? (time, budget, performance, compatibility)/n/n### Implicit Assumptions/n/nThe following assumptions are being made. Please clarify if any are incorrect:/n/n**1. Language is TypeScript/JavaScript**/n   → Clarify: Which programming language should be used?/n/n**2. Using React Context or local state**/n   → Clarify: Which state management approach is preferred?/n/n/n### Alternative Approaches/n/n**1. Functional Decomposition**/n   Break down into discrete functions with clear interfaces/n   → Best for: Step-by-step implementation, clarity on sequence/n/n**2. Test-Driven Approach**/n   Define expected behavior through tests first/n   → Best for: When requirements are clear and testable/n/n**3. Example-Driven**/n   Provide concrete input/output examples/n   → Best for: When you have reference implementations/n/n/n### Scope Definition/n/n**In Scope:**/n✓ Component implementation with specified functionality/n/n**Out of Scope:**/n✗ Deployment and CI/CD configuration/n✗ Production infrastructure setup/n✗ Backend/API implementation/n/n**Boundaries & Assumptions:**/n• Database schema assumed to exist or specified separately/n• Following existing project conventions and patterns",
   "improvements": [
     {
       "description": "Added section headers for clarity",
@@ -22,9 +52,39 @@ exports[`Optimization Output Snapshots deep mode output structure should produce
       "impact": "low"
     },
     {
-      "description": "Added 4 missing element prompts (20% complete)",
+      "description": "Identified 3 areas needing context clarification",
       "dimension": "completeness",
       "impact": "high"
+    },
+    {
+      "description": "Made 2 improvements to increase specificity",
+      "dimension": "actionability",
+      "impact": "medium"
+    },
+    {
+      "description": "Decomposed into 5 sequential steps",
+      "dimension": "structure",
+      "impact": "high"
+    },
+    {
+      "description": "Added 3 missing element prompts (40% complete)",
+      "dimension": "completeness",
+      "impact": "high"
+    },
+    {
+      "description": "Identified 2 implicit assumptions to clarify",
+      "dimension": "clarity",
+      "impact": "high"
+    },
+    {
+      "description": "Generated 3 alternative approaches",
+      "dimension": "structure",
+      "impact": "medium"
+    },
+    {
+      "description": "Added explicit scope boundaries",
+      "dimension": "completeness",
+      "impact": "medium"
     }
   ],
   "intent": {
@@ -42,22 +102,24 @@ exports[`Optimization Output Snapshots deep mode output structure should produce
   "original": "Add dark mode to my app",
   "processingTimeMs": "[PROCESSING_TIME]",
   "quality": {
-    "actionability": 65,
+    "actionability": 45,
     "clarity": 100,
-    "completeness": 90,
+    "completeness": 100,
     "efficiency": 95,
     "improvements": [
       "Added missing context and specifications",
       "Added clear objective statement"
     ],
-    "overall": 86.75,
+    "overall": 88.5,
+    "specificity": 100,
     "strengths": [
       "Clear objective and goals",
       "Concise and focused",
       "Well-structured with logical flow",
-      "Comprehensive with all necessary details"
+      "Comprehensive with all necessary details",
+      "Highly specific with concrete details"
     ],
-    "structure": 90
+    "structure": 100
   }
 }"
 `;
@@ -81,12 +143,27 @@ exports[`Optimization Output Snapshots fast mode output structure should produce
       "name": "Technical Context Enricher"
     },
     {
-      "description": "Ensures all necessary requirements are present",
+      "description": "Add precise context when missing",
+      "impact": "high",
+      "name": "Context Precision Booster"
+    },
+    {
+      "description": "Converts vague goals into specific, actionable tasks",
       "impact": "medium",
+      "name": "Actionability Enhancer"
+    },
+    {
+      "description": "Break complex prompts into clear sequential steps",
+      "impact": "high",
+      "name": "Step-by-Step Decomposer"
+    },
+    {
+      "description": "Ensures all necessary requirements are present",
+      "impact": "low",
       "name": "Completeness Validator"
     }
   ],
-  "enhanced": "# Objective/nbuild a user authentication system that supports: - Email/password login - OAuth with Google and GitHub - Two-factor authentication - Password reset flow Please include security best practices/n/nI need to build a user authentication system that supports: - Email/password login - OAuth with Google and GitHub - Two-factor authentication - Password reset flow Please include security best practices./n/n# Technical Constraints/n- Language: Go (please specify version if critical)/n/n---/n/n**Completeness Check**: 60% (3/5 elements present)/n/n**Missing Information** (please specify):/n/n- **Success Criteria**: How will you know it works? What metrics matter?/n- **Expected Output**: What should the result look like? (component, API, file, etc.)",
+  "enhanced": "# Objective/nbuild a user authentication system that supports: - Email/password login - OAuth with Google and GitHub - Two-factor authentication - Password reset flow Please include security best practices/n/nI need to build a user authentication system that supports: - Email/password login - OAuth with Google and GitHub - Two-factor authentication - Password reset flow Please include security best practices./n/n# Technical Constraints/n- Language: Go (please specify version if critical)/n/n### Context Needed/n/nPlease provide additional context for better (e.g., faster (specify: < 100ms, < 1s, etc.)) results:/n/n**1. Which version are you targeting?**/n   _Suggestion: Specify exact versions (e.g., React 18, Node 20, TypeScript 5.x)_/n/n**2. What are the expected inputs and outputs?**/n   _Suggestion: Define function signature: inputs, return type, and data structures_/n/n**3. Is there existing code this should integrate with?**/n   _Suggestion: Reference existing patterns, imports, or dependencies in the project_/n/n**4. How should errors be handled?**/n   _Suggestion: Specify error handling strategy (throw, return null, default value)_/n/n/n### Implementation Steps/n/n1. Define component interface and props/n2. Implement core component logic/n3. Add styling and responsive design/n4. Add error handling and edge cases/n5. Write unit tests/n/n---/n/n**Completeness Check**: 80% (4/5 elements present)/n/n**Missing Information** (please specify):/n/n- **Success Criteria**: How will you know it works? What metrics matter?",
   "improvements": [
     {
       "description": "Removed 0 unnecessary phrases for conciseness",
@@ -104,9 +181,24 @@ exports[`Optimization Output Snapshots fast mode output structure should produce
       "impact": "medium"
     },
     {
-      "description": "Added 2 missing element prompts (60% complete)",
+      "description": "Identified 4 areas needing context clarification",
       "dimension": "completeness",
+      "impact": "high"
+    },
+    {
+      "description": "Made 2 improvements to increase specificity",
+      "dimension": "actionability",
       "impact": "medium"
+    },
+    {
+      "description": "Decomposed into 5 sequential steps",
+      "dimension": "structure",
+      "impact": "high"
+    },
+    {
+      "description": "Added 1 missing element prompts (80% complete)",
+      "dimension": "completeness",
+      "impact": "low"
     }
   ],
   "intent": {
@@ -116,7 +208,7 @@ exports[`Optimization Output Snapshots fast mode output structure should produce
       "isOpenEnded": true,
       "needsStructure": false
     },
-    "confidence": 100,
+    "confidence": 50,
     "primaryIntent": "code-generation",
     "suggestedMode": "deep"
   },
@@ -124,23 +216,25 @@ exports[`Optimization Output Snapshots fast mode output structure should produce
   "original": "/n        I need to build a user authentication system that supports:/n        - Email/password login/n        - OAuth with Google and GitHub/n        - Two-factor authentication/n        - Password reset flow/n        Please include security best practices./n      ",
   "processingTimeMs": "[PROCESSING_TIME]",
   "quality": {
-    "actionability": 90,
+    "actionability": 60,
     "clarity": 100,
-    "completeness": 90,
-    "efficiency": 80,
+    "completeness": 100,
+    "efficiency": 95,
     "improvements": [
       "Added missing context and specifications",
       "Added clear objective statement",
       "Added technical context"
     ],
     "overall": 91.5,
+    "specificity": 100,
     "strengths": [
       "Clear objective and goals",
+      "Concise and focused",
       "Well-structured with logical flow",
       "Comprehensive with all necessary details",
-      "Immediately actionable"
+      "Highly specific with concrete details"
     ],
-    "structure": 90
+    "structure": 100
   }
 }"
 `;
@@ -154,12 +248,27 @@ exports[`Optimization Output Snapshots fast mode output structure should produce
       "name": "Objective Clarifier"
     },
     {
+      "description": "Add precise context when missing",
+      "impact": "high",
+      "name": "Context Precision Booster"
+    },
+    {
+      "description": "Converts vague goals into specific, actionable tasks",
+      "impact": "medium",
+      "name": "Actionability Enhancer"
+    },
+    {
+      "description": "Break complex prompts into clear sequential steps",
+      "impact": "high",
+      "name": "Step-by-Step Decomposer"
+    },
+    {
       "description": "Ensures all necessary requirements are present",
       "impact": "high",
       "name": "Completeness Validator"
     }
   ],
-  "enhanced": "# Objective/na login page/n/nCreate a login page/n/n---/n/n**Completeness Check**: 20% (1/5 elements present)/n/n**Missing Information** (please specify):/n/n- **Tech Stack**: Which technologies/frameworks? (e.g., React, Node.js, PostgreSQL)/n- **Success Criteria**: How will you know it works? What metrics matter?/n- **Constraints**: Any limitations? (time, budget, performance, compatibility)/n- **Expected Output**: What should the result look like? (component, API, file, etc.)",
+  "enhanced": "# Objective/na login page/n/nCreate a login page/n/n### Context Needed/n/nPlease provide additional context for better (e.g., faster (specify: < 100ms, < 1s, etc.)) results:/n/n**1. What are the expected inputs and outputs?**/n   _Suggestion: Define function signature: inputs, return type, and data structures_/n/n**2. Is there existing code this should integrate with?**/n   _Suggestion: Reference existing patterns, imports, or dependencies in the project_/n/n**3. How should errors be handled?**/n   _Suggestion: Specify error handling strategy (throw, return null, default value)_/n/n/n### Implementation Steps/n/n1. Define function signature and types/n2. Implement core logic/n3. Handle edge cases/n4. Add documentation/n5. Write tests/n/n---/n/n**Completeness Check**: 40% (2/5 elements present)/n/n**Missing Information** (please specify):/n/n- **Tech Stack**: Which technologies/frameworks? (e.g., React, Node.js, PostgreSQL)/n- **Success Criteria**: How will you know it works? What metrics matter?/n- **Constraints**: Any limitations? (time, budget, performance, compatibility)",
   "improvements": [
     {
       "description": "Added clear objective statement",
@@ -167,7 +276,22 @@ exports[`Optimization Output Snapshots fast mode output structure should produce
       "impact": "high"
     },
     {
-      "description": "Added 4 missing element prompts (20% complete)",
+      "description": "Identified 3 areas needing context clarification",
+      "dimension": "completeness",
+      "impact": "high"
+    },
+    {
+      "description": "Made 2 improvements to increase specificity",
+      "dimension": "actionability",
+      "impact": "medium"
+    },
+    {
+      "description": "Decomposed into 5 sequential steps",
+      "dimension": "structure",
+      "impact": "high"
+    },
+    {
+      "description": "Added 3 missing element prompts (40% complete)",
       "dimension": "completeness",
       "impact": "high"
     }
@@ -187,22 +311,24 @@ exports[`Optimization Output Snapshots fast mode output structure should produce
   "original": "Create a login page",
   "processingTimeMs": "[PROCESSING_TIME]",
   "quality": {
-    "actionability": 65,
+    "actionability": 55,
     "clarity": 100,
-    "completeness": 90,
+    "completeness": 100,
     "efficiency": 95,
     "improvements": [
       "Added missing context and specifications",
       "Added clear objective statement"
     ],
-    "overall": 86.75,
+    "overall": 90.5,
+    "specificity": 100,
     "strengths": [
       "Clear objective and goals",
       "Concise and focused",
       "Well-structured with logical flow",
-      "Comprehensive with all necessary details"
+      "Comprehensive with all necessary details",
+      "Highly specific with concrete details"
     ],
-    "structure": 90
+    "structure": 100
   }
 }"
 `;
@@ -213,6 +339,7 @@ exports[`Optimization Output Snapshots quality assessment structure quality dime
   "clarity",
   "completeness",
   "efficiency",
+  "specificity",
   "structure",
 ]
 `;

@@ -29,7 +29,21 @@ You are starting a Clavix conversational session for iterative prompt and requir
 
 **If unsure, ASK:** "Should I implement this now, or continue gathering requirements?"
 
-For complete mode documentation, see: `.clavix/instructions/core/clavix-mode.md`
+---
+
+## Self-Correction Protocol
+
+**DETECT**: If you find yourself:
+- Writing function/class definitions for the user's feature
+- Creating component implementations
+- Generating API endpoint code
+
+**STOP**: Immediately halt code generation
+
+**CORRECT**: Output:
+"I apologize - I was implementing instead of gathering requirements. Let me return to asking clarifying questions."
+
+**RESUME**: Return to the requirements gathering workflow.
 
 ---
 
@@ -114,7 +128,7 @@ For complete mode documentation, see: `.clavix/instructions/core/clavix-mode.md`
    I'll now analyze our entire conversation and extract structured requirements.
    ```
 
-   Then proceed to the summarization workflow (see `.clavix/instructions/workflows/summarize.md`).
+   Then proceed to `/clavix:summarize` to extract and optimize your requirements.
 
 ## How Summarization Works
 
@@ -164,7 +178,6 @@ The goal is natural exploration of requirements, not a rigid questionnaire. Foll
 - STOP generating code immediately
 - Apologize: "I was jumping to implementation. Let me return to requirements gathering."
 - Return to asking clarifying questions
-- See: `.clavix/instructions/troubleshooting/jumped-to-implementation.md`
 
 ### Issue: Conversation going in circles without progress
 **Cause**: Unclear focus or too many topics being explored

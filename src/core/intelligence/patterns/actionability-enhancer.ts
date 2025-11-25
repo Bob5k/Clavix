@@ -18,21 +18,26 @@ export class ActionabilityEnhancer extends BasePattern {
   priority = 7; // High priority
 
   private readonly VAGUE_WORDS: Record<string, string[]> = {
-    'better': ['faster', 'more efficient', 'more reliable', 'more maintainable'],
-    'improve': ['optimize performance', 'enhance user experience', 'increase reliability', 'refactor for clarity'],
-    'good': ['high-performing', 'user-friendly', 'maintainable', 'secure'],
-    'nice': ['polished', 'intuitive', 'responsive', 'accessible'],
-    'fast': ['< 100ms response time', '< 2s load time', 'under 500ms', 'high-performance'],
-    'slow': ['> 2s load time', 'laggy', 'delayed response', 'poor performance'],
-    'something': ['[specify what]', '[component/feature/function]', '[define requirement]'],
-    'somehow': ['[specify method]', '[define approach]', '[explain how]'],
-    'maybe': ['[decide: yes/no]', '[clarify requirement]', '[confirm if needed]'],
-    'enhance': ['add features to', 'improve functionality of', 'extend capabilities of'],
-    'fix': ['resolve bug in', 'correct error in', 'debug issue with'],
-    'update': ['modify', 'change', 'revise', 'upgrade']
+    better: ['faster', 'more efficient', 'more reliable', 'more maintainable'],
+    improve: [
+      'optimize performance',
+      'enhance user experience',
+      'increase reliability',
+      'refactor for clarity',
+    ],
+    good: ['high-performing', 'user-friendly', 'maintainable', 'secure'],
+    nice: ['polished', 'intuitive', 'responsive', 'accessible'],
+    fast: ['< 100ms response time', '< 2s load time', 'under 500ms', 'high-performance'],
+    slow: ['> 2s load time', 'laggy', 'delayed response', 'poor performance'],
+    something: ['[specify what]', '[component/feature/function]', '[define requirement]'],
+    somehow: ['[specify method]', '[define approach]', '[explain how]'],
+    maybe: ['[decide: yes/no]', '[clarify requirement]', '[confirm if needed]'],
+    enhance: ['add features to', 'improve functionality of', 'extend capabilities of'],
+    fix: ['resolve bug in', 'correct error in', 'debug issue with'],
+    update: ['modify', 'change', 'revise', 'upgrade'],
   };
 
-  apply(prompt: string, context: PatternContext): PatternResult {
+  apply(prompt: string, _context: PatternContext): PatternResult {
     let enhanced = prompt;
     let changesCount = 0;
 
@@ -56,9 +61,9 @@ export class ActionabilityEnhancer extends BasePattern {
       improvement: {
         dimension: 'actionability',
         description: `Made ${changesCount} improvements to increase specificity`,
-        impact: changesCount >= 3 ? 'high' : changesCount >= 2 ? 'medium' : 'low'
+        impact: changesCount >= 3 ? 'high' : changesCount >= 2 ? 'medium' : 'low',
       },
-      applied: enhanced !== prompt
+      applied: enhanced !== prompt,
     };
   }
 
@@ -78,14 +83,14 @@ export class ActionabilityEnhancer extends BasePattern {
 
   private hasAbstractGoals(prompt: string): boolean {
     const abstractPatterns = [
-      /make\s+it\s+\w+/i,              // "make it better"
-      /should\s+be\s+\w+/i,            // "should be nice"
-      /want\s+it\s+to\s+be\s+\w+/i,   // "want it to be good"
-      /more\s+\w+/i,                   // "more efficient"
-      /less\s+\w+/i                    // "less complex"
+      /make\s+it\s+\w+/i, // "make it better"
+      /should\s+be\s+\w+/i, // "should be nice"
+      /want\s+it\s+to\s+be\s+\w+/i, // "want it to be good"
+      /more\s+\w+/i, // "more efficient"
+      /less\s+\w+/i, // "less complex"
     ];
 
-    return abstractPatterns.some(pattern => pattern.test(prompt));
+    return abstractPatterns.some((pattern) => pattern.test(prompt));
   }
 
   private replaceVagueWords(prompt: string): string {
@@ -120,7 +125,7 @@ export class ActionabilityEnhancer extends BasePattern {
       { pattern: /\befficient\b/gi, suggestion: ' (specify metrics: time, memory, CPU)' },
       { pattern: /\bscalable\b/gi, suggestion: ' (specify: handle 1K, 10K, 100K users)' },
       { pattern: /\breliable\b/gi, suggestion: ' (specify: 99.9% uptime, < 0.1% error rate)' },
-      { pattern: /\bsecure\b/gi, suggestion: ' (specify: HTTPS, auth required, encrypted)' }
+      { pattern: /\bsecure\b/gi, suggestion: ' (specify: HTTPS, auth required, encrypted)' },
     ];
 
     let enhanced = prompt;
@@ -139,38 +144,38 @@ export class ActionabilityEnhancer extends BasePattern {
 
   private hasSpecificMetric(prompt: string): boolean {
     const metricPatterns = [
-      /\d+\s*(?:ms|s|min|hours?)/i,      // Time metrics
-      /\d+\s*(?:kb|mb|gb)/i,             // Size metrics
-      /\d+\s*(?:%|percent)/i,            // Percentage
-      /<?>\s*\d+/i,                      // Comparison operators
-      /\d+k?\s*(?:users?|requests?)/i   // Scale metrics
+      /\d+\s*(?:ms|s|min|hours?)/i, // Time metrics
+      /\d+\s*(?:kb|mb|gb)/i, // Size metrics
+      /\d+\s*(?:%|percent)/i, // Percentage
+      /<?>\s*\d+/i, // Comparison operators
+      /\d+k?\s*(?:users?|requests?)/i, // Scale metrics
     ];
 
-    return metricPatterns.some(pattern => pattern.test(prompt));
+    return metricPatterns.some((pattern) => pattern.test(prompt));
   }
 
   private concretizeGoals(prompt: string): string {
     const abstractPatterns: Array<{ pattern: RegExp; replacement: string }> = [
       {
         pattern: /make\s+it\s+better/gi,
-        replacement: 'improve by [specify: performance, UX, reliability, etc.]'
+        replacement: 'improve by [specify: performance, UX, reliability, etc.]',
       },
       {
         pattern: /should\s+be\s+nice/gi,
-        replacement: 'should have [specify: polished UI, intuitive UX, etc.]'
+        replacement: 'should have [specify: polished UI, intuitive UX, etc.]',
       },
       {
         pattern: /want\s+it\s+to\s+be\s+good/gi,
-        replacement: 'should meet [specify: quality standards, performance targets, etc.]'
+        replacement: 'should meet [specify: quality standards, performance targets, etc.]',
       },
       {
         pattern: /more\s+efficient/gi,
-        replacement: 'more efficient (reduce time/memory/CPU by [X%])'
+        replacement: 'more efficient (reduce time/memory/CPU by [X%])',
       },
       {
         pattern: /less\s+complex/gi,
-        replacement: 'less complex (reduce from [X] to [Y] components/lines/dependencies)'
-      }
+        replacement: 'less complex (reduce from [X] to [Y] components/lines/dependencies)',
+      },
     ];
 
     let enhanced = prompt;

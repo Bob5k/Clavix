@@ -3,9 +3,21 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { AgentAdapter, CommandTemplate } from '../types/agent.js';
 import { FileSystem } from './file-system.js';
+import { TemplateAssembler } from '../core/template-assembler.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+// v4.0: Singleton assembler instance for caching
+let assemblerInstance: TemplateAssembler | null = null;
+
+function getAssembler(): TemplateAssembler {
+  if (!assemblerInstance) {
+    const templatesDir = path.join(__dirname, '..', 'templates');
+    assemblerInstance = new TemplateAssembler(templatesDir);
+  }
+  return assemblerInstance;
+}
 
 export async function loadCommandTemplates(_adapter: AgentAdapter): Promise<CommandTemplate[]> {
   // Load from canonical template source (always .md files)
@@ -18,14 +30,28 @@ export async function loadCommandTemplates(_adapter: AgentAdapter): Promise<Comm
   // Canonical templates are always .md files
   const commandFiles = files.filter((file) => file.endsWith('.md'));
   const templates: CommandTemplate[] = [];
+  const assembler = getAssembler();
 
   for (const file of commandFiles) {
     const templatePath = path.join(templatesDir, file);
-    const content = await FileSystem.readFile(templatePath);
+    let content = await FileSystem.readFile(templatePath);
     const name = file.slice(0, -3); // Remove .md extension
 
-    // Extract description and clean content from markdown
+    // Extract description before processing includes
     const description = extractDescription(content);
+
+    // v4.0: Process {{INCLUDE:}} markers if present
+    if (assembler.hasIncludes(content)) {
+      try {
+        const result = await assembler.assembleFromContent(content);
+        content = result.content;
+      } catch (error) {
+        // If assembly fails, use original content
+        console.warn(`Template assembly warning for ${file}:`, error);
+      }
+    }
+
+    // Clean content from markdown
     const cleanContent = stripFrontmatter(content);
 
     templates.push({

@@ -5,6 +5,16 @@ import { TechnicalContextEnricher } from './patterns/technical-context-enricher.
 import { StructureOrganizer } from './patterns/structure-organizer.js';
 import { CompletenessValidator } from './patterns/completeness-validator.js';
 import { ActionabilityEnhancer } from './patterns/actionability-enhancer.js';
+// v4.0 Deep mode patterns
+import { AlternativePhrasingGenerator } from './patterns/alternative-phrasing-generator.js';
+import { EdgeCaseIdentifier } from './patterns/edge-case-identifier.js';
+import { ValidationChecklistCreator } from './patterns/validation-checklist-creator.js';
+import { AssumptionExplicitizer } from './patterns/assumption-explicitizer.js';
+import { ScopeDefiner } from './patterns/scope-definer.js';
+import { PRDStructureEnforcer } from './patterns/prd-structure-enforcer.js';
+// v4.0 Both mode patterns
+import { StepDecomposer } from './patterns/step-decomposer.js';
+import { ContextPrecisionBooster } from './patterns/context-precision.js';
 import { IntentAnalysis, OptimizationMode, PromptIntent } from './types.js';
 
 export class PatternLibrary {
@@ -16,25 +26,24 @@ export class PatternLibrary {
 
   private registerDefaultPatterns(): void {
     // Register core patterns (available in fast & deep modes)
-    this.register(new ConcisenessFilter());           // HIGH - Remove verbosity
-    this.register(new ObjectiveClarifier());          // HIGH - Add clarity
-    this.register(new TechnicalContextEnricher());    // MEDIUM - Add technical details
-    this.register(new StructureOrganizer());          // HIGH - Reorder logically
-    this.register(new CompletenessValidator());       // MEDIUM - Check missing elements
-    this.register(new ActionabilityEnhancer());       // HIGH - Vague to specific
+    this.register(new ConcisenessFilter()); // HIGH - Remove verbosity
+    this.register(new ObjectiveClarifier()); // HIGH - Add clarity
+    this.register(new TechnicalContextEnricher()); // MEDIUM - Add technical details
+    this.register(new StructureOrganizer()); // HIGH - Reorder logically
+    this.register(new CompletenessValidator()); // MEDIUM - Check missing elements
+    this.register(new ActionabilityEnhancer()); // HIGH - Vague to specific
 
-    // TODO: Register additional patterns for deep mode (future enhancement)
-    // Deep mode exclusive:
-    // - AlternativePhrasingGenerator
-    // - StructureVariationGenerator
-    // - EdgeCaseIdentifier
-    // - ValidationChecklistCreator
-    // - AssumptionExplicitizer
-    // - ScopeDefiner
-    // - StepByStepDecomposer
-    // - TemplatePatternApplier
-    // - ReflectionPrompter
-    // - ContextPrecisionBooster
+    // v4.0 Deep mode patterns
+    this.register(new AlternativePhrasingGenerator()); // P5 - Generate alternative structures
+    this.register(new EdgeCaseIdentifier()); // P4 - Identify edge cases by domain
+    this.register(new ValidationChecklistCreator()); // P3 - Create validation checklists
+    this.register(new AssumptionExplicitizer()); // P6 - Make implicit assumptions explicit
+    this.register(new ScopeDefiner()); // P5 - Add scope boundaries
+    this.register(new PRDStructureEnforcer()); // P9 - Ensure PRD completeness
+
+    // v4.0 Both mode patterns (fast & deep)
+    this.register(new StepDecomposer()); // P7 - Break complex prompts into steps
+    this.register(new ContextPrecisionBooster()); // P8 - Add precise context when missing
   }
 
   /**
@@ -76,8 +85,8 @@ export class PatternLibrary {
         hasCodeContext: false,
         hasTechnicalTerms: false,
         isOpenEnded: false,
-        needsStructure: false
-      }
+        needsStructure: false,
+      },
     };
 
     // Use existing selectPatterns method
@@ -119,8 +128,7 @@ export class PatternLibrary {
    * Get patterns by mode
    */
   getPatternsByMode(mode: OptimizationMode): BasePattern[] {
-    return Array.from(this.patterns.values())
-      .filter(p => p.mode === mode || p.mode === 'both');
+    return Array.from(this.patterns.values()).filter((p) => p.mode === mode || p.mode === 'both');
   }
 
   /**

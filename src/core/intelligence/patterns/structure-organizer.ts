@@ -13,11 +13,17 @@ export class StructureOrganizer extends BasePattern {
   id = 'structure-organizer';
   name = 'Structure Organizer';
   description = 'Reorders information into logical sections';
-  applicableIntents: PromptIntent[] = ['code-generation', 'planning', 'refinement', 'debugging', 'documentation'];
+  applicableIntents: PromptIntent[] = [
+    'code-generation',
+    'planning',
+    'refinement',
+    'debugging',
+    'documentation',
+  ];
   mode: 'fast' | 'deep' | 'both' = 'both';
   priority = 8; // High priority
 
-  apply(prompt: string, context: PatternContext): PatternResult {
+  apply(prompt: string, _context: PatternContext): PatternResult {
     // Detect existing sections
     const sections = this.detectSections(prompt);
 
@@ -29,9 +35,9 @@ export class StructureOrganizer extends BasePattern {
         improvement: {
           dimension: 'structure',
           description: 'Added section headers for clarity',
-          impact: 'low'
+          impact: 'low',
         },
-        applied: enhanced !== prompt
+        applied: enhanced !== prompt,
       };
     }
 
@@ -42,7 +48,14 @@ export class StructureOrganizer extends BasePattern {
     const expectedOutput = this.extractExpectedOutput(prompt);
     const successCriteria = this.extractSuccessCriteria(prompt);
     const constraints = this.extractConstraints(prompt);
-    const other = this.extractOther(prompt, [objective, requirements, technical, expectedOutput, successCriteria, constraints]);
+    const other = this.extractOther(prompt, [
+      objective,
+      requirements,
+      technical,
+      expectedOutput,
+      successCriteria,
+      constraints,
+    ]);
 
     // Build structured output
     let structured = '';
@@ -89,18 +102,18 @@ export class StructureOrganizer extends BasePattern {
       improvement: {
         dimension: 'structure',
         description: `Reorganized content into ${sectionsCount} logical sections`,
-        impact: sectionsCount >= 4 ? 'high' : sectionsCount >= 2 ? 'medium' : 'low'
+        impact: sectionsCount >= 4 ? 'high' : sectionsCount >= 2 ? 'medium' : 'low',
       },
-      applied: true
+      applied: true,
     };
   }
 
   private detectSections(prompt: string): string[] {
     const sectionMarkers = [
-      /^#+\s+.+$/gm,           // Markdown headers
-      /^[A-Z][^.!?]+:$/gm,     // "Objective:", "Requirements:"
-      /^\d+\.\s+[A-Z]/gm,      // Numbered lists
-      /^[-*]\s+/gm             // Bullet points
+      /^#+\s+.+$/gm, // Markdown headers
+      /^[A-Z][^.!?]+:$/gm, // "Objective:", "Requirements:"
+      /^\d+\.\s+[A-Z]/gm, // Numbered lists
+      /^[-*]\s+/gm, // Bullet points
     ];
 
     const sections: string[] = [];
@@ -120,7 +133,7 @@ export class StructureOrganizer extends BasePattern {
     let lastIndex = -1;
     for (const section of sections) {
       const sectionLower = section.toLowerCase();
-      const currentIndex = idealOrder.findIndex(keyword => sectionLower.includes(keyword));
+      const currentIndex = idealOrder.findIndex((keyword) => sectionLower.includes(keyword));
 
       if (currentIndex !== -1) {
         if (currentIndex < lastIndex) {
@@ -154,7 +167,7 @@ export class StructureOrganizer extends BasePattern {
   private extractObjective(prompt: string): string {
     const patterns = [
       /(?:objective|goal|purpose|need to|want to)[:]\s*(.+?)(?:\n\n|$)/is,
-      /^(.{20,100}?)(?:\n|$)/i  // First sentence if no explicit objective
+      /^(.{20,100}?)(?:\n|$)/i, // First sentence if no explicit objective
     ];
 
     for (const pattern of patterns) {
@@ -174,7 +187,8 @@ export class StructureOrganizer extends BasePattern {
   }
 
   private extractTechnical(prompt: string): string {
-    const pattern = /(?:technical|tech stack|technology|using|built? with)[:]\s*(.+?)(?:\n\n|##|$)/is;
+    const pattern =
+      /(?:technical|tech stack|technology|using|built? with)[:]\s*(.+?)(?:\n\n|##|$)/is;
     const match = prompt.match(pattern);
     return match ? match[1].trim() : '';
   }

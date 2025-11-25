@@ -1,6 +1,6 @@
 {
   "name": "clavix",
-  "version": "3.6.1",
+  "version": "4.0.0",
   "description": "Clavix Intelligence™ for AI coding. Automatically optimizes prompts with intent detection, quality assessment, and adaptive patterns—no framework to learn. Works with Claude Code, Cursor, Windsurf, and 19+ other AI coding tools.",
   "type": "module",
   "main": "dist/index.js",

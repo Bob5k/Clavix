@@ -39,6 +39,9 @@ For complete step-by-step workflows, see `.clavix/instructions/`:
 **Troubleshooting:**
 - `troubleshooting/jumped-to-implementation.md` - If you started coding during planning
 - `troubleshooting/skipped-file-creation.md` - If files weren't created
+- `troubleshooting/mode-confusion.md` - When unclear about planning vs implementation
+
+**When detected:** Reference the corresponding `.clavix/instructions/workflows/{workflow}.md` file.
 
 **⚠️ GitHub Copilot Limitation:** If Write tool unavailable, provide file content with clear "save to" instructions for user.
 
@@ -161,3 +164,11 @@ clavix fast 'Build a dashboard for...' for quick optimization."
 - `.clavix/outputs/<project>/` - PRDs, tasks, prompts
 - `.clavix/sessions/` - Captured conversations
 - `.clavix/config.json` - Project configuration
+
+---
+
+**For complete workflows:** Always reference `.clavix/instructions/workflows/{workflow}.md`
+
+**For troubleshooting:** Check `.clavix/instructions/troubleshooting/`
+
+**For mode clarification:** See `.clavix/instructions/core/clavix-mode.md`

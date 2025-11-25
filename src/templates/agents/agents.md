@@ -54,6 +54,8 @@ For complete step-by-step workflows, see `.clavix/instructions/`:
 | "let's discuss", "not sure what I want" | Conversational mode → Start gathering | `workflows/start.md` |
 | "summarize our conversation" | Extract mode → Analyze thread | `workflows/summarize.md` |
 
+**When detected:** Reference the corresponding `.clavix/instructions/workflows/{workflow}.md` file.
+
 ---
 
 ## 📋 CLI Quick Reference
@@ -165,3 +167,11 @@ PRD Creation → Task Planning → Implementation → Archive
 - `.clavix/outputs/<project>/` - PRDs, tasks, prompts
 - `.clavix/sessions/` - Captured conversations
 - `.clavix/templates/` - Custom overrides
+
+---
+
+**For complete workflows:** Always reference `.clavix/instructions/workflows/{workflow}.md`
+
+**For troubleshooting:** Check `.clavix/instructions/troubleshooting/`
+
+**For mode clarification:** See `.clavix/instructions/core/clavix-mode.md`

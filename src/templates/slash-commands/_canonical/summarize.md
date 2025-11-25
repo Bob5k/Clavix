@@ -26,7 +26,21 @@ You are analyzing the conversation history and extracting optimized requirements
 
 **This workflow creates PLANNING DOCUMENTS, not implementations.**
 
-For complete mode documentation, see: `.clavix/instructions/core/clavix-mode.md`
+---
+
+## Self-Correction Protocol
+
+**DETECT**: If you find yourself:
+- Writing function/class definitions for the user's feature
+- Creating component implementations
+- Generating API endpoint code
+
+**STOP**: Immediately halt code generation
+
+**CORRECT**: Output:
+"I apologize - I was implementing instead of summarizing. Let me return to extracting requirements."
+
+**RESUME**: Return to the requirements extraction workflow.
 
 ---
 
@@ -209,7 +223,7 @@ For complete mode documentation, see: `.clavix/instructions/core/clavix-mode.md`
 
    **If any file is missing:**
    - Something went wrong with file creation
-   - See troubleshooting: `.clavix/instructions/troubleshooting/skipped-file-creation.md`
+   - Retry the Write tool for the missing file
 
 4. **Clavix Intelligence™ Optimization** (automatic with labeled improvements):
    - After extracting the prompt, analyze using Clavix Intelligence™
@@ -354,7 +368,7 @@ Success: Sales managers can identify issues within 30 seconds of opening, dashbo
 - Review step 3 file creation instructions
 - Ensure each file has explicit Write tool step
 - Verify all files exist before continuing
-- See: `.clavix/instructions/troubleshooting/skipped-file-creation.md`
+- Retry the Write tool for any missing files
 
 ### Issue: Pre-extraction validation fails (missing objective/requirements)
 **Cause**: Conversation didn't cover enough detail

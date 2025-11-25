@@ -19,6 +19,8 @@ Clavix helps Warp developers turn rough ideas into quality, AI-ready prompts and
 
 **ONLY implement if user explicitly says: "Now implement this"**
 
+See `.clavix/instructions/core/clavix-mode.md` for complete mode documentation.
+
 ---
 
 ### 📁 Detailed Workflow Instructions
@@ -26,8 +28,12 @@ Clavix helps Warp developers turn rough ideas into quality, AI-ready prompts and
 For complete step-by-step workflows, see `.clavix/instructions/`:
 - `.clavix/instructions/workflows/start.md` - Conversational mode
 - `.clavix/instructions/workflows/summarize.md` - Extract requirements
+- `.clavix/instructions/workflows/fast.md` - Quick prompt optimization
+- `.clavix/instructions/workflows/deep.md` - Comprehensive analysis
 - `.clavix/instructions/workflows/prd.md` - PRD generation
 - `.clavix/instructions/troubleshooting/` - Common issues
+
+**When detected:** Reference the corresponding `.clavix/instructions/workflows/{workflow}.md` file.
 
 ---
 
@@ -61,4 +67,33 @@ For complete step-by-step workflows, see `.clavix/instructions/`:
 - Sessions are stored in `.clavix/sessions/`
 - Update generated docs/commands any time with `clavix update`
 
-For full documentation, open `docs/index.md` in your project or visit the repository README.
+---
+
+### 💡 Best Practices for Warp
+
+1. **Always reference instruction files** - Don't recreate workflow steps inline, point to `.clavix/instructions/workflows/`
+2. **Respect mode boundaries** - Planning mode = no code, Implementation mode = write code
+3. **Create files explicitly** - Use Write tool for every file, verify, never skip file creation
+4. **Ask when unclear** - If mode is ambiguous, ask: "Should I implement or continue planning?"
+
+---
+
+### ⚠️ Common Mistakes
+
+#### ❌ Jumping to implementation during planning
+**Wrong:** User runs `clavix prd`, you generate PRD then start building features
+
+**Right:** User runs `clavix prd`, you generate PRD, save files, suggest `clavix plan` as next step
+
+#### ❌ Not referencing instruction files
+**Wrong:** Trying to remember workflow details from this file
+
+**Right:** "See `.clavix/instructions/workflows/fast.md` for complete workflow"
+
+---
+
+**For complete workflows:** Always reference `.clavix/instructions/workflows/{workflow}.md`
+
+**For troubleshooting:** Check `.clavix/instructions/troubleshooting/`
+
+**For mode clarification:** See `.clavix/instructions/core/clavix-mode.md`
