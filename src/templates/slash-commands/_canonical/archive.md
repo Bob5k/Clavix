@@ -176,7 +176,7 @@ I tell you:
 
 ## Prompts Are Separate
 
-Fast/deep prompts from `/clavix:fast` and `/clavix:deep` are stored separately in `.clavix/outputs/prompts/`.
+Optimized prompts from `/clavix:improve` are stored separately in `.clavix/outputs/prompts/`.
 
 **Prompts are NOT archived with PRD projects.**
 

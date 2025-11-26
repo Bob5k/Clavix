@@ -50,7 +50,7 @@ Always output current state when starting a workflow:
 NO_PROJECT:
   → /clavix:prd creates PRD_EXISTS
   → /clavix:start + /clavix:summarize creates PRD_EXISTS
-  → /clavix:fast or /clavix:deep creates prompt (not PRD_EXISTS)
+  → /clavix:improve creates prompt (not PRD_EXISTS)
 
 PRD_EXISTS:
   → /clavix:plan creates TASKS_EXIST

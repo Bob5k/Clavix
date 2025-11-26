@@ -405,7 +405,7 @@ Implementation: BLOCKED - I will extract requirements, not implement them
 **Related commands:**
 - `/clavix:start` - Begin conversational exploration (typical previous step)
 - `/clavix:plan` - Generate tasks from extracted mini-PRD (next step)
-- `/clavix:fast` or `/clavix:deep` - Further optimize the extracted prompt
+- `/clavix:improve` - Further optimize the extracted prompt
 
 ## Example
 

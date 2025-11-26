@@ -41,6 +41,6 @@
 1. Ask user to clarify current intent
 2. Check last Clavix command run
 3. Mode determination:
-   - `/clavix:fast`, `/clavix:deep`, `/clavix:prd`, `/clavix:start`, `/clavix:summarize`, `/clavix:plan` → PLANNING
+   - `/clavix:improve`, `/clavix:prd`, `/clavix:start`, `/clavix:summarize`, `/clavix:plan` → PLANNING
    - `/clavix:implement`, `/clavix:execute` → IMPLEMENTATION
 4. If still unclear, default to PLANNING and ask for clarification

@@ -7,11 +7,11 @@ These rules define deterministic agent behavior. Follow exactly - no interpretat
 ```
 IF quality < 60%:
   IF (completeness < 50%) OR (clarity < 50%) OR (actionability < 50%):
-    → ACTION: Strongly recommend /clavix:deep
-    → SAY: "Quality is [X]%. Deep mode strongly recommended for: [low dimensions]"
+    → ACTION: Strongly recommend comprehensive depth
+    → SAY: "Quality is [X]%. Comprehensive depth strongly recommended for: [low dimensions]"
   ELSE:
-    → ACTION: Suggest /clavix:deep
-    → SAY: "Quality is [X]%. Consider deep mode for better results."
+    → ACTION: Suggest comprehensive depth
+    → SAY: "Quality is [X]%. Consider comprehensive depth for better results."
 
 IF quality >= 60% AND quality < 80%:
   → ACTION: Proceed with optimization
@@ -46,19 +46,19 @@ IF confidence < 50%:
 
 ```
 IF escalation_score >= 75:
-  → ACTION: Strongly recommend deep mode
+  → ACTION: Strongly recommend comprehensive depth
   → SHOW: Top 3 contributing factors
 
 IF escalation_score 60-74:
-  → ACTION: Recommend deep mode
+  → ACTION: Recommend comprehensive depth
   → SHOW: Primary contributing factor
 
 IF escalation_score 45-59:
-  → ACTION: Suggest deep mode as option
-  → SAY: "Deep mode available for more thorough analysis"
+  → ACTION: Suggest comprehensive depth as option
+  → SAY: "Comprehensive depth available for more thorough analysis"
 
 IF escalation_score < 45:
-  → ACTION: Fast mode sufficient
+  → ACTION: Standard depth sufficient
   → NO escalation mention
 ```
 
@@ -120,7 +120,7 @@ IF pattern not applicable to intent:
 IF pattern applicable but skipped:
   → EXPLAIN: "Skipped [pattern] because [reason]"
 
-DEEP MODE ONLY:
+COMPREHENSIVE DEPTH ONLY:
   → MUST include alternatives (2-3)
   → MUST include validation checklist
   → MUST include edge cases
@@ -129,15 +129,15 @@ DEEP MODE ONLY:
 ### Rule 8: Mode Transition Decision
 
 ```
-IF user requests /clavix:fast but quality < 50%:
-  → ACTION: Warn and suggest deep
-  → SAY: "Quality is [X]%. Fast mode may be insufficient."
+IF user requests standard depth but quality < 50%:
+  → ACTION: Warn and suggest comprehensive
+  → SAY: "Quality is [X]%. Standard depth may be insufficient."
   → ALLOW: User can override and proceed
 
-IF user in /clavix:deep but prompt is simple (quality > 85%):
+IF user requests comprehensive depth but prompt is simple (quality > 85%):
   → ACTION: Note efficiency
-  → SAY: "Prompt is already high quality. Fast mode would suffice."
-  → CONTINUE: With deep analysis anyway
+  → SAY: "Prompt is already high quality. Standard depth would suffice."
+  → CONTINUE: With comprehensive analysis anyway
 
 IF strategic keywords detected (3+ architecture/security/scalability):
   → ACTION: Suggest PRD mode

@@ -4,95 +4,76 @@ This directory contains the complete instruction set for AI agents consuming Cla
 
 ---
 
-## 📐 Documentation Architecture
+## 📐 Documentation Architecture (v4.11)
 
 ```
 Canonical Templates (SOURCE OF TRUTH)
   src/templates/slash-commands/_canonical/
-  ├── fast.md, deep.md, prd.md
-  ├── start.md, summarize.md
-  ├── plan.md, implement.md, execute.md
-  └── archive.md, prompts.md
-    ↓ (copied during clavix init)
-Instruction Files (AUTO-GENERATED)
+  ├── improve.md          - Unified prompt optimization (standard + comprehensive)
+  ├── prd.md              - PRD generation via Socratic questions
+  ├── start.md            - Conversational mode entry
+  ├── summarize.md        - Extract requirements from conversation
+  ├── plan.md             - Task breakdown from PRD
+  ├── implement.md        - Execute tasks with progress tracking
+  ├── execute.md          - Run saved prompts
+  ├── verify.md           - Post-implementation verification
+  └── archive.md          - Archive completed projects
+    ↓ (referenced by)
+Component Templates (REUSABLE BUILDING BLOCKS)
+  src/templates/slash-commands/_components/
+  ├── agent-protocols/    - Self-correction, state awareness, decision rules
+  ├── sections/           - Quality dimensions, patterns, escalation factors
+  └── troubleshooting/    - Mode confusion, triage escalation
+    ↓ (copied during clavix init/update)
+User Instructions
   .clavix/instructions/
-  ├── workflows/         - Complete workflows (COPIED from canonical)
-  ├── core/             - Foundational concepts (static)
-  └── troubleshooting/  - Common issues (static)
-    ↓ (reference)
-Generic Connectors (THIN WRAPPERS)
-  src/templates/agents/
-  ├── agents.md          - Generic agents
-  ├── octo.md           - Octofriend-specific
-  ├── copilot-instructions.md - GitHub Copilot
-  └── warp.md           - Warp AI
+  ├── core/              - Foundational concepts (clavix-mode, verification)
+  └── troubleshooting/   - Common issues and fixes
+    ↓ (referenced by)
+Integration Adapters (THIN WRAPPERS)
+  src/templates/integrations/
+  ├── claude-code/       - Claude Code adapter
+  ├── cursor/            - Cursor adapter
+  ├── windsurf/          - Windsurf adapter
+  └── ... (22 integrations total)
 ```
 
 ---
 
 ## 🎯 Core Principles
 
-### 1. Single Source of Truth
+### 1. Canonical Templates = Single Source of Truth
 
-**Canonical templates** (`src/templates/slash-commands/_canonical/`) are the definitive reference:
-- Complete workflow descriptions
-- Official command behavior
-- Authoritative patterns and examples
+**Canonical templates** (`src/templates/slash-commands/_canonical/`) define authoritative behavior:
+- Complete workflow descriptions with all steps
+- Official command behavior and output formats
+- Patterns, examples, and edge cases
 - NEVER modified for size/brevity - they define the standard
 
-**Rule:** When canonical and instruction files conflict, canonical wins.
+**Rule:** When in doubt, canonical templates are correct.
 
-### 2. Agent-Optimized Instructions
+### 2. Component Templates = DRY Building Blocks
 
-**Instruction files** (`src/templates/instructions/`) are derived from canonical templates but optimized for AI agent consumption:
-- Must match canonical workflows 100% in substance
-- Can reorganize for better agent comprehension
-- Add explicit checkpoints, self-correction checks, troubleshooting
-- Include "Common Mistakes" sections with wrong/right examples
-- Expand on ambiguous points from canonical
+**Component templates** (`src/templates/slash-commands/_components/`) provide reusable sections:
+- `agent-protocols/` - Self-correction, state detection, decision rules
+- `sections/` - Quality dimensions, pattern visibility, escalation factors
+- `troubleshooting/` - Error recovery and mode confusion handling
 
-**Rule:** Instruction files implement canonical, never contradict it.
+**Rule:** Shared content lives in components, not duplicated across canonicals.
 
-### 3. Thin Generic Connectors
+### 3. Integration Adapters = Platform-Specific Wrappers
 
-**Generic connector files** (`src/templates/agents/`) are minimal wrappers:
-- Reference instruction files, don't duplicate them
-- Platform-specific guidance ONLY (model switching, tool limitations, etc.)
-- Brief workflow overview + standard workflow (PRD → Plan → Implement → Archive)
-- Command quick reference table
-- Common mistakes specific to platform
+**Integration adapters** (`src/templates/integrations/`) provide minimal platform wrappers:
+- Reference canonical templates, don't duplicate content
+- Platform-specific formatting and tool usage
+- Command format transformation (colon vs hyphen separators)
+- Model-specific guidance (context limits, tool availability)
 
-**Target sizes:**
-- agents.md: 4-7K (generic, no platform features)
-- octo.md: 7-10K (Octofriend has unique features)
-- copilot-instructions.md: 5-7K (GitHub Copilot integration)
-- warp.md: 5-7K (Warp AI-specific)
-
-**Rule:** If it's in an instruction file, don't duplicate it in a connector file.
+**Rule:** If it's in canonical, don't duplicate in adapter.
 
 ---
 
 ## 📂 Directory Structure
-
-### `/workflows/` - Step-by-Step Workflows
-
-Complete, executable workflows with explicit steps:
-
-| File | Purpose | Key Sections |
-|------|---------|--------------|
-| `start.md` | Conversational mode entry | Questions, complexity tracking, mode transitions |
-| `summarize.md` | Extract requirements from conversation | Pre-validation, extraction, file creation, optimization |
-| `fast.md` | Quick prompt optimization | Intent detection, quality assessment, smart triage |
-| `deep.md` | Comprehensive analysis | Strategic scope, alternatives, validation, edge cases, risks |
-| `prd.md` | PRD generation via Socratic questions | 5-question sequence, validation criteria, file-saving protocol |
-
-**Pattern:** Each workflow file includes:
-- CLAVIX PLANNING MODE block (clarifies planning vs implementation)
-- Complete workflow steps with checkpoints
-- Self-correction checks
-- Common mistakes (wrong/right examples)
-- Troubleshooting references
-- Integration with other workflows
 
 ### `/core/` - Foundational Concepts
 
@@ -100,7 +81,7 @@ Cross-workflow patterns and principles:
 
 | File | Purpose | Key Content |
 |------|---------|-------------|
-| `clavix-mode.md` | Planning vs implementation distinction | Mode table, standard workflow, command categorization |
+| `clavix-mode.md` | Planning vs implementation distinction | Mode table, command categorization, standard workflow |
 | `file-operations.md` | File creation patterns | Write tool usage, verification steps, error handling |
 | `verification.md` | Checkpoint patterns | Self-correction triggers, validation approaches |
 
@@ -124,6 +105,47 @@ Problem → Solution guides:
 
 ---
 
+## 📋 Quick Reference
+
+### Standard Workflow
+
+All workflows follow this progression:
+
+```
+PRD Creation → Task Planning → Implementation → Verification → Archive
+```
+
+| Phase | Command | Output | Mode |
+|-------|---------|--------|------|
+| **Planning** | `/clavix:prd` or `/clavix:start` | `full-prd.md` + `quick-prd.md` | PLANNING |
+| **Task Prep** | `/clavix:plan` | `tasks.md` | PLANNING |
+| **Implementation** | `/clavix:implement` | Executed code | IMPLEMENTATION |
+| **Verification** | `/clavix:verify` | Verification report | VERIFICATION |
+| **Completion** | `/clavix:archive` | Archived project | MANAGEMENT |
+
+### Command Mode Mapping
+
+| Command | Mode | Implement? |
+|---------|------|------------|
+| `/clavix:start` | Planning | ✗ NO |
+| `/clavix:summarize` | Planning | ✗ NO |
+| `/clavix:improve` | Planning | ✗ NO |
+| `/clavix:prd` | Planning | ✗ NO |
+| `/clavix:plan` | Planning | ✗ NO |
+| `/clavix:implement` | Implementation | ✓ YES |
+| `/clavix:execute` | Implementation | ✓ YES |
+| `/clavix:verify` | Verification | Context-dependent |
+| `/clavix:archive` | Management | ✗ NO |
+
+### Agent-Only Commands (No Slash Command)
+
+| CLI Command | Purpose | Invoked By |
+|-------------|---------|------------|
+| `clavix analyze` | Internal prompt analysis | `improve` workflow |
+| `clavix task-complete` | Mark task done | `implement` workflow |
+
+---
+
 ## 🔄 Maintenance Workflow
 
 ### When Adding New Workflow
@@ -131,118 +153,68 @@ Problem → Solution guides:
 1. **Create canonical template** in `src/templates/slash-commands/_canonical/`
    - Complete workflow description
    - All steps, examples, edge cases
-   - This is the official reference
+   - Include CLAVIX MODE header if planning-only
 
-2. **NO NEED to create instruction file** - It's auto-copied during init
-   - During `clavix init`, canonical templates are automatically copied to `.clavix/instructions/workflows/`
-   - User projects get fresh copy on init/update
-   - **Single source of truth:** Only maintain canonical template
+2. **Create CLI command** in `src/cli/commands/`
+   - Implement the command behavior
+   - Ensure template and CLI match
 
-3. **Update generic connectors** in `src/templates/agents/` (if needed)
-   - Add table reference to new workflow
-   - Update workflow detection keywords
-   - DO NOT duplicate workflow steps
+3. **Update tests** in `tests/consistency/`
+   - Add command to `cli-template-parity.test.ts` categories
+   - Update any affected consistency tests
 
-4. **Update this README** if new pattern/principle introduced
+4. **Run validation**: `npm run validate:consistency`
 
 ### When Modifying Existing Workflow
 
-1. **Update canonical template** - This is source of truth
-2. **Users run `clavix update`** - Refreshes `.clavix/instructions/workflows/` from canonical
-3. **Test:** Verify `clavix update` propagates changes correctly
-4. **No manual duplication needed** - InstructionsGenerator copies from canonical automatically
+1. **Update canonical template** - This is the source of truth
+2. **Update CLI if behavior changed**
+3. **Run validation**: `npm run validate:consistency`
+4. **Users run `clavix update`** - Refreshes their local instructions
 
-### When Reporting Verbosity Issues
+### Preventing the "Half-Update" Problem
 
-**Bloat checklist:**
-1. Is canonical template duplicated in instruction file? → Remove from instruction, reference canonical
-2. Is instruction file duplicated in connector file? → Remove from connector, reference instruction
-3. Is workflow description inline in connector? → Remove, add table reference to instruction file
-4. Are "Common Mistakes" duplicated across files? → Keep in instruction file only
-5. Is command reference table too detailed? → Condense to single-line purpose
+The v4.11.2 release introduced validation to catch incomplete updates:
 
-**Size targets:**
-- Canonical templates: 10-20K (complete reference, no size limit)
-- Instruction files: 10-18K (agent-optimized, comprehensive)
-- Generic connectors: 4-10K (thin wrappers)
+```bash
+# Run before committing
+npm run validate:consistency
+
+# Checks performed:
+# - No legacy command references (fast, deep commands removed in v4.11)
+# - All CLI commands have templates (if required)
+# - All templates have CLI implementations
+# - No deprecated version references
+# - Mode enforcement headers present
+```
 
 ---
 
 ## 🧠 Design Philosophy
 
-### Why Three Layers?
+### Why Canonical Templates?
 
-**Layer 1: Canonical Templates**
-- **Audience:** CLI implementation, human developers, official documentation
-- **Purpose:** Define authoritative behavior
-- **Constraint:** Complete and accurate, no brevity requirement
+**Canonical templates solve the documentation drift problem:**
+- Single authoritative source for workflow behavior
+- Agents can trust template instructions match CLI behavior
+- Updates propagate through validation, not manual duplication
+- Clear ownership: canonical defines, adapters reference
 
-**Layer 2: Instruction Files**
-- **Audience:** AI agents (all platforms)
-- **Purpose:** Executable guidance with self-correction
-- **Constraint:** Must match canonical, optimized for agent comprehension
+### Why Component Templates?
 
-**Layer 3: Generic Connectors**
-- **Audience:** Platform-specific agents (Copilot, Octofriend, Warp, generic)
-- **Purpose:** Minimal platform-specific wrapper + references
-- **Constraint:** Keep thin, reference instruction files, platform-unique guidance only
+**Components prevent duplication:**
+- Quality dimensions defined once, used in improve.md
+- Agent protocols shared across all planning workflows
+- Troubleshooting sections reusable across contexts
+- Pattern visibility documented centrally
 
-### Why Not Just One File?
+### Why Integration Adapters?
 
-**Problems with single-file approach:**
-1. **Duplication:** Same workflow described 4+ times (canonical + 3 platforms)
-2. **Maintenance burden:** Update one workflow = edit 4+ files
-3. **Size bloat:** Each platform file becomes 15-20K
-4. **Inconsistency:** Descriptions drift apart over time
-5. **Confusion:** Agent sees multiple versions, unclear which is authoritative
-
-**Benefits of three-layer hierarchy:**
-1. **DRY principle:** Write workflow once (instruction file), reference everywhere
-2. **Single source of truth:** Canonical → Instruction → Connector flow
-3. **Platform focus:** Connector files focus on platform-specific value (model switching, tool limitations)
-4. **Maintainability:** Fix bug in one instruction file, all platforms benefit
-5. **Clarity:** Agent knows where to look - instruction file for workflow, connector for platform quirks
-
----
-
-## 📋 Quick Reference Tables
-
-### Standard Workflow
-
-All workflows follow this progression:
-
-```
-PRD Creation → Task Planning → Implementation → Archive
-```
-
-| Phase | Command | Output | Mode |
-|-------|---------|--------|------|
-| **Planning** | `clavix prd` or conversational | `full-prd.md` + `quick-prd.md` | PLANNING |
-| **Task Prep** | `clavix plan` | `tasks.md` | PLANNING (Pre-Implementation) |
-| **Implementation** | `clavix implement` | Executed code | IMPLEMENTATION |
-| **Completion** | `clavix archive` | Archived project | Management |
-
-### Mode Distinction
-
-| Command | Mode | Implement? |
-|---------|------|------------|
-| `/clavix:start` | Planning | ✗ NO |
-| `/clavix:summarize` | Planning | ✗ NO |
-| `/clavix:fast` | Planning | ✗ NO |
-| `/clavix:deep` | Planning | ✗ NO |
-| `/clavix:prd` | Planning | ✗ NO |
-| `/clavix:plan` | Planning (Pre-Implementation) | ✗ NO |
-| `/clavix:implement` | Implementation | ✓ YES |
-| `/clavix:execute` | Implementation | ✓ YES |
-| `/clavix:task-complete` | Implementation | ✓ YES |
-
-### File Size Expectations
-
-| File Type | Size Range | Line Range | Purpose |
-|-----------|-----------|------------|---------|
-| Canonical Template | 10-20K | 300-600 lines | Complete reference (no limit) |
-| Instruction File | 10-18K | 350-650 lines | Agent-executable workflows |
-| Generic Connector | 4-10K | 150-300 lines | Thin wrapper + platform-specific |
+**Adapters handle platform differences:**
+- Command format: `/clavix:improve` vs `/clavix-improve`
+- Tool availability: Some platforms lack filesystem access
+- Context limits: Different token limits per platform
+- Model guidance: Platform-specific best practices
 
 ---
 
@@ -253,10 +225,9 @@ PRD Creation → Task Planning → Implementation → Archive
 **Root cause:** Agent didn't recognize planning mode boundary
 
 **Fix:**
-1. Check instruction file has CLAVIX PLANNING MODE block at top
-2. Verify "DO NOT IMPLEMENT" warnings present and clear
-3. Add self-correction check: "Check 1: Am I Implementing?"
-4. Reference `troubleshooting/jumped-to-implementation.md`
+1. Check canonical template has CLAVIX MODE header at top
+2. Verify "DO NOT IMPLEMENT" warnings present
+3. Reference `troubleshooting/jumped-to-implementation.md`
 
 ### "Agent skipped file creation"
 
@@ -264,48 +235,50 @@ PRD Creation → Task Planning → Implementation → Archive
 
 **Fix:**
 1. Add explicit step-by-step file creation section
-2. Include "Step N: Verify Files Were Created" with ls command
-3. Add common mistake: "Skipping file creation"
-4. Reference `troubleshooting/skipped-file-creation.md`
+2. Include verification step with file listing
+3. Reference `troubleshooting/skipped-file-creation.md`
 
-### "Generic connector file too large (>10K)"
+### "Legacy command references found"
 
-**Root cause:** Duplicating instruction file content
-
-**Fix:**
-1. Identify duplicated workflow descriptions
-2. Replace with table reference to instruction file
-3. Keep only platform-specific guidance (model switching, tool limitations, etc.)
-4. Condense CLI reference table (one line per command)
-5. Remove detailed workflow explanations (link to instruction file instead)
-
-### "Instruction file doesn't match canonical"
-
-**Root cause:** Manual edit to instruction file without checking canonical
+**Root cause:** Template not updated during v4.11 migration
 
 **Fix:**
-1. Read canonical template: `src/templates/slash-commands/_canonical/<workflow>.md`
-2. Compare with instruction file: `src/templates/instructions/workflows/<workflow>.md`
-3. Ensure substance matches 100%
-4. Reorganization for agent clarity is OK, contradicting canonical is NOT
+1. Run `npm run validate:consistency` to find all occurrences
+2. Replace legacy fast/deep commands with `clavix improve`
+3. Replace "fast mode"/"deep mode" with "standard depth"/"comprehensive depth"
+4. Update any navigation references
+
+### "Template doesn't match CLI behavior"
+
+**Root cause:** CLI changed without updating canonical template
+
+**Fix:**
+1. Read canonical template in `src/templates/slash-commands/_canonical/`
+2. Compare with actual CLI behavior
+3. Update canonical template to match CLI
+4. Run `npm run validate:consistency`
+5. Update `cli-template-parity.test.ts` if needed
 
 ---
 
-## 📚 Additional Resources
+## 📚 Key Files Reference
 
-**Related documentation:**
-- `src/templates/slash-commands/_canonical/README.md` - Canonical template guidelines
-- `src/templates/agents/README.md` - Generic connector patterns (if exists)
-- `CONTRIBUTING.md` - General contribution guidelines
-- `ARCHITECTURE.md` - Overall Clavix architecture
+### Canonical Templates (Start Here)
+- `improve.md` - Unified prompt optimization (v4.11)
+- `prd.md` - PRD generation workflow
+- `implement.md` - Task execution workflow
 
-**Key files to read first:**
-- `core/clavix-mode.md` - Understand planning vs implementation
-- `workflows/fast.md` - See complete workflow pattern
-- `../agents/octo.md` - See thin connector example (post-v3.6.1)
+### Agent Protocols
+- `_components/agent-protocols/self-correction.md` - Mistake detection
+- `_components/agent-protocols/state-awareness.md` - Workflow state tracking
+- `_components/agent-protocols/decision-rules.md` - Decision logic
+
+### Validation
+- `scripts/validate-consistency.ts` - TypeScript ↔ Template validator
+- `tests/consistency/cli-template-parity.test.ts` - CLI-Template mapping tests
 
 ---
 
-**Last updated:** v3.6.1 (November 2025)
+**Last updated:** v4.11.2 (November 2025)
 
-**Maintainers:** Ensure this README stays synchronized with actual instruction hierarchy.
+**Validation:** Run `npm run validate:consistency` before committing changes.

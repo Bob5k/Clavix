@@ -194,7 +194,7 @@ After the conversational session, `/clavix:summarize` will:
 **Related commands:**
 - `/clavix:summarize` - Extract and optimize conversation (typical next step)
 - `/clavix:prd` - Switch to Clavix Planning Mode for structured PRD generation
-- `/clavix:fast` or `/clavix:deep` - Direct prompt improvement instead of conversation
+- `/clavix:improve` - Direct prompt improvement instead of conversation
 
 ## Note
 

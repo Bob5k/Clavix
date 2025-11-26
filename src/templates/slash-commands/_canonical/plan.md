@@ -357,7 +357,7 @@ The generated `tasks.md` will look like:
 **Agent recovery**:
 1. Read the PRD to assess detail level
 2. If PRD is vague:
-   - Suggest: "Let's improve the PRD with `/clavix:deep` first"
+   - Suggest: "Let's improve the PRD with `/clavix:improve --comprehensive` first"
    - Then regenerate tasks with `clavix plan --overwrite`
 3. If PRD is detailed but tasks are high-level:
    - Manually break each task into 3-5 concrete sub-tasks

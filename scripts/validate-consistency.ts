@@ -69,7 +69,8 @@ interface ValidationError {
     | 'escalation-factor'
     | 'escalation-threshold'
     | 'pattern-count'
-    | 'outdated-version';
+    | 'outdated-version'
+    | 'legacy-command';
   message: string;
   file: string;
   line?: number;
@@ -821,6 +822,96 @@ async function validateModeEnforcement(): Promise<ValidationError[]> {
 }
 
 // ============================================================================
+// Legacy Command Reference Validation (v4.11.2)
+// ============================================================================
+
+/**
+ * v4.11.2: Check that no templates reference deprecated /clavix:fast or /clavix:deep commands
+ * These were unified into /clavix:improve in v4.11
+ */
+async function validateNoLegacyCommandReferences(): Promise<ValidationError[]> {
+  const errors: ValidationError[] = [];
+
+  // Deprecated command patterns (v4.11: replaced by /clavix:improve)
+  const legacyPatterns = [
+    { pattern: /\/clavix:fast\b/g, command: '/clavix:fast' },
+    { pattern: /\/clavix:deep\b/g, command: '/clavix:deep' },
+  ];
+
+  // Directories to scan
+  const dirsToScan = [
+    { path: PATHS.canonicalTemplates, name: 'canonical' },
+    {
+      path: path.join(ROOT_DIR, 'src/templates/slash-commands/_components'),
+      name: 'components',
+    },
+    {
+      path: path.join(ROOT_DIR, 'src/templates/instructions'),
+      name: 'instructions',
+    },
+  ];
+
+  for (const dir of dirsToScan) {
+    if (!fs.existsSync(dir.path)) continue;
+
+    // Recursively get all .md files
+    const mdFiles = getAllMarkdownFiles(dir.path);
+
+    for (const filePath of mdFiles) {
+      const content = fs.readFileSync(filePath, 'utf-8');
+      const lines = content.split('\n');
+      const relativePath = path.relative(ROOT_DIR, filePath);
+      const foundReferences: { command: string; line: number }[] = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        for (const { pattern, command } of legacyPatterns) {
+          // Reset regex lastIndex since we're using global flag
+          pattern.lastIndex = 0;
+          if (pattern.test(line)) {
+            foundReferences.push({ command, line: i + 1 });
+          }
+        }
+      }
+
+      if (foundReferences.length > 0) {
+        errors.push({
+          type: 'legacy-command',
+          message: `Legacy command references found in ${path.basename(filePath)}`,
+          file: relativePath,
+          line: foundReferences[0].line,
+          expected: ['/clavix:improve (unified command in v4.11)'],
+          found: foundReferences.map((r) => `${r.command} (line ${r.line})`),
+          missing: [],
+        });
+      }
+    }
+  }
+
+  return errors;
+}
+
+/**
+ * Recursively get all markdown files from a directory
+ */
+function getAllMarkdownFiles(dirPath: string): string[] {
+  const files: string[] = [];
+
+  const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const fullPath = path.join(dirPath, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...getAllMarkdownFiles(fullPath));
+    } else if (entry.isFile() && entry.name.endsWith('.md')) {
+      files.push(fullPath);
+    }
+  }
+
+  return files;
+}
+
+// ============================================================================
 // Outdated Version Reference Validation (v4.6)
 // ============================================================================
 
@@ -968,6 +1059,16 @@ export async function validateConsistency(): Promise<ValidationResult> {
     console.log(`  Mode Enforcement: ⚠️ Could not validate (${e})`);
   }
 
+  try {
+    const legacyCommandErrors = await validateNoLegacyCommandReferences();
+    errors.push(...legacyCommandErrors);
+    console.log(
+      `  Legacy Commands: ${legacyCommandErrors.length === 0 ? '✅ OK' : `❌ ${legacyCommandErrors.length} issues`}`
+    );
+  } catch (e) {
+    console.log(`  Legacy Commands: ⚠️ Could not validate (${e})`);
+  }
+
   console.log('');
 
   return {
@@ -1102,6 +1203,21 @@ function formatErrors(errors: ValidationError[]): string {
       output += `  ${error.message}\n`;
       output += `  Found: ${error.found.join(', ')}\n`;
       output += `  Expected: ${error.expected.join(', ')}\n\n`;
+    }
+  }
+
+  // Legacy command reference errors
+  const legacyErrors = byType.get('legacy-command') || [];
+  if (legacyErrors.length > 0) {
+    output += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+    output += 'Legacy Command References (v4.11.2)\n';
+    output += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+    output += '  /clavix:fast and /clavix:deep were replaced by /clavix:improve in v4.11\n\n';
+
+    for (const error of legacyErrors) {
+      output += `  📄 ${error.file}${error.line ? `:${error.line}` : ''}\n`;
+      output += `  Found: ${error.found.join(', ')}\n`;
+      output += `  Replace with: ${error.expected.join(', ')}\n\n`;
     }
   }
 

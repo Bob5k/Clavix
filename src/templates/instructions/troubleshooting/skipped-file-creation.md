@@ -11,7 +11,7 @@ Agent completed a Clavix workflow but didn't create the expected output files. C
 - Agent says "files created" but they don't exist in `.clavix/outputs/`
 - Agent provides content in chat instead of using Write tool
 - Agent completes `/clavix:summarize` but no mini-prd.md, original-prompt.md, or optimized-prompt.md files
-- Agent finishes `/clavix:fast` or `/clavix:deep` but no saved prompt file
+- Agent finishes `/clavix:improve` but no saved prompt file
 - Agent generates PRD content but no PRD.md or PRD-quick.md files
 
 ---
@@ -262,23 +262,23 @@ Should show all three files.
 
 ---
 
-### Test Scenario 2: Fast Improvement
+### Test Scenario 2: Prompt Improvement
 
 **Setup:**
 ```markdown
-User: /clavix:fast [prompt]
+User: /clavix:improve [prompt]
 ```
 
 **Expected behavior:**
-- Agent analyzes prompt
+- Agent analyzes prompt with triage
 - Agent generates optimized version
-- Agent creates .clavix/outputs/prompts/fast/ directory
-- Agent writes fast-YYYYMMDD-HHMM.md file
+- Agent creates .clavix/outputs/prompts/ directory
+- Agent writes prompt file with timestamp ID
 - Agent verifies file created
 
 **Test:**
 ```bash
-ls -la .clavix/outputs/prompts/fast/
+ls -la .clavix/outputs/prompts/
 ```
 
 Should show saved prompt file.

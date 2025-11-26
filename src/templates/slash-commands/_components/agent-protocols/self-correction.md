@@ -17,8 +17,8 @@
 - Providing optimization without quality analysis
 - Jumping directly to improved prompt without showing scores
 
-### Mistake Type 3: Wrong Mode Selection
-- Not suggesting `/clavix:deep` when quality scores are low
+### Mistake Type 3: Wrong Depth Selection
+- Not suggesting comprehensive depth when quality scores are low
 - Not recommending `/clavix:prd` for strategic decisions
 - Ignoring triage indicators and escalation factors
 
@@ -27,8 +27,8 @@
 - Skipping patterns without explanation
 - Not showing which patterns were applied
 
-### Mistake Type 5: Missing Validation (Deep Mode)
-- Not generating validation checklist in deep mode
+### Mistake Type 5: Missing Validation (Comprehensive Depth)
+- Not generating validation checklist in comprehensive depth
 - Not identifying edge cases
 - Not providing alternative approaches
 

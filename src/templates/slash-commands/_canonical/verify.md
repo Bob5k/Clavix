@@ -241,9 +241,9 @@ Failed checks are normal. They just mean something needs a bit more work.
 
 ---
 
-## Fast Mode vs Deep Mode
+## Standard vs Comprehensive Depth
 
-### If You Used Deep Mode (`/clavix:deep`)
+### If You Used Comprehensive Depth (`/clavix:improve --comprehensive`)
 
 Your prompt already has a detailed checklist. I'll use that.
 
@@ -253,9 +253,9 @@ Your prompt already has a detailed checklist. I'll use that.
 - Potential risks identified
 - Specific verification criteria
 
-### If You Used Fast Mode (`/clavix:fast`)
+### If You Used Standard Depth (`/clavix:improve`)
 
-Fast mode doesn't create detailed checklists, so I'll generate one based on what you were building.
+Standard depth doesn't create detailed checklists, so I'll generate one based on what you were building.
 
 **What you get:**
 - Basic checks based on what you asked for
@@ -263,8 +263,8 @@ Fast mode doesn't create detailed checklists, so I'll generate one based on what
 - Common sense verifications
 
 **You'll see:**
-> "This was a fast mode prompt, so I'm creating a basic checklist.
-> For more thorough verification next time, use /clavix:deep"
+> "This was a standard depth prompt, so I'm creating a basic checklist.
+> For more thorough verification next time, use /clavix:improve --comprehensive"
 
 ---
 
@@ -371,7 +371,7 @@ I generate different checklists based on what you're building:
 **Where you are:** Verification (checking your work)
 
 **How you got here:**
-1. `/clavix:deep` or `/clavix:fast` → Optimized your prompt
+1. `/clavix:improve` → Optimized your prompt
 2. `/clavix:execute` → Implemented the requirements
 3. **`/clavix:verify`** → Now checking it works (you are here)
 
@@ -381,7 +381,7 @@ I generate different checklists based on what you're building:
 
 **Related commands:**
 - `/clavix:execute` - Run the implementation (previous step)
-- `/clavix:deep` - Get comprehensive checklist next time
+- `/clavix:improve --comprehensive` - Get comprehensive checklist next time
 - `/clavix:archive` - Archive when done (next step)
 
 ---

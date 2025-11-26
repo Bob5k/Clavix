@@ -310,8 +310,8 @@ The validation ensures generated PRDs are immediately usable for AI consumption 
 
 **Common workflows:**
 - **Full planning workflow**: `/clavix:prd` → `/clavix:plan` → `/clavix:implement` → `/clavix:archive`
-- **From deep mode**: `/clavix:deep` → (strategic scope detected) → `/clavix:prd`
-- **Quick to strategic**: `/clavix:fast` → (realizes complexity) → `/clavix:prd`
+- **From improve mode**: `/clavix:improve` → (strategic scope detected) → `/clavix:prd`
+- **Quick to strategic**: `/clavix:improve` → (realizes complexity) → `/clavix:prd`
 
 **Related commands:**
 - `/clavix:plan` - Generate task breakdown from PRD (next step)

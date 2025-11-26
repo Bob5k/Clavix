@@ -54,7 +54,7 @@ Let me return to asking clarifying questions about your requirements instead.
 Agent should:
 1. **Return** to asking clarifying questions (if in `/clavix:start`)
 2. **Return** to extracting requirements (if in `/clavix:summarize`)
-3. **Return** to analyzing prompts (if in `/clavix:fast` or `/clavix:deep`)
+3. **Return** to analyzing prompts (if in `/clavix:improve`)
 4. **Return** to generating PRD (if in `/clavix:prd`)
 
 **NOT** continue with implementation.

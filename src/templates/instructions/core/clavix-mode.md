@@ -6,7 +6,7 @@ Clavix has **two distinct modes** based on the command type:
 
 ### CLAVIX PLANNING MODE (Requirements & Documentation)
 
-**Commands:** `/clavix:start`, `/clavix:summarize`, `/clavix:fast`, `/clavix:deep`, `/clavix:prd`
+**Commands:** `/clavix:start`, `/clavix:summarize`, `/clavix:improve`, `/clavix:prd`
 
 **Your role:**
 - Ask questions about requirements
@@ -40,8 +40,7 @@ Clavix has **two distinct modes** based on the command type:
 |---------|------|------------|
 | `/clavix:start` | Planning | ✗ NO |
 | `/clavix:summarize` | Planning | ✗ NO |
-| `/clavix:fast` | Planning | ✗ NO |
-| `/clavix:deep` | Planning | ✗ NO |
+| `/clavix:improve` | Planning | ✗ NO |
 | `/clavix:prd` | Planning | ✗ NO |
 | `/clavix:plan` | Planning (Pre-Implementation) | ✗ NO |
 | `/clavix:implement` | Implementation | ✓ YES |
@@ -108,7 +107,7 @@ Clavix has **two distinct modes** based on the command type:
 **User runs:** `/clavix:implement` or `/clavix:execute`
 → **You are in IMPLEMENTATION MODE** - write code
 
-**User runs:** `/clavix:prd` or `/clavix:fast` or `/clavix:start`
+**User runs:** `/clavix:prd` or `/clavix:improve` or `/clavix:start`
 → **You are in PLANNING MODE** - gather requirements, don't implement
 
 ---

@@ -281,42 +281,40 @@ If workflow isn't proceeding as expected, check:
 
 ---
 
-### Quick Improvement (/clavix:fast)
+### Prompt Improvement (/clavix:improve)
 
 ```markdown
 **Checkpoints to include:**
 
-1. After analysis:
+1. After triage:
+   **CHECKPOINT:** Triage complete - [standard/comprehensive] depth selected
+
+2. After analysis:
    **CHECKPOINT:** Analyzed prompt - identified [N] improvement areas
 
-2. After optimization:
+3. After optimization:
    **CHECKPOINT:** Generated optimized prompt with [N] enhancements
 
-3. After file creation:
-   **CHECKPOINT:** Saved prompt to .clavix/outputs/prompts/fast/[id].md
+4. After file creation:
+   **CHECKPOINT:** Saved prompt to .clavix/outputs/prompts/[id].md
 
-4. After verification:
+5. After verification:
    **CHECKPOINT:** File verified - prompt saved successfully
 ```
 
----
-
-### Deep Analysis (/clavix:deep)
+**For Comprehensive Depth (`/clavix:improve --comprehensive`):**
 
 ```markdown
-**Checkpoints to include:**
+**Additional checkpoints:**
 
-1. After initial analysis:
-   **CHECKPOINT:** Completed deep analysis - generated [N] alternative phrasings
+1. After alternative analysis:
+   **CHECKPOINT:** Generated [N] alternative phrasings
 
 2. After edge case analysis:
    **CHECKPOINT:** Identified [M] edge cases and potential issues
 
-3. After file creation:
-   **CHECKPOINT:** Created comprehensive analysis document
-
-4. After verification:
-   **CHECKPOINT:** All outputs verified - deep analysis complete
+3. After validation checklist:
+   **CHECKPOINT:** Created comprehensive analysis with validation checklist
 ```
 
 ---

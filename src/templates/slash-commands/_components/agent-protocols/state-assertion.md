@@ -17,8 +17,7 @@ Implementation: [BLOCKED|ALLOWED]
 
 | Mode | Type | Implementation | Purpose |
 |------|------|----------------|---------|
-| /clavix:fast | planning | BLOCKED | Prompt optimization |
-| /clavix:deep | planning | BLOCKED | Comprehensive prompt analysis |
+| /clavix:improve | planning | BLOCKED | Prompt optimization (smart depth selection) |
 | /clavix:prd | planning | BLOCKED | PRD development |
 | /clavix:plan | planning | BLOCKED | Task breakdown generation |
 | /clavix:start | planning | BLOCKED | Requirements gathering |
@@ -37,9 +36,9 @@ Implementation: [BLOCKED|ALLOWED]
 
 **Planning Mode (Implementation BLOCKED):**
 ```
-**CLAVIX MODE: Fast Optimization**
+**CLAVIX MODE: Improve**
 Mode: planning
-Purpose: Optimizing user prompt with Clavix Intelligence™
+Purpose: Optimizing user prompt with Clavix Intelligence
 Implementation: BLOCKED - I will analyze and improve the prompt, not implement it
 ```
 
