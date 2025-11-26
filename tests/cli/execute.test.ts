@@ -32,7 +32,9 @@ const restoreConsole = (): void => {
   console.error = originalError;
 };
 
-const mockInquirer = (responses: Array<Record<string, unknown>> | Record<string, unknown>): jest.Mock => {
+const mockInquirer = (
+  responses: Array<Record<string, unknown>> | Record<string, unknown>
+): jest.Mock => {
   const sequence = Array.isArray(responses) ? responses : [responses];
   const mock = jest.fn();
   sequence.forEach((response) => mock.mockResolvedValueOnce(response as never));
@@ -42,7 +44,13 @@ const mockInquirer = (responses: Array<Record<string, unknown>> | Record<string,
 
 const createPrompt = async (
   manager: PromptManager,
-  options: { source: PromptSource; original: string; content?: string; timestamp?: Date; executed?: boolean }
+  options: {
+    source: PromptSource;
+    original: string;
+    content?: string;
+    timestamp?: Date;
+    executed?: boolean;
+  }
 ) => {
   const { source, original, content = '# Prompt Body', timestamp, executed } = options;
   const metadata = await manager.savePrompt(content, source, original);
@@ -88,7 +96,7 @@ describe('Execute CLI command', () => {
 
   it('informs user when no prompts exist', async () => {
     await Execute.run([]);
-    expect(logs.some(line => line.includes('No prompts found'))).toBe(true);
+    expect(logs.some((line) => line.includes('No prompts found'))).toBe(true);
   });
 
   it('executes prompt by id and marks it as executed', async () => {
@@ -96,9 +104,9 @@ describe('Execute CLI command', () => {
     await Execute.run(['--id', metadata.id]);
 
     const updated = await manager.listPrompts({ source: 'fast' });
-    const prompt = updated.find(p => p.id === metadata.id);
+    const prompt = updated.find((p) => p.id === metadata.id);
     expect(prompt?.executed).toBe(true);
-    expect(logs.some(line => line.includes(`Source: ${prompt?.source}`))).toBe(true);
+    expect(logs.some((line) => line.includes(`Source: ${prompt?.source}`))).toBe(true);
   });
 
   it('warns when requested prompt id is missing', async () => {
@@ -109,13 +117,17 @@ describe('Execute CLI command', () => {
   });
 
   it('selects newest prompt overall with --latest', async () => {
-    await createPrompt(manager, { source: 'fast', original: 'Old prompt', timestamp: new Date(Date.now() - 2 * 86400000) });
+    await createPrompt(manager, {
+      source: 'fast',
+      original: 'Old prompt',
+      timestamp: new Date(Date.now() - 2 * 86400000),
+    });
     const newest = await createPrompt(manager, { source: 'deep', original: 'New prompt' });
 
     await Execute.run(['--latest']);
 
     const prompts = await manager.listPrompts();
-    const executedPrompt = prompts.find(p => p.executed);
+    const executedPrompt = prompts.find((p) => p.executed);
     expect(executedPrompt?.id).toBe(newest.id);
   });
 
@@ -126,8 +138,8 @@ describe('Execute CLI command', () => {
     await Execute.run(['--latest', '--fast']);
 
     const prompts = await manager.listPrompts({ source: 'fast' });
-    expect(prompts.filter(p => p.executed).length).toBe(1);
-    expect(logs.some(line => line.includes('Source: fast'))).toBe(true);
+    expect(prompts.filter((p) => p.executed).length).toBe(1);
+    expect(logs.some((line) => line.includes('Source: fast'))).toBe(true);
   });
 
   it('falls back to interactive selection when no flags provided', async () => {
@@ -138,7 +150,7 @@ describe('Execute CLI command', () => {
 
     expect(promptMock).toHaveBeenCalled();
     const updated = await manager.listPrompts();
-    expect(updated.find(p => p.id === prompt.id)?.executed).toBe(true);
+    expect(updated.find((p) => p.id === prompt.id)?.executed).toBe(true);
   });
 
   it('handles missing prompt content gracefully', async () => {
@@ -148,7 +160,7 @@ describe('Execute CLI command', () => {
 
     await Execute.run(['--id', prompt.id]);
 
-    expect(logs.some(line => line.includes('Could not load prompt'))).toBe(true);
+    expect(logs.some((line) => line.includes('Could not load prompt'))).toBe(true);
   });
 
   it('suggests cleanup when executed prompts count is high', async () => {
@@ -161,6 +173,7 @@ describe('Execute CLI command', () => {
     const fresh = await createPrompt(manager, { source: 'fast', original: 'Needs execution' });
     await Execute.run(['--id', fresh.id]);
 
-    expect(logs.some(line => line.includes('Cleanup suggestion'))).toBe(true);
+    // Should suggest cleanup with count of executed prompts
+    expect(logs.some((line) => line.includes('executed prompts'))).toBe(true);
   });
 });

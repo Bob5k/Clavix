@@ -5,6 +5,140 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.8.0] - 2025-11-26
+
+### Checklist Verification System Release
+
+**Post-implementation verification system ensuring prompts from deep/fast modes are validated against their checklists. Verification is now a REQUIRED step after implementation.**
+
+#### New Feature: `/clavix:verify` Command
+Complete verification workflow for validating implementations against checklists:
+
+| Flag | Description |
+|------|-------------|
+| `--latest` | Verify latest executed prompt |
+| `--fast` | Filter to fast prompts only |
+| `--deep` | Filter to deep prompts only |
+| `--id <id>` | Verify specific prompt by ID |
+| `--status` | Show verification status only |
+| `--retry-failed` | Re-run only failed items |
+| `--export markdown\|json` | Export verification report |
+| `--run-hooks` | Run automated hooks (default: true) |
+
+#### Verification System Architecture
+
+**New Core Modules:**
+- `src/types/verification.ts` - Type definitions for verification system
+- `src/core/checklist-parser.ts` - Parse validation checklists from deep mode output
+- `src/core/verification-hooks.ts` - CLI hook detection (npm/yarn/pnpm) and execution
+- `src/core/verification-manager.ts` - Verification state management and persistence
+- `src/core/basic-checklist-generator.ts` - Generate basic checklists for fast mode prompts
+
+**Verification Types:**
+| Type | Detection | Examples |
+|------|-----------|----------|
+| `automated` | CLI hooks | "tests pass", "compiles", "lint", "typecheck" |
+| `semi-automated` | Browser/visual | "renders correctly", "no console errors" |
+| `manual` | Human judgment | "requirements met", "edge cases handled" |
+
+**CLI Hook Auto-Detection:**
+- Detects package manager (npm, yarn, pnpm) from lock files
+- Maps checklist items to appropriate hooks (test, build, lint, typecheck)
+- Runs hooks automatically during verification
+- Falls back to manual verification for items without hooks
+
+#### Fast Mode Checklist Generation
+Fast mode prompts don't have comprehensive checklists. The verification system now:
+1. Detects prompt intent (11 types: code-generation, testing, debugging, etc.)
+2. Generates basic checklist based on detected intent
+3. Adds context-specific items based on keywords (API, UI, database, auth, performance)
+
+#### Verification Report Format
+```
+══════════════════════════════════════════════════════════════════════
+                    VERIFICATION REPORT
+                    [prompt-id]
+══════════════════════════════════════════════════════════════════════
+
+📋 VALIDATION CHECKLIST (X items)
+
+✅ [automated] Code compiles/runs without errors
+   Evidence: npm run build - exit code 0
+   Confidence: HIGH
+
+❌ [manual] All requirements implemented
+   Status: FAILED
+   Reason: Missing feature X
+   Confidence: MEDIUM
+
+══════════════════════════════════════════════════════════════════════
+                         SUMMARY
+══════════════════════════════════════════════════════════════════════
+Total:        X items
+Passed:       Y (Z%)
+Failed:       N (requires attention)
+Skipped:      M
+══════════════════════════════════════════════════════════════════════
+```
+
+#### Verification Storage
+Reports saved alongside prompt files:
+```
+.clavix/
+  outputs/
+    prompts/
+      deep/
+        deep-20250117-143022-a3f2.md              # Prompt
+        deep-20250117-143022-a3f2.verification.json  # Report
+```
+
+#### Execute Integration (REQUIRED Verification)
+Updated `/clavix:execute` workflow:
+1. Execute displays checklist summary
+2. Shows **⚠️ VERIFICATION REQUIRED** notice
+3. Prompts user to run `clavix verify --latest` after implementation
+4. Verification is tracked in prompt metadata
+
+**PromptMetadata Extensions:**
+- `verificationRequired: boolean` - Always true for new prompts
+- `verified: boolean` - Set when verification completes successfully
+- `verifiedAt: string | null` - Timestamp of verification completion
+
+#### New Slash Command Template
+- `src/templates/slash-commands/_canonical/verify.md` - Complete verification workflow documentation
+- `src/templates/slash-commands/_components/agent-protocols/verification-methods.md` - Verification methods by category
+
+#### New Tests
+| Test File | Coverage |
+|-----------|----------|
+| `tests/core/checklist-parser.test.ts` | Parsing validation, edge cases, risks from markdown |
+| `tests/core/verification-manager.test.ts` | Report lifecycle, item verification, status tracking |
+| `tests/core/verification-hooks.test.ts` | Hook detection, execution, package manager detection |
+| `tests/core/basic-checklist-generator.test.ts` | Intent-based checklist generation |
+| `tests/cli/verify.test.ts` | CLI command flags and help |
+
+#### Files Added
+- `src/types/verification.ts`
+- `src/core/checklist-parser.ts`
+- `src/core/verification-hooks.ts`
+- `src/core/verification-manager.ts`
+- `src/core/basic-checklist-generator.ts`
+- `src/cli/commands/verify.ts`
+- `src/templates/slash-commands/_canonical/verify.md`
+- `src/templates/slash-commands/_components/agent-protocols/verification-methods.md`
+- `tests/core/checklist-parser.test.ts`
+- `tests/core/verification-manager.test.ts`
+- `tests/core/verification-hooks.test.ts`
+- `tests/core/basic-checklist-generator.test.ts`
+- `tests/cli/verify.test.ts`
+
+#### Files Modified
+- `src/core/prompt-manager.ts` - Added verification tracking fields
+- `src/cli/commands/execute.ts` - Added checklist summary and verification notice
+- `src/templates/slash-commands/_canonical/execute.md` - Added REQUIRED verification section
+
+---
+
 ## [4.7.0] - 2025-11-26
 
 ### Mode Enforcement & Command Taxonomy Release

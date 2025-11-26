@@ -16,6 +16,10 @@ export interface PromptMetadata {
   executedAt: string | null;
   ageInDays?: number;
   linkedProject?: string;
+  // Verification tracking (v4.8)
+  verificationRequired: boolean;
+  verified: boolean;
+  verifiedAt: string | null;
 }
 
 export interface PromptsIndex {
@@ -114,6 +118,10 @@ export class PromptManager {
       executed: false,
       executedAt: null,
       linkedProject,
+      // Verification tracking (v4.8)
+      verificationRequired: true,
+      verified: false,
+      verifiedAt: null,
     };
 
     // Create file with frontmatter
@@ -125,9 +133,13 @@ export class PromptManager {
       `executed: ${metadata.executed}`,
       `originalPrompt: ${originalPrompt}`,
       linkedProject ? `linkedProject: ${linkedProject}` : '',
+      `verificationRequired: ${metadata.verificationRequired}`,
+      `verified: ${metadata.verified}`,
       '---',
       '',
-    ].filter(Boolean).join('\n');
+    ]
+      .filter(Boolean)
+      .join('\n');
 
     const fileContent = frontmatter + content;
     await fs.writeFile(filePath, fileContent, 'utf-8');
@@ -143,7 +155,7 @@ export class PromptManager {
    */
   async loadPrompt(id: string): Promise<PromptData | null> {
     const index = await this.loadIndex();
-    const metadata = index.prompts.find(p => p.id === id);
+    const metadata = index.prompts.find((p) => p.id === id);
 
     if (!metadata) {
       return null;
@@ -151,7 +163,7 @@ export class PromptManager {
 
     const filePath = path.join(this.promptsDir, metadata.source, metadata.filename);
 
-    if (!await fs.pathExists(filePath)) {
+    if (!(await fs.pathExists(filePath))) {
       return null;
     }
 
@@ -176,7 +188,7 @@ export class PromptManager {
     // Ensure index exists when filtering by source (for corruption recovery tests)
     if (filters?.source) {
       const indexPath = this.getIndexPath(filters.source);
-      if (!await fs.pathExists(indexPath)) {
+      if (!(await fs.pathExists(indexPath))) {
         await this.saveIndex({ version: '1.0', prompts: [] }, filters.source);
       }
     }
@@ -184,18 +196,18 @@ export class PromptManager {
     // Apply filters
     if (filters) {
       if (filters.executed !== undefined) {
-        prompts = prompts.filter(p => p.executed === filters.executed);
+        prompts = prompts.filter((p) => p.executed === filters.executed);
       }
       if (filters.stale) {
-        prompts = prompts.filter(p => this.getPromptAge(p) > 30);
+        prompts = prompts.filter((p) => this.getPromptAge(p) > 30);
       }
       if (filters.old) {
-        prompts = prompts.filter(p => this.getPromptAge(p) > 7);
+        prompts = prompts.filter((p) => this.getPromptAge(p) > 7);
       }
     }
 
     // Add age calculation
-    prompts = prompts.map(p => ({
+    prompts = prompts.map((p) => ({
       ...p,
       createdAt: new Date(p.timestamp),
       ageInDays: this.getPromptAge(p),
@@ -215,7 +227,7 @@ export class PromptManager {
   async markExecuted(id: string): Promise<void> {
     // Load all indexes to find the prompt
     const allPrompts = await this.listPrompts();
-    const prompt = allPrompts.find(p => p.id === id);
+    const prompt = allPrompts.find((p) => p.id === id);
 
     if (!prompt) {
       throw new Error(`Prompt not found: ${id}`);
@@ -223,11 +235,34 @@ export class PromptManager {
 
     // Load source-specific index
     const index = await this.loadIndex(prompt.source);
-    const indexPrompt = index.prompts.find(p => p.id === id);
+    const indexPrompt = index.prompts.find((p) => p.id === id);
 
     if (indexPrompt) {
       indexPrompt.executed = true;
       indexPrompt.executedAt = new Date().toISOString();
+      await this.saveIndex(index, prompt.source);
+    }
+  }
+
+  /**
+   * Mark prompt as verified (v4.8)
+   */
+  async markVerified(id: string): Promise<void> {
+    // Load all indexes to find the prompt
+    const allPrompts = await this.listPrompts();
+    const prompt = allPrompts.find((p) => p.id === id);
+
+    if (!prompt) {
+      throw new Error(`Prompt not found: ${id}`);
+    }
+
+    // Load source-specific index
+    const index = await this.loadIndex(prompt.source);
+    const indexPrompt = index.prompts.find((p) => p.id === id);
+
+    if (indexPrompt) {
+      indexPrompt.verified = true;
+      indexPrompt.verifiedAt = new Date().toISOString();
       await this.saveIndex(index, prompt.source);
     }
   }
@@ -259,7 +294,7 @@ export class PromptManager {
     // Update each source index
     for (const [source, deletedIds] of bySource.entries()) {
       const index = await this.loadIndex(source);
-      index.prompts = index.prompts.filter(p => !deletedIds.has(p.id));
+      index.prompts = index.prompts.filter((p) => !deletedIds.has(p.id));
       await this.saveIndex(index, source);
     }
 
@@ -291,15 +326,14 @@ export class PromptManager {
 
     const stats: StorageStats = {
       totalPrompts: allPrompts.length,
-      fastPrompts: allPrompts.filter(p => p.source === 'fast').length,
-      deepPrompts: allPrompts.filter(p => p.source === 'deep').length,
-      executedPrompts: allPrompts.filter(p => p.executed).length,
-      pendingPrompts: allPrompts.filter(p => !p.executed).length,
-      stalePrompts: allPrompts.filter(p => (p.ageInDays || 0) > 30).length,
-      oldPrompts: allPrompts.filter(p => (p.ageInDays || 0) > 7).length,
-      oldestPromptAge: allPrompts.length > 0
-        ? Math.max(...allPrompts.map(p => p.ageInDays || 0))
-        : 0,
+      fastPrompts: allPrompts.filter((p) => p.source === 'fast').length,
+      deepPrompts: allPrompts.filter((p) => p.source === 'deep').length,
+      executedPrompts: allPrompts.filter((p) => p.executed).length,
+      pendingPrompts: allPrompts.filter((p) => !p.executed).length,
+      stalePrompts: allPrompts.filter((p) => (p.ageInDays || 0) > 30).length,
+      oldPrompts: allPrompts.filter((p) => (p.ageInDays || 0) > 7).length,
+      oldestPromptAge:
+        allPrompts.length > 0 ? Math.max(...allPrompts.map((p) => p.ageInDays || 0)) : 0,
     };
 
     return stats;
@@ -323,7 +357,7 @@ export class PromptManager {
 
     // Load specific source index
     const indexPath = this.getIndexPath(source);
-    if (!await fs.pathExists(indexPath)) {
+    if (!(await fs.pathExists(indexPath))) {
       return {
         version: '1.0',
         prompts: [],
@@ -363,7 +397,7 @@ export class PromptManager {
     const index = await this.loadIndex(metadata.source);
 
     // Remove any existing entry with same ID (shouldn't happen, but be safe)
-    index.prompts = index.prompts.filter(p => p.id !== metadata.id);
+    index.prompts = index.prompts.filter((p) => p.id !== metadata.id);
 
     // Add new entry
     index.prompts.push(metadata);

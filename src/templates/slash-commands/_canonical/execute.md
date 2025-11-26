@@ -74,7 +74,78 @@ clavix execute --id <prompt-id>
 1. Run `clavix execute --latest`
 2. Read displayed prompt content
 3. Implement requirements
-4. After completion, cleanup: `clavix prompts clear --executed`
+4. **REQUIRED: Run verification**: `clavix verify --latest`
+5. After verification passes, cleanup: `clavix prompts clear --executed`
+
+---
+
+## ⚠️ REQUIRED: Post-Implementation Verification
+
+**Verification is a REQUIRED step after implementation.**
+
+After implementing the prompt requirements, you MUST verify your implementation against the checklist:
+
+```bash
+clavix verify --latest
+```
+
+### What Verification Does
+
+1. **Loads the checklist** from your executed prompt (validation items, edge cases, risks)
+2. **Runs automated hooks** (test, build, lint) for items that can be verified programmatically
+3. **Guides manual verification** for items requiring human judgment
+4. **Generates a verification report** with pass/fail status for each item
+
+### Verification Report
+
+The verification report shows:
+- ✅ **Passed items** - Implementation covers the requirement
+- ❌ **Failed items** - Implementation does NOT cover (with reason why)
+- ⏭️ **Skipped items** - To be verified later
+- ➖ **N/A items** - Does not apply to this implementation
+
+### Fast Mode Prompts
+
+Fast mode prompts don't have comprehensive checklists. When verifying a fast mode prompt:
+- A **basic checklist is generated** based on detected intent
+- Covers essential items (compiles, requirements met, no errors)
+- For comprehensive checklists, use `/clavix:deep` instead
+
+### Verification Commands
+
+```bash
+# Verify latest executed prompt
+clavix verify --latest
+
+# Verify specific prompt
+clavix verify --id <prompt-id>
+
+# Show verification status
+clavix verify --status
+
+# Re-run failed items only
+clavix verify --retry-failed
+
+# Export verification report
+clavix verify --export markdown
+clavix verify --export json
+```
+
+### After Verification
+
+**If all items pass:**
+```bash
+# Cleanup executed prompts
+clavix prompts clear --executed
+
+# Or archive the project
+/clavix:archive
+```
+
+**If items fail:**
+1. Review failed items and reasons
+2. Fix implementation issues
+3. Re-run verification: `clavix verify --retry-failed --id <prompt-id>`
 
 ---
 
