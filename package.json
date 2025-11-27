@@ -1,7 +1,7 @@
 {
   "name": "clavix",
-  "version": "4.12.0",
-  "description": "Prompt optimization for AI coding. Structures prompts with pattern-based intent detection, quality assessment, and workflow management. Works with Claude Code, Cursor, Windsurf, and 19+ other AI coding tools.",
+  "version": "5.0.0-alpha.0",
+  "description": "Agentic-first prompt workflows. Markdown templates that teach AI agents how to optimize prompts, create PRDs, and manage implementation. Works with Claude Code, Cursor, Windsurf, and 19+ other AI coding tools.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
