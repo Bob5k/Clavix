@@ -1,4 +1,4 @@
-# Clavix Mode Enforcement v4.0
+# Clavix Mode Enforcement v5.1
 
 This is the authoritative reference for mode enforcement in Clavix workflows. All templates MUST adhere to these patterns.
 
@@ -8,7 +8,7 @@ This is the authoritative reference for mode enforcement in Clavix workflows. Al
 
 ### Planning Mode Declaration
 
-Used in: `fast.md`, `deep.md`, `prd.md`, `start.md`, `summarize.md`, `plan.md`
+Used in: `improve.md`, `prd.md`, `start.md`, `summarize.md`, `plan.md`
 
 ```markdown
 ## CLAVIX MODE: [Specific Planning Type]
@@ -32,7 +32,7 @@ For complete mode documentation, see: `.clavix/instructions/core/clavix-mode.md`
 
 ### Implementation Mode Declaration
 
-Used in: `implement.md`, `execute.md`
+Used in: `implement.md`
 
 ```markdown
 ## CLAVIX MODE: Implementation
@@ -148,7 +148,7 @@ All planning templates MUST include this protocol:
 1. Planning workflow must complete first (files saved)
 2. User must explicitly run implementation command
 3. Do NOT switch modes based on verbal requests alone
-4. Suggest correct command: "To implement, run `/clavix:execute` or `/clavix:implement`"
+4. Suggest correct command: "To implement, run `/clavix:implement`"
 
 ### From Implementation Back to Planning
 
@@ -204,34 +204,33 @@ When updating templates, verify:
 
 ## Template Categories
 
-### Planning Templates (6 total)
+### Planning Templates (5 total)
 
 | Template | Mode Type | Self-Correction | Primary Action |
 |----------|-----------|-----------------|----------------|
-| `fast.md` | Requirements & Planning | Required | Prompt optimization |
-| `deep.md` | Requirements & Planning | Required | Comprehensive analysis |
+| `improve.md` | Requirements & Planning | Required | Smart prompt optimization (auto-depth) |
 | `prd.md` | Requirements & Planning | Required | PRD generation |
 | `start.md` | Requirements & Planning | Required | Requirements gathering |
 | `summarize.md` | Requirements & Planning | Required | Requirements extraction |
 | `plan.md` | Pre-Implementation Planning | Required | Task breakdown |
 
-### Implementation Templates (2 total)
+### Implementation Templates (1 total)
 
 | Template | Mode Type | Entry Validation | Primary Action |
 |----------|-----------|------------------|----------------|
-| `implement.md` | Implementation | Required | Task execution |
-| `execute.md` | Implementation | Required | Prompt implementation |
+| `implement.md` | Implementation | Required | Task or prompt execution (auto-detects source) |
 
 ### Utility Templates (2 total)
 
 | Template | Mode | Notes |
 |----------|------|-------|
 | `archive.md` | Management | Project archival |
-| `prompts.md` | Management | Prompt management |
+| `verify.md` | Verification | Post-implementation verification |
 
 ---
 
 ## Version History
 
+- **v5.1** (2025): Consolidated execute into implement with auto-detection, removed fast/deep in favor of unified improve
 - **v4.0** (2024): Added self-correction protocol, standardized checkpoints, mode entry validation
 - **v3.0** (2024): Initial mode separation between planning and implementation

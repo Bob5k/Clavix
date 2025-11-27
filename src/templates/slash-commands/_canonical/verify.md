@@ -69,8 +69,8 @@ Me:     "Here's what I found:
 **Step 1: I find your work**
 
 I'll look for the prompt you implemented. Usually this is automatic:
-- If you just ran `/clavix:execute`, I know which prompt that was
-- I'll find the checklist from the deep/fast mode output
+- If you just ran `/clavix:implement`, I know which prompt that was
+- I'll find the checklist from the improve mode output
 
 **Step 2: I run automated checks**
 
@@ -372,7 +372,7 @@ I generate different checklists based on what you're building:
 
 **How you got here:**
 1. `/clavix:improve` → Optimized your prompt
-2. `/clavix:execute` → Implemented the requirements
+2. `/clavix:implement` → Implemented the requirements
 3. **`/clavix:verify`** → Now checking it works (you are here)
 
 **What's next:**
@@ -380,13 +380,13 @@ I generate different checklists based on what you're building:
 - All passed → `/clavix:archive` to wrap up
 
 **Related commands:**
-- `/clavix:execute` - Run the implementation (previous step)
+- `/clavix:implement` - Execute tasks or prompts (previous step)
 - `/clavix:improve --comprehensive` - Get comprehensive checklist next time
 - `/clavix:archive` - Archive when done (next step)
 
 ---
 
-## Agent Transparency (v4.9)
+## Agent Transparency (v5.1)
 
 ### CLI Reference (Commands I Execute)
 {{INCLUDE:agent-protocols/cli-reference.md}}

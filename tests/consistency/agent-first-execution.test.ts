@@ -207,9 +207,8 @@ describe('Agent-First Execution Model', () => {
 
   describe('CLI Reference Section', () => {
     // Templates that use CLI commands should have a reference section
-    // v4.11: fast.md and deep.md merged into improve.md
+    // v5.1: execute.md consolidated into implement.md
     const TEMPLATES_REQUIRING_CLI_REFERENCE = [
-      'execute.md',
       'implement.md',
       'verify.md',
       'archive.md',

@@ -282,10 +282,9 @@ This project uses Clavix for prompt improvement and PRD generation.
 | \`/clavix:improve\` | Optimize prompts (auto-selects depth) |
 | \`/clavix:prd\` | Generate PRD through guided questions |
 | \`/clavix:plan\` | Create task breakdown from PRD |
-| \`/clavix:implement\` | Execute tasks with progress tracking |
+| \`/clavix:implement\` | Execute tasks or prompts (auto-detects source) |
 | \`/clavix:start\` | Begin conversational session |
 | \`/clavix:summarize\` | Extract requirements from conversation |
-| \`/clavix:execute\` | Run saved prompts |
 | \`/clavix:verify\` | Verify implementation |
 | \`/clavix:archive\` | Archive completed projects |
 

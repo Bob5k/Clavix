@@ -1,24 +1,46 @@
 ---
 name: "Clavix: Implement"
-description: Execute tasks from the implementation plan
+description: Execute tasks or prompts (auto-detects source)
 ---
 
-# Clavix: Implement Your Tasks
+# Clavix: Implement
 
-Time to build your project task by task! I'll work through your task list, building each feature and tracking progress.
+Time to build! This command auto-detects what to implement:
+- **Tasks from PRD workflow** - Your task list from `/clavix:plan`
+- **Prompts from improve workflow** - Your optimized prompts from `/clavix:improve`
 
 ---
 
 ## What This Does
 
 When you run `/clavix:implement`, I:
-1. **Find your task list** - Load tasks.md from your PRD output
-2. **Pick up where you left off** - Find the next incomplete task
-3. **Build each task** - Implement one at a time, in order
-4. **Mark progress automatically** - Update checkboxes when done
-5. **Create commits (optional)** - Git history as you go
+1. **Auto-detect what to build** - Check tasks.md first, then prompts/
+2. **Find your work** - Load from PRD output or saved prompts
+3. **Build systematically** - Tasks in order, or implement your prompt
+4. **Mark progress** - Update checkboxes or prompt metadata
+5. **Verify automatically** - Run tests and checks when done
 
-**You just say "let's build" and I handle the rest.**
+**You just say "implement" and I handle the rest.**
+
+### Detection Priority
+
+```
+/clavix:implement
+    │
+    ├─► Check .clavix/outputs/<project>/tasks.md
+    │       └─► If found → Task Implementation Mode
+    │
+    └─► Check .clavix/outputs/prompts/*.md
+            └─► If found → Prompt Execution Mode
+            └─► If neither → Ask what to build
+```
+
+### Explicit Flags
+
+Override auto-detection when needed:
+- `--tasks` - Force task mode (skip prompt check)
+- `--prompt <id>` - Execute specific prompt by ID
+- `--latest` - Execute most recent prompt
 
 ---
 
@@ -273,22 +295,169 @@ I find them automatically from tasks.md:
 
 You don't need to remember these - I handle all the tracking.
 
+---
+
+# Prompt Execution Mode
+
+When I detect saved prompts (or you use `--latest`/`--prompt`), I switch to prompt execution mode.
+
+## How Prompt Execution Works
+
+### The Quick Version
+
+```
+You:    /clavix:implement --latest
+Me:     [Finds your latest prompt]
+        [Reads requirements]
+        [Implements everything]
+        [Runs verification]
+Me:     "Done! Here's what I built..."
+```
+
+### The Detailed Version (v5 Agentic-First)
+
+**Step 1: I find your prompt**
+
+I read directly from the file system:
+- List `.clavix/outputs/prompts/*.md` to find saved prompts
+- Get the most recent one (by timestamp in filename or frontmatter)
+- Read the prompt file: `.clavix/outputs/prompts/<id>.md`
+
+**Step 2: I read and understand**
+
+I parse the prompt file and extract:
+- The objective (what to build)
+- Requirements (specifics to implement)
+- Technical constraints (how to build it)
+- Success criteria (how to know it's done)
+
+**Step 3: I implement everything**
+
+This is where I actually write code using my native tools:
+- Create new files as needed
+- Modify existing files
+- Write functions, components, classes
+- Add tests if specified
+
+**Step 4: I verify automatically**
+
+After building, I verify by:
+- Running tests (if test suite exists)
+- Building/compiling to ensure no errors
+- Checking requirements from the checklist
+
+**Step 5: I report results**
+
+You'll see a summary of:
+- What I built
+- What passed verification
+- Any issues (if they exist)
+
+---
+
+## Prompt Management
+
+**Where prompts live:**
+- All prompts: `.clavix/outputs/prompts/*.md`
+- Metadata: In frontmatter of each `.md` file
+
+### How I Access Prompts (Native Tools)
+
+| What I Do | How I Do It |
+|-----------|-------------|
+| List saved prompts | List `.clavix/outputs/prompts/*.md` files |
+| Get latest prompt | Find newest file by timestamp in filename |
+| Get specific prompt | Read `.clavix/outputs/prompts/<id>.md` |
+| Mark as executed | Edit frontmatter: `executed: true` |
+| Clean up executed | Delete files where frontmatter has `executed: true` |
+
+### The Prompt Lifecycle
+
+```
+1. YOU CREATE   →  /clavix:improve (saves to .clavix/outputs/prompts/<id>.md)
+2. I EXECUTE    →  /clavix:implement --latest (reads and implements)
+3. I VERIFY     →  Automatic verification
+4. MARK DONE    →  I update frontmatter with executed: true
+```
+
+---
+
+## Automatic Verification (Prompt Mode)
+
+**I always verify after implementing. You don't need to ask.**
+
+### What Happens Automatically
+
+After I finish building, I run verification myself:
+
+1. **Load the checklist** - From your executed prompt (what to check)
+2. **Run automated tests** - Test suite, build, linting, type checking
+3. **Check each requirement** - Make sure everything was implemented
+4. **Generate a report** - Show you what passed and failed
+
+### What You'll See
+
+```
+Implementation complete for [prompt-id]
+
+Verification Results:
+8 items passed
+1 item needs attention: [specific issue]
+
+Would you like me to fix the failing item?
+```
+
+### Understanding the Symbols
+
+| Symbol | Meaning |
+|--------|---------|
+| Pass | Passed - This works |
+| Fail | Failed - Needs fixing |
+| Skip | Skipped - Check later |
+| N/A | N/A - Doesn't apply |
+
+### When Things Fail
+
+**I try to fix issues automatically:**
+
+If verification finds problems, I'll:
+1. Tell you what failed and why
+2. Offer to fix it
+3. Re-verify after fixing
+
+**If I can't fix it myself:**
+
+I'll explain what's wrong and what you might need to do:
+> "The database connection is failing - this might be a configuration issue.
+> Can you check that your `.env` file has the correct `DATABASE_URL`?"
+
+---
+
 ## Workflow Navigation
 
-**Where you are:** Implement (building your tasks)
+**Where you are:** Implement (building tasks or prompts)
 
-**How you got here:**
+**How you got here (two paths):**
+
+**PRD Path:**
 1. `/clavix:prd` → Created your requirements document
 2. `/clavix:plan` → Generated your task breakdown
-3. **`/clavix:implement`** → Now building everything (you are here)
+3. **`/clavix:implement`** → Now building tasks (you are here)
+
+**Improve Path:**
+1. `/clavix:improve` → Optimized your prompt
+2. **`/clavix:implement --latest`** → Now building prompt (you are here)
 
 **What happens after:**
 - All tasks done → `/clavix:archive` to wrap up
+- Prompt complete → Verification runs automatically
 - Need to pause → Just stop. Run `/clavix:implement` again to continue
 
 **Related commands:**
-- `/clavix:plan` - Regenerate tasks if needed
+- `/clavix:improve` - Optimize prompts (creates prompts for execution)
+- `/clavix:plan` - Generate tasks from PRD
 - `/clavix:prd` - Review requirements
+- `/clavix:verify` - Detailed verification (if needed)
 - `/clavix:archive` - Archive when done
 
 ---
@@ -302,7 +471,7 @@ You don't need to remember these - I handle all the tracking.
 
 ---
 
-## Agent Transparency (v5.0)
+## Agent Transparency (v5.1)
 
 ### Workflow State Detection
 {{INCLUDE:agent-protocols/state-awareness.md}}
@@ -406,3 +575,47 @@ You don't need to remember these - I handle all the tracking.
 > [I fix the issues]
 >
 > ✓ Tests passing now!"
+
+---
+
+## Prompt Mode Troubleshooting
+
+### "No prompts found"
+
+**What happened:** I can't find any saved prompts.
+
+**What I'll do:**
+> "I don't see any saved prompts. Let's create one first!
+>
+> Run `/clavix:improve 'your requirement'` and come back with `/clavix:implement --latest`"
+
+### "Prompt is old or stale"
+
+**What happened:** Your prompt is more than 7 days old.
+
+**What I'll do:**
+> "This prompt is a bit old. Want me to proceed anyway, or should we create a fresh one?"
+
+### "Verification keeps failing"
+
+**What happened:** I can't get verification to pass after trying.
+
+**What I'll do:**
+> "I've tried a few fixes but this item keeps failing. Here's what's happening: [details]
+>
+> Would you like me to:
+> 1. Keep trying with a different approach
+> 2. Skip this check for now
+> 3. Show you what needs manual attention"
+
+### "Both tasks and prompts exist"
+
+**What happened:** You have both a tasks.md and saved prompts.
+
+**What I'll do:**
+> "I found both tasks and prompts. Which should I implement?
+>
+> - Tasks from your PRD (8 tasks remaining)
+> - Prompt: 'Add dark mode support'
+>
+> Or use `--tasks` or `--prompt <id>` to specify."

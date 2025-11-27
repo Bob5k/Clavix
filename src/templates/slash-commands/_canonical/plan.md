@@ -289,7 +289,7 @@ The generated `tasks.md` will look like:
 
 ---
 
-## Agent Transparency (v4.9)
+## Agent Transparency (v5.1)
 
 ### Workflow State Detection
 {{INCLUDE:agent-protocols/state-awareness.md}}

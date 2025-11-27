@@ -4,7 +4,7 @@ This directory contains the complete instruction set for AI agents consuming Cla
 
 ---
 
-## 📐 Documentation Architecture (v4.11)
+## 📐 Documentation Architecture
 
 ```
 Canonical Templates (SOURCE OF TRUTH)
@@ -14,8 +14,7 @@ Canonical Templates (SOURCE OF TRUTH)
   ├── start.md            - Conversational mode entry
   ├── summarize.md        - Extract requirements from conversation
   ├── plan.md             - Task breakdown from PRD
-  ├── implement.md        - Execute tasks with progress tracking
-  ├── execute.md          - Run saved prompts
+  ├── implement.md        - Execute tasks or prompts (auto-detection)
   ├── verify.md           - Post-implementation verification
   └── archive.md          - Archive completed projects
     ↓ (referenced by)
@@ -133,7 +132,6 @@ PRD Creation → Task Planning → Implementation → Verification → Archive
 | `/clavix:prd` | Planning | ✗ NO |
 | `/clavix:plan` | Planning | ✗ NO |
 | `/clavix:implement` | Implementation | ✓ YES |
-| `/clavix:execute` | Implementation | ✓ YES |
 | `/clavix:verify` | Verification | Context-dependent |
 | `/clavix:archive` | Management | ✗ NO |
 
@@ -177,14 +175,14 @@ In v5, agents use native tools (Write, Edit, Bash) instead of CLI commands:
 
 ### Preventing the "Half-Update" Problem
 
-The v4.11.2 release introduced validation to catch incomplete updates:
+Clavix includes validation to catch incomplete updates:
 
 ```bash
 # Run before committing
 npm run validate:consistency
 
 # Checks performed:
-# - No legacy command references (fast, deep commands removed in v4.11)
+# - No legacy command references (removed deprecated commands)
 # - All CLI commands have templates (if required)
 # - All templates have CLI implementations
 # - No deprecated version references
@@ -243,12 +241,12 @@ npm run validate:consistency
 
 ### "Legacy command references found"
 
-**Root cause:** Template not updated during v4.11 migration
+**Root cause:** Template not updated during migration
 
 **Fix:**
 1. Run `npm run validate:consistency` to find all occurrences
-2. Replace legacy fast/deep commands with `clavix improve`
-3. Replace "fast mode"/"deep mode" with "standard depth"/"comprehensive depth"
+2. Replace legacy commands with current equivalents (e.g., `/clavix:implement`)
+3. Replace deprecated terminology (e.g., "fast mode" → "standard depth")
 4. Update any navigation references
 
 ### "Template doesn't match CLI behavior"
@@ -267,14 +265,14 @@ npm run validate:consistency
 ## 📚 Key Files Reference
 
 ### Canonical Templates (Start Here)
-- `improve.md` - Unified prompt optimization (v4.11)
+- `improve.md` - Unified prompt optimization
 - `prd.md` - PRD generation workflow
-- `implement.md` - Task execution workflow
+- `implement.md` - Task and prompt execution workflow
 
 ### Agent Protocols
-- `_components/agent-protocols/self-correction.md` - Mistake detection
-- `_components/agent-protocols/state-awareness.md` - Workflow state tracking
 - `_components/agent-protocols/decision-rules.md` - Decision logic
+- `_components/agent-protocols/state-awareness.md` - Workflow state tracking
+- `_components/agent-protocols/error-handling.md` - Error recovery patterns
 
 ### Validation
 - `scripts/validate-consistency.ts` - TypeScript ↔ Template validator
@@ -282,6 +280,6 @@ npm run validate:consistency
 
 ---
 
-**Last updated:** v4.11.2 (November 2025)
+**Last updated:** v5.1.0
 
 **Validation:** Run `npm run validate:consistency` before committing changes.

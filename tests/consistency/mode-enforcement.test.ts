@@ -43,8 +43,8 @@ describe('Mode Enforcement Consistency', () => {
       expect(improveTemplate).toContain('Exploring the codebase');
     });
 
-    it('improve.md tells agent to run /clavix:execute for implementation', () => {
-      expect(improveTemplate).toContain('/clavix:execute');
+    it('improve.md tells agent to run /clavix:implement for implementation', () => {
+      expect(improveTemplate).toContain('/clavix:implement');
       expect(improveTemplate).toContain('--latest');
     });
 
@@ -90,14 +90,13 @@ describe('Mode Enforcement Consistency', () => {
       }
     });
 
-    it('v5: No CLI command references for execute/prompts (agentic-first)', async () => {
-      const executeTemplate = await fs.readFile(path.join(templatesDir, 'execute.md'), 'utf-8');
+    it('v5.1: No CLI command references for prompts (agentic-first)', async () => {
+      const implementTemplate = await fs.readFile(path.join(templatesDir, 'implement.md'), 'utf-8');
 
-      // v5: These CLI commands were removed - agents use tools directly
+      // v5.1: prompts CLI commands were removed - agents use tools directly
       // The templates should reference agent tools (Read, Write, Glob), not CLI
-      expect(executeTemplate).not.toContain('clavix execute --');
-      expect(executeTemplate).not.toContain('clavix prompts list');
-      expect(executeTemplate).not.toContain('clavix prompts clear');
+      expect(implementTemplate).not.toContain('clavix prompts list');
+      expect(implementTemplate).not.toContain('clavix prompts clear');
     });
   });
 
@@ -124,7 +123,7 @@ describe('Mode Enforcement Consistency', () => {
 
         // Optimization workflows should mention STOP
         expect(content).toContain('STOP');
-        expect(content).toContain('/clavix:execute');
+        expect(content).toContain('/clavix:implement');
       }
     });
   });
@@ -132,13 +131,13 @@ describe('Mode Enforcement Consistency', () => {
   describe('Navigation Consistency', () => {
     const workflowTemplates = [
       'improve.md',
-      'execute.md',
       'prd.md',
       'plan.md',
       'implement.md',
       'start.md',
       'summarize.md',
       'archive.md',
+      'verify.md',
     ];
 
     it.each(workflowTemplates)('%s does not list /clavix:prompts in navigation', async (file) => {
@@ -152,7 +151,7 @@ describe('Mode Enforcement Consistency', () => {
   });
 
   describe('v5: No .index.json References', () => {
-    const workflowTemplates = ['improve.md', 'execute.md'];
+    const workflowTemplates = ['improve.md', 'implement.md'];
 
     it.each(workflowTemplates)('%s does not reference .index.json', async (file) => {
       const content = await fs.readFile(path.join(templatesDir, file), 'utf-8');

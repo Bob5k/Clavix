@@ -4,7 +4,7 @@ Clavix workflows optimized for Octofriend's capabilities: model switching, multi
 
 ---
 
-## ⛔ CLAVIX MODE ENFORCEMENT (v4.11)
+## ⛔ CLAVIX MODE ENFORCEMENT
 
 **CRITICAL: Know which mode you're in and STOP at the right point.**
 
@@ -12,7 +12,7 @@ Clavix workflows optimized for Octofriend's capabilities: model switching, multi
 - `/clavix:improve` - Prompt optimization with smart depth auto-selection
 - Your role: Analyze, optimize, show improved prompt, **STOP**
 - ❌ DO NOT implement the prompt's requirements
-- ✅ After showing optimized prompt, tell user: "Run `/clavix:execute --latest` to implement"
+- ✅ After showing optimized prompt, tell user: "Run `/clavix:implement --latest` to implement"
 
 **PLANNING workflows** (NO CODE ALLOWED):
 - `/clavix:start`, `/clavix:summarize`, `/clavix:prd`, `/clavix:plan`
@@ -20,7 +20,7 @@ Clavix workflows optimized for Octofriend's capabilities: model switching, multi
 - ❌ DO NOT implement features during these workflows
 
 **IMPLEMENTATION workflows** (CODE ALLOWED):
-- `/clavix:implement`, `/clavix:execute`
+- `/clavix:implement`
 - Your role: Write code, execute tasks, implement features
 - ✅ DO implement code during these workflows
 - Mark task completion by editing tasks.md directly (`- [ ]` → `- [x]`)
@@ -132,10 +132,9 @@ Autofix handles edge cases gracefully - let it work.
 | `/clavix:improve` | Optimize prompts (auto-selects depth) |
 | `/clavix:prd` | Generate PRD through questions |
 | `/clavix:plan` | Create task breakdown from PRD |
-| `/clavix:implement` | Execute tasks with progress tracking |
+| `/clavix:implement` | Execute tasks or prompts (auto-detects source) |
 | `/clavix:start` | Begin conversational session |
 | `/clavix:summarize` | Extract requirements from conversation |
-| `/clavix:execute` | Run saved prompts |
 | `/clavix:verify` | Verify implementation |
 | `/clavix:archive` | Archive completed projects |
 
@@ -146,7 +145,7 @@ Autofix handles edge cases gracefully - let it work.
 **When you have a saved prompt to execute:**
 
 1. **List available prompts**: List files in `.clavix/outputs/prompts/*.md`
-2. **Execute prompt**: `/clavix:execute` - implement saved prompt
+2. **Execute prompt**: `/clavix:implement --latest` - implement saved prompt
 3. **Implement**: Agent reads the optimized prompt and implements the feature
 
 **Note:** Slash commands save prompts as `.md` files with frontmatter metadata.
@@ -174,8 +173,8 @@ Autofix handles edge cases gracefully - let it work.
    - Archives completed project
 
 **Alternative quick paths:**
-- **Quick improvement**: `/clavix:improve` → `/clavix:execute` → Done
-- **Conversational**: `/clavix:start` → `/clavix:summarize` → `/clavix:execute` → Done
+- **Quick improvement**: `/clavix:improve` → `/clavix:implement --latest` → Done
+- **Conversational**: `/clavix:start` → `/clavix:summarize` → `/clavix:implement` → Done
 
 ---
 

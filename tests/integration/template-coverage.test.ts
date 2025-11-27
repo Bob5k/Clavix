@@ -18,9 +18,9 @@ describe('Template Coverage - Integration', () => {
   describe('Canonical Templates', () => {
     const canonicalDir = path.join(templatesDir, 'slash-commands/_canonical');
 
-    it('should have execute.md template', () => {
+    it('should NOT have execute.md template (consolidated into implement.md in v5.1)', () => {
       const executePath = path.join(canonicalDir, 'execute.md');
-      expect(fs.existsSync(executePath)).toBe(true);
+      expect(fs.existsSync(executePath)).toBe(false);
     });
 
     it('should NOT have prompts.md template (removed in v4.7)', () => {
@@ -28,31 +28,32 @@ describe('Template Coverage - Integration', () => {
       expect(fs.existsSync(promptsPath)).toBe(false);
     });
 
-    it('execute.md should reference agentic-first patterns (v5)', () => {
-      const executePath = path.join(canonicalDir, 'execute.md');
-      const content = fs.readFileSync(executePath, 'utf-8');
+    it('implement.md should reference agentic-first patterns (v5)', () => {
+      const implementPath = path.join(canonicalDir, 'implement.md');
+      const content = fs.readFileSync(implementPath, 'utf-8');
 
-      // v5: Uses Read/Glob tools, not CLI commands
+      // v5.1: implement.md handles both tasks and prompts with auto-detection
       expect(content).toContain('.clavix/outputs/prompts');
-      expect(content).toContain('latest prompt');
+      expect(content).toContain('Auto-detect');
       // v5: References file operations, not clavix CLI
-      expect(content).toMatch(/Read tool|Glob|list.*\.md/i);
+      expect(content).toMatch(/Edit tool|Read|tasks\.md/i);
     });
 
-    it('execute.md should reference v5 prompt management (agentic-first)', () => {
-      const executePath = path.join(canonicalDir, 'execute.md');
-      const content = fs.readFileSync(executePath, 'utf-8');
+    it('implement.md should reference v5.1 auto-detection (tasks + prompts)', () => {
+      const implementPath = path.join(canonicalDir, 'implement.md');
+      const content = fs.readFileSync(implementPath, 'utf-8');
 
-      // v5: Prompt files with frontmatter, not .index.json
-      expect(content).toContain('executed');
-      expect(content).not.toContain('.index.json');
+      // v5.1: Auto-detects source - tasks.md or prompts/
+      expect(content).toContain('--latest');
+      expect(content).toContain('--tasks');
+      expect(content).toContain('Detection Priority');
     });
 
     it('improve.md should reference prompt lifecycle features', () => {
       const fastPath = path.join(canonicalDir, 'improve.md');
       const content = fs.readFileSync(fastPath, 'utf-8');
 
-      expect(content).toContain('/clavix:execute');
+      expect(content).toContain('/clavix:implement');
       expect(content).toContain('.clavix/outputs/prompts');
     });
 
@@ -174,7 +175,7 @@ describe('Template Coverage - Integration', () => {
     it('canonical templates should use consistent storage paths', () => {
       const canonicalTemplates = [
         'slash-commands/_canonical/improve.md',
-        'slash-commands/_canonical/execute.md',
+        'slash-commands/_canonical/implement.md',
       ];
 
       canonicalTemplates.forEach((template) => {
@@ -188,7 +189,7 @@ describe('Template Coverage - Integration', () => {
     it('no templates should reference .index.json (v5)', () => {
       const canonicalTemplates = [
         'slash-commands/_canonical/improve.md',
-        'slash-commands/_canonical/execute.md',
+        'slash-commands/_canonical/implement.md',
       ];
 
       canonicalTemplates.forEach((template) => {
@@ -207,12 +208,13 @@ describe('Template Coverage - Integration', () => {
       expect(fs.existsSync(distDir)).toBe(true);
     });
 
-    it('dist should contain canonical templates', () => {
+    it('dist should contain canonical templates (v5.1)', () => {
       const canonicalDist = path.join(distDir, 'slash-commands/_canonical');
 
-      expect(fs.existsSync(path.join(canonicalDist, 'execute.md'))).toBe(true);
+      expect(fs.existsSync(path.join(canonicalDist, 'execute.md'))).toBe(false); // Removed in v5.1
       expect(fs.existsSync(path.join(canonicalDist, 'prompts.md'))).toBe(false);
       expect(fs.existsSync(path.join(canonicalDist, 'improve.md'))).toBe(true);
+      expect(fs.existsSync(path.join(canonicalDist, 'implement.md'))).toBe(true);
     });
 
     it('dist should contain provider templates', () => {

@@ -23,8 +23,7 @@ Do you have a clear, specific task?
 | `/clavix:improve` | Single prompts needing optimization | Raw prompt text | Optimized prompt (saved) |
 | `/clavix:prd` | Feature planning | Answers to guided questions | full-prd.md + quick-prd.md |
 | `/clavix:plan` | Task breakdown | PRD document | tasks.md with phases |
-| `/clavix:implement` | Executing task plans | tasks.md | Code changes + git commits |
-| `/clavix:execute` | Running saved prompts | Saved prompt ID | Executed prompt |
+| `/clavix:implement` | Executing tasks or prompts | tasks.md or prompts/ | Code changes + git commits |
 | `/clavix:start` | Exploration | Conversation | Session history |
 | `/clavix:summarize` | Extract requirements | Session | mini-prd.md + prompt |
 
@@ -42,7 +41,7 @@ Do you have a clear, specific task?
 1. Clavix analyzes intent and quality
 2. Applies relevant optimization patterns
 3. Saves optimized prompt to `.clavix/outputs/prompts/`
-4. You can later run it with `/clavix:execute`
+4. You can later run it with `/clavix:implement --latest`
 
 **Depth selection**:
 - Auto-selects based on quality score
@@ -82,19 +81,6 @@ Do you have a clear, specific task?
 clavix task-complete <taskId>  # Mark task done, auto-commit if configured
 ```
 
-### Execute Workflow (Running Saved Prompts)
-
-**Use when**: You've saved prompts from `/clavix:improve` and want to execute them.
-
-```
-/clavix:execute          # Interactive selection
-/clavix:execute --latest # Run most recent prompt
-```
-
-**Key difference from implement**:
-- Execute = single saved prompt
-- Implement = multi-task plan from PRD
-
 ### Conversational Workflow (Exploration)
 
 **Use when**: You're not sure what you want yet.
@@ -111,34 +97,29 @@ clavix task-complete <taskId>  # Mark task done, auto-commit if configured
 3. Summarize extracts a mini-PRD and optimized prompt
 4. Continue with `/clavix:plan` if needed
 
-## Execute vs Implement
+## Implement: Unified Execution
 
-This is a common point of confusion:
+`/clavix:implement` auto-detects what to execute:
 
-### Execute
+- **If tasks.md exists**: Executes task plan from PRD workflow
+- **If prompts/ has files**: Executes saved prompts from improve workflow
 
-- **Source**: Saved prompts from `/clavix:improve`
-- **Purpose**: Run a single optimized prompt
-- **Model**: One-shot execution
-- **Git**: No automatic commits
-- **Use case**: Ad-hoc prompt optimization workflow
+### Explicit Flags
 
-### Implement
+| Flag | Behavior |
+|------|----------|
+| `--tasks` | Force task mode (skip prompt check) |
+| `--prompt <id>` | Execute specific prompt by ID |
+| `--latest` | Execute most recent prompt |
 
-- **Source**: Task plan from `/clavix:plan` (which comes from PRD)
-- **Purpose**: Execute a multi-task implementation plan
-- **Model**: Sequential task execution with progress tracking
-- **Git**: Optional automatic commits (per-task, per-phase, etc.)
-- **Use case**: Structured feature development workflow
+### When to Use Which Approach
 
-### When to Use Which
-
-| Situation | Use |
-|-----------|-----|
-| "I have a prompt I want to improve and run" | improve → execute |
+| Situation | Command |
+|-----------|---------|
+| "I have a prompt I want to improve and run" | improve → implement --latest |
 | "I'm building a new feature from scratch" | prd → plan → implement |
 | "I have requirements, need to implement" | plan → implement |
-| "I optimized a prompt earlier, want to run it" | execute |
+| "I optimized a prompt earlier, want to run it" | implement --latest |
 | "I'm in the middle of a task plan" | implement |
 
 ## Workflow Chaining
@@ -147,7 +128,7 @@ Common workflow chains:
 
 ### Simple (single prompt)
 ```
-/clavix:improve "..." → /clavix:execute --latest
+/clavix:improve "..." → /clavix:implement --latest
 ```
 
 ### Standard (feature development)

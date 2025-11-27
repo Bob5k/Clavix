@@ -1,7 +1,13 @@
-# clavix implement
+# clavix implement / /clavix:implement
 
 ## Description
-Guides you through executing tasks from `tasks.md`, tracks progress, and optionally creates automatic git commits. The command always shows the next incomplete task and writes a configuration file for downstream automation.
+Guides you through executing tasks from `tasks.md` OR saved prompts from `/clavix:improve`, tracks progress, and optionally creates automatic git commits.
+
+**v5.1 Update**: The `/clavix:implement` slash command now auto-detects what to execute:
+- **Tasks mode**: If `tasks.md` exists in your PRD output folder
+- **Prompt mode**: If saved prompts exist in `.clavix/outputs/prompts/`
+
+This consolidates the previous `/clavix:execute` command into a unified implementation workflow.
 
 ## Syntax
 ```
@@ -9,23 +15,42 @@ clavix implement [options]
 ```
 
 ## Flags
+
+### Task Mode Flags
 - `-p, --project <name>` – Select a PRD project under `.clavix/outputs/`.
 - `--tasks-path <file>` – Provide a custom path to a `tasks.md` file.
+- `--tasks` – Force task mode (skip prompt detection).
 - `--no-git` – Skip git detection and disable auto-commit prompts.
 - `--commit-strategy <per-task|per-5-tasks|per-phase|none>` – Preselect an auto-commit strategy (defaults to interactive prompt).
 
+### Prompt Mode Flags (v5.1+)
+- `--latest` – Execute the most recent saved prompt.
+- `--prompt <id>` – Execute a specific prompt by ID (e.g., `std-20250127-143022-a3f2`).
+
 ## Inputs
+
+### Task Mode
 - `.clavix/outputs/<project>/tasks.md` – Markdown checklist with phases and tasks.
 - Git repository metadata (optional) to offer commit automation.
+
+### Prompt Mode (v5.1+)
+- `.clavix/outputs/prompts/*.md` – Saved prompts from `/clavix:improve` with frontmatter metadata.
 
 ## Outputs
 - Progress summary (completed vs remaining tasks) printed to the console.
 - `.clavix/outputs/<project>/.clavix-implement-config.json` – Stores the selected commit strategy, active task, and stats for AI agents.
 
 ## Examples
-- `clavix implement`
+
+### Task Mode
+- `clavix implement` – Auto-detect and implement tasks
 - `clavix implement --project billing-api --commit-strategy per-phase`
 - `clavix implement --tasks-path ./docs/tasks.md --no-git`
+- `clavix implement --tasks` – Force task mode
+
+### Prompt Mode (v5.1+)
+- `/clavix:implement --latest` – Execute most recent optimized prompt
+- `/clavix:implement --prompt comp-20250127-143022-a3f2` – Execute specific prompt
 
 ## Git Auto-Commit Strategies (v2.8.1+)
 

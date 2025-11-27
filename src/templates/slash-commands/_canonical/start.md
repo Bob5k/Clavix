@@ -202,7 +202,7 @@ The goal is natural exploration of requirements, not a rigid questionnaire. Foll
 
 ---
 
-## Agent Transparency (v4.9)
+## Agent Transparency (v5.1)
 
 ### Conversational Companion
 {{INCLUDE:agent-protocols/supportive-companion.md}}

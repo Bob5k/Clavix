@@ -4,7 +4,7 @@ This guide is for agents that can only read documentation (no slash-command supp
 
 ---
 
-## ⛔ CLAVIX MODE ENFORCEMENT (v4.7)
+## ⛔ CLAVIX MODE ENFORCEMENT
 
 **CRITICAL: Know which mode you're in and STOP at the right point.**
 
@@ -12,7 +12,7 @@ This guide is for agents that can only read documentation (no slash-command supp
 - Improve mode - Prompt optimization only (auto-selects depth)
 - Your role: Analyze, optimize, show improved prompt, **STOP**
 - ❌ DO NOT implement the prompt's requirements
-- ✅ After showing optimized prompt, tell user: "Run `/clavix:execute --latest` to implement"
+- ✅ After showing optimized prompt, tell user: "Run `/clavix:implement --latest` to implement"
 
 **PLANNING workflows** (NO CODE ALLOWED):
 - Conversational mode, requirement extraction, PRD generation
@@ -84,10 +84,9 @@ All workflows are executed via slash commands that AI agents read and follow:
 | `/clavix:improve` | Optimize prompts (auto-selects depth) |
 | `/clavix:prd` | Generate PRD through guided questions |
 | `/clavix:plan` | Create task breakdown from PRD |
-| `/clavix:implement` | Execute tasks with progress tracking |
+| `/clavix:implement` | Execute tasks or prompts (auto-detects source) |
 | `/clavix:start` | Begin conversational session |
 | `/clavix:summarize` | Extract requirements from conversation |
-| `/clavix:execute` | Run saved prompts |
 | `/clavix:verify` | Verify implementation |
 | `/clavix:archive` | Archive completed projects |
 

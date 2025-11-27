@@ -328,7 +328,7 @@ The validation ensures generated PRDs are immediately usable for AI consumption 
 
 ---
 
-## Agent Transparency (v4.9)
+## Agent Transparency (v5.1)
 
 ### PRD Examples
 {{INCLUDE:sections/prd-examples.md}}

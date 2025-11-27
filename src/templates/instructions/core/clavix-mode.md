@@ -20,7 +20,7 @@ Clavix has **two distinct modes** based on the command type:
 
 ### CLAVIX IMPLEMENTATION MODE (Code Execution)
 
-**Commands:** `/clavix:implement`, `/clavix:execute`, `/clavix:task-complete`
+**Commands:** `/clavix:implement`
 
 **Your role:**
 - Write code and implement features
@@ -44,8 +44,6 @@ Clavix has **two distinct modes** based on the command type:
 | `/clavix:prd` | Planning | ✗ NO |
 | `/clavix:plan` | Planning (Pre-Implementation) | ✗ NO |
 | `/clavix:implement` | Implementation | ✓ YES |
-| `/clavix:execute` | Implementation | ✓ YES |
-| `/clavix:task-complete` | Implementation | ✓ YES |
 
 ---
 
@@ -87,9 +85,9 @@ Clavix has **two distinct modes** based on the command type:
    - Output: `.clavix/outputs/{project}/tasks.md`
 
 3. **Implementation Phase** (`/clavix:implement`)
-   - Agent executes tasks systematically
+   - Agent executes tasks or prompts systematically (auto-detects source)
    - Mode: IMPLEMENTATION
-   - Uses `task-complete` to mark progress
+   - Agent edits tasks.md directly (`- [ ]` → `- [x]`) to mark progress
 
 4. **Completion** (`/clavix:archive`)
    - Archives completed project
@@ -104,7 +102,7 @@ Clavix has **two distinct modes** based on the command type:
 **User says:** "Now implement this" or "Build this feature"
 → **Switch to IMPLEMENTATION MODE** if not already in implementation command
 
-**User runs:** `/clavix:implement` or `/clavix:execute`
+**User runs:** `/clavix:implement`
 → **You are in IMPLEMENTATION MODE** - write code
 
 **User runs:** `/clavix:prd` or `/clavix:improve` or `/clavix:start`
@@ -199,21 +197,7 @@ export function TodoApp() {
 
 ---
 
-### Scenario 4: User Runs Execute Command
-
-**Command:** `/clavix:execute` or `/clavix:execute --latest`
-
-**Your mode:** CLAVIX IMPLEMENTATION MODE
-
-**Actions:**
-- Load saved prompt from fast/deep workflow
-- Implement the feature described in the prompt
-- Write actual code
-- Complete the implementation
-
----
-
-### Scenario 5: Ambiguous Request During Planning
+### Scenario 4: Ambiguous Request During Planning
 
 **User:** "What do you think about adding real-time updates?"
 
@@ -230,14 +214,14 @@ export function TodoApp() {
 
 ---
 
-### Scenario 6: User Gives Direct Implementation Request
+### Scenario 5: User Gives Direct Implementation Request
 
 **User:** "Now implement this feature" or "Build the dashboard we discussed"
 
 **Your mode:** Check context first
 
 **If no `/clavix:implement` command was run:**
-- Suggest: "To implement this, please run `/clavix:implement` or `/clavix:execute`. This ensures proper task tracking and file management."
+- Suggest: "To implement this, please run `/clavix:implement`. This ensures proper task tracking and file management."
 
 **If `/clavix:implement` command was run:**
 - You're already in CLAVIX IMPLEMENTATION MODE
@@ -261,13 +245,14 @@ If you catch yourself implementing during a Clavix workflow:
 
 **Two distinct Clavix modes:**
 
-1. **CLAVIX PLANNING MODE** (`start`, `summarize`, `fast`, `deep`, `prd`, `plan`)
+1. **CLAVIX PLANNING MODE** (`start`, `summarize`, `improve`, `prd`, `plan`)
    - Create PRDs, prompts, documentation
    - DO NOT implement features
 
-2. **CLAVIX IMPLEMENTATION MODE** (`implement`, `execute`, `task-complete`)
+2. **CLAVIX IMPLEMENTATION MODE** (`implement`)
    - Write code and build features
    - DO implement what's been planned
+   - Auto-detects tasks.md or prompts/
 
 **Standard workflow:** PRD → Plan → Implement → Archive
 

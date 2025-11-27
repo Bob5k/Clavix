@@ -232,7 +232,7 @@ Result: Project permanently deleted
 
 ---
 
-## Agent Transparency (v5.0)
+## Agent Transparency (v5.1)
 
 ### CLI Reference (Commands I Execute)
 {{INCLUDE:agent-protocols/cli-reference.md}}

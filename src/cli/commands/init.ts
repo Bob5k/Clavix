@@ -372,10 +372,9 @@ All workflows are executed via slash commands that AI agents read and follow:
 | \`/clavix:improve\` | Optimize prompts (auto-selects depth) |
 | \`/clavix:prd\` | Generate PRD through guided questions |
 | \`/clavix:plan\` | Create task breakdown from PRD |
-| \`/clavix:implement\` | Execute tasks with progress tracking |
+| \`/clavix:implement\` | Execute tasks or prompts (auto-detects source) |
 | \`/clavix:start\` | Begin conversational session |
 | \`/clavix:summarize\` | Extract requirements from conversation |
-| \`/clavix:execute\` | Run saved prompts |
 | \`/clavix:verify\` | Verify implementation |
 | \`/clavix:archive\` | Archive completed projects |
 
@@ -418,7 +417,7 @@ PRD Creation → Task Planning → Implementation → Archive
 
 1. **Optimize prompt**: \`/clavix:improve\` - Analyzes and improves your prompt
 2. **Review**: Agent lists saved prompts from \`.clavix/outputs/prompts/\`
-3. **Execute**: \`/clavix:execute\` - Implement when ready
+3. **Execute**: \`/clavix:implement --latest\` - Implement when ready
 4. **Cleanup**: Agent deletes old prompt files from \`.clavix/outputs/prompts/\`
 
 ## When to Use Which Mode

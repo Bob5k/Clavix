@@ -82,8 +82,7 @@ Users invoke workflows through slash commands:
 | `/clavix:prd` | Document | Guided PRD generation |
 | `/clavix:plan` | Plan | Transform PRD into task breakdown |
 | `/clavix:improve` | Optimize | Structure and optimize a prompt |
-| `/clavix:implement` | Implement | Execute tasks with tracking |
-| `/clavix:execute` | Implement | Run a saved optimized prompt |
+| `/clavix:implement` | Implement | Execute tasks or prompts (auto-detects source) |
 | `/clavix:verify` | Verify | Check implementation against checklist |
 
 ### Mode Enforcement

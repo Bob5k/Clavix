@@ -117,7 +117,7 @@ Implementation: BLOCKED - I will extract requirements, not implement them
    - **Success Criteria** [confidence]: How will success be measured?
    - **Context** [confidence]: Any important background or constraints?
 
-   **Calculate Extraction Confidence (v4.4):**
+   **Calculate Extraction Confidence:**
    - Start with 50% base (conversational content detected)
    - Add 20% if concrete requirements extracted
    - Add 15% if clear goals identified
@@ -177,7 +177,7 @@ Implementation: BLOCKED - I will extract requirements, not implement them
    - [Edge case 1 and how it should be handled]
    - [Open question 1 - needs clarification]
 
-   ## Implicit Requirements (v4.4)
+   ## Implicit Requirements
    *Inferred from conversation context - please verify:*
    - [Category] [Requirement inferred from discussion]
    - [Category] [Another requirement]
@@ -371,7 +371,7 @@ Implementation: BLOCKED - I will extract requirements, not implement them
 
 ---
 
-## Agent Transparency (v4.9)
+## Agent Transparency (v5.1)
 
 ### How to Explain Improvements
 {{INCLUDE:sections/improvement-explanations.md}}

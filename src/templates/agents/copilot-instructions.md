@@ -4,7 +4,7 @@ These instructions enhance GitHub Copilot's understanding of Clavix prompt optim
 
 ---
 
-## ⛔ CLAVIX MODE ENFORCEMENT (v4.7)
+## ⛔ CLAVIX MODE ENFORCEMENT
 
 **CRITICAL: Know which mode you're in and STOP at the right point.**
 
@@ -12,7 +12,7 @@ These instructions enhance GitHub Copilot's understanding of Clavix prompt optim
 - Fast/deep optimization - Prompt improvement only
 - Your role: Analyze, optimize, show improved prompt, **STOP**
 - ❌ DO NOT implement the prompt's requirements
-- ✅ After showing optimized prompt, tell user: "Run `/clavix:execute --latest` to implement"
+- ✅ After showing optimized prompt, tell user: "Run `/clavix:implement --latest` to implement"
 
 **PLANNING workflows** (NO CODE ALLOWED):
 - Conversational mode, requirement extraction, PRD generation
@@ -71,10 +71,9 @@ All workflows are executed via slash commands:
 | `/clavix:improve` | Optimize prompts (auto-selects depth) |
 | `/clavix:prd` | Generate PRD through guided questions |
 | `/clavix:plan` | Create task breakdown from PRD |
-| `/clavix:implement` | Execute tasks with progress tracking |
+| `/clavix:implement` | Execute tasks or prompts (auto-detects source) |
 | `/clavix:start` | Begin conversational session |
 | `/clavix:summarize` | Extract requirements from conversation |
-| `/clavix:execute` | Run saved prompts |
 | `/clavix:verify` | Verify implementation |
 | `/clavix:archive` | Archive completed projects |
 
@@ -85,7 +84,7 @@ All workflows are executed via slash commands:
 **Prompt Lifecycle:**
 1. **Optimize**: `/clavix:improve` → Analyzes and improves your prompt
 2. **Review**: Agent reads `.clavix/outputs/prompts/*.md` to list saved prompts
-3. **Execute**: `/clavix:execute` → Implement when ready
+3. **Execute**: `/clavix:implement --latest` → Implement when ready
 4. **Cleanup**: Agent deletes old prompt files from `.clavix/outputs/prompts/`
 
 ---

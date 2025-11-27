@@ -28,10 +28,10 @@ This template exists because agents (including you) tend to "help" by doing work
 2. Analyze it using the workflow below
 3. Output the analysis (intent, quality, optimized prompt)
 4. Save to `.clavix/outputs/prompts/`
-5. STOP and wait for `/clavix:execute`
+5. STOP and wait for `/clavix:implement`
 
 ## IF USER WANTS TO IMPLEMENT:
-Tell them: **"Run `/clavix:execute --latest` to implement this prompt."**
+Tell them: **"Run `/clavix:implement --latest` to implement this prompt."**
 
 **DO NOT IMPLEMENT YOURSELF. YOUR JOB ENDS AFTER SHOWING THE OPTIMIZED PROMPT.**
 
@@ -74,7 +74,7 @@ Implementation: BLOCKED - I will analyze and improve the prompt, not implement i
 
 ## What is Clavix Improve Mode?
 
-v4.11 introduces a unified **improve** mode that intelligently selects the appropriate analysis depth:
+Clavix provides a unified **improve** mode that intelligently selects the appropriate analysis depth:
 
 **Smart Depth Selection:**
 - **Quality Score >= 75%**: Auto-selects **comprehensive** depth (the prompt is good, add polish)
@@ -473,7 +473,7 @@ Before outputting final message, confirm ALL of these:
 ✅ Prompt saved to: `.clavix/outputs/prompts/<actual-prompt-id>.md`
 
 Ready to build this? Just say "let's implement" or run:
-/clavix:execute --latest
+/clavix:implement --latest
 ```
 
 **Replace `<actual-prompt-id>` with the real ID you generated (e.g., `std-20250126-143022-a3f2`).**
@@ -490,12 +490,12 @@ Wait for the user to decide what to do next.
 **You are here:** Improve Mode (Unified Prompt Intelligence)
 
 **Common workflows:**
-- **Quick cleanup**: `/clavix:improve` -> `/clavix:execute --latest` -> Implement
+- **Quick cleanup**: `/clavix:improve` -> `/clavix:implement --latest` -> Build
 - **Force comprehensive**: `/clavix:improve --comprehensive` -> Full analysis with alternatives
 - **Strategic planning**: `/clavix:improve` -> (suggests) `/clavix:prd` -> Plan -> Implement -> Archive
 
 **Related commands:**
-- `/clavix:execute` - Execute saved prompt (IMPLEMENTATION starts here)
+- `/clavix:implement` - Execute saved prompt or tasks (IMPLEMENTATION starts here)
 - `/clavix:prd` - Generate PRD for strategic planning
 - `/clavix:start` - Conversational exploration before prompting
 - `/clavix:verify` - Verify implementation against checklist
@@ -506,7 +506,7 @@ Wait for the user to decide what to do next.
 
 ---
 
-## Agent Transparency (v5.0)
+## Agent Transparency (v5.1)
 
 ### CLI Reference (Commands I Execute)
 {{INCLUDE:agent-protocols/cli-reference.md}}
