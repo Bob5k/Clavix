@@ -283,34 +283,84 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
 ---
 
+## Integration Configuration (Source of Truth)
+
+All integration configurations are defined in `src/config/integrations.json`. This JSON file is the **single source of truth** for:
+
+- Directory paths (e.g., `.cursor/rules`, `.claude/commands/clavix`)
+- Filename patterns (e.g., `clavix-{name}` vs `{name}`)
+- Command separators (`:` or `-`)
+- Detection directories
+- Placeholder support (e.g., `$ARGUMENTS`, `{{args}}`)
+- Special adapter requirements (TOML, doc-injection)
+- Global vs project-local paths
+
+### Configuration Schema
+
+```json
+{
+  "name": "newtool",
+  "displayName": "New Tool",
+  "directory": ".newtool/rules",
+  "filenamePattern": "clavix-{name}",
+  "extension": ".md",
+  "separator": "-",
+  "detection": ".newtool",
+  "placeholder": "$ARGUMENTS",
+  "global": false,
+  "specialAdapter": null
+}
+```
+
+### Configuration Fields
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `name` | Yes | Internal adapter name (kebab-case) |
+| `displayName` | Yes | User-facing name |
+| `directory` | Yes | Command file directory (use `~/` for global) |
+| `filenamePattern` | Yes | Pattern with `{name}` placeholder |
+| `extension` | Yes | `.md` or `.toml` |
+| `separator` | Yes | `:` (TOML/folderized) or `-` (flat markdown) |
+| `detection` | Yes | Directory to detect integration presence |
+| `placeholder` | No | Argument placeholder (`$ARGUMENTS`, `{{args}}`, etc.) |
+| `global` | No | If `true`, writes to home directory |
+| `specialAdapter` | No | `"toml"` or `"doc-injection"` for custom handling |
+
+---
+
 ## Adding New Adapters
 
 To add support for a new AI tool:
 
 ### Simple Adapter (Config-Driven)
 
-Add to `ADAPTER_CONFIGS` in `src/core/adapter-registry.ts`:
+Add to `src/config/integrations.json`:
 
-```typescript
+```json
 {
-  name: 'newtool',
-  displayName: 'New Tool',
-  directory: '.newtool/rules',
-  fileExtension: '.md',
-  filenamePattern: 'clavix-{name}',
-  features: { ...DEFAULT_MD_FEATURES },
-  detection: { type: 'directory', path: '.newtool' },
+  "name": "newtool",
+  "displayName": "New Tool",
+  "directory": ".newtool/rules",
+  "filenamePattern": "clavix-{name}",
+  "extension": ".md",
+  "separator": "-",
+  "detection": ".newtool"
 }
 ```
+
+That's it! The adapter registry loads configurations from this JSON file automatically. No TypeScript changes needed for simple adapters.
 
 ### Special Adapter (Custom Logic)
 
 If the tool needs special handling (TOML format, doc injection, etc.):
 
-1. Create `src/core/adapters/newtool-adapter.ts`
-2. Extend `BaseAdapter` or `TomlFormattingAdapter`
-3. Register in `AgentManager` constructor
-4. Add tests in `tests/adapters/`
+1. Add entry to `src/config/integrations.json` with `specialAdapter` field
+2. Create `src/core/adapters/newtool-adapter.ts`
+3. Extend `BaseAdapter` or `TomlFormattingAdapter`
+4. Register in `AgentManager` constructor
+5. Add tests in `tests/adapters/`
+6. Update `docs/integrations.md` tables
 
 ---
 

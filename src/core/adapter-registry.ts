@@ -1,11 +1,11 @@
 /**
  * Adapter Registry - Config-driven adapter definitions
  *
- * This registry provides configuration for all simple adapters that can
- * be represented as pure configuration without custom logic.
+ * This registry loads configuration from integrations.json and transforms
+ * it into AdapterConfig objects used by the adapter system.
  *
- * For adapters requiring custom behavior (TOML format, doc injection),
- * dedicated adapter classes still exist.
+ * The integrations.json file is the single source of truth for all
+ * adapter configurations. See CONTRIBUTING.md for modification guidelines.
  *
  * NOTE: AGENTS.md is a mandatory integration that is always enabled by default.
  * It provides universal agent guidance that all AI tools can read. The AGENTS.md
@@ -13,187 +13,89 @@
  * included by ensureMandatoryIntegrations() in integration-selector.ts.
  *
  * @since v5.3.0
+ * @updated v5.7.0 - Refactored to use integrations.json as source of truth
  */
 
+import { createRequire } from 'module';
 import {
   AdapterConfig,
+  AdapterFeatures,
+  CommandSeparator,
   DEFAULT_MD_FEATURES,
   DEFAULT_TOML_FEATURES,
 } from '../types/adapter-config.js';
 
+// Use createRequire for JSON imports in ESM
+const require = createRequire(import.meta.url);
+const integrations = require('../config/integrations.json');
+
+/**
+ * Integration configuration from JSON
+ */
+interface IntegrationConfig {
+  name: string;
+  displayName: string;
+  directory: string;
+  filenamePattern: string;
+  extension: '.md' | '.toml';
+  separator: ':' | '-';
+  detection: string;
+  specialAdapter?: 'toml' | 'doc-injection';
+  rootDir?: string;
+  global?: boolean;
+  placeholder?: string;
+}
+
+/**
+ * Transform JSON config to AdapterConfig
+ */
+function transformConfig(config: IntegrationConfig): AdapterConfig {
+  const isToml = config.extension === '.toml';
+
+  // Build features based on adapter type
+  const features: AdapterFeatures = isToml
+    ? { ...DEFAULT_TOML_FEATURES }
+    : {
+        ...DEFAULT_MD_FEATURES,
+        commandSeparator: config.separator as CommandSeparator,
+      };
+
+  // Add placeholder support if specified
+  if (config.placeholder) {
+    features.argumentPlaceholder = config.placeholder;
+  }
+
+  // Special handling for Claude Code (subdirectories + frontmatter + doc injection)
+  if (config.specialAdapter === 'doc-injection') {
+    features.supportsSubdirectories = true;
+    features.supportsFrontmatter = true;
+    features.supportsDocInjection = true;
+    features.commandSeparator = ':';
+  }
+
+  return {
+    name: config.name,
+    displayName: config.displayName,
+    directory: config.directory,
+    fileExtension: config.extension,
+    filenamePattern: config.filenamePattern,
+    features,
+    detection: { type: 'directory', path: config.detection },
+    specialAdapter: config.specialAdapter,
+    rootDir: config.rootDir,
+    global: config.global,
+  };
+}
+
 /**
  * Registry of all adapter configurations
  *
- * These configurations describe how each adapter behaves:
- * - Where commands are stored
- * - File extension and naming pattern
- * - Feature support (subdirectories, frontmatter, etc.)
- * - Detection method for project environment
+ * Loaded from src/config/integrations.json and transformed into AdapterConfig objects.
+ * The JSON file is the single source of truth for integration paths, patterns, and features.
  */
-export const ADAPTER_CONFIGS: AdapterConfig[] = [
-  // IDE Extensions (Markdown-based)
-  {
-    name: 'cursor',
-    displayName: 'Cursor',
-    directory: '.cursor/rules',
-    fileExtension: '.md',
-    filenamePattern: 'clavix-{name}',
-    features: { ...DEFAULT_MD_FEATURES },
-    detection: { type: 'directory', path: '.cursor' },
-  },
-  {
-    name: 'windsurf',
-    displayName: 'Windsurf',
-    directory: '.windsurf/rules',
-    fileExtension: '.md',
-    filenamePattern: 'clavix-{name}',
-    features: { ...DEFAULT_MD_FEATURES },
-    detection: { type: 'directory', path: '.windsurf' },
-  },
-  {
-    name: 'kilocode',
-    displayName: 'Kilocode',
-    directory: '.kilocode/rules',
-    fileExtension: '.md',
-    filenamePattern: 'clavix-{name}',
-    features: { ...DEFAULT_MD_FEATURES },
-    detection: { type: 'directory', path: '.kilocode' },
-  },
-  {
-    name: 'roocode',
-    displayName: 'Roo-Code',
-    directory: '.roo/rules',
-    fileExtension: '.md',
-    filenamePattern: 'clavix-{name}',
-    features: { ...DEFAULT_MD_FEATURES },
-    detection: { type: 'directory', path: '.roo' },
-  },
-  {
-    name: 'cline',
-    displayName: 'Cline',
-    directory: '.cline/rules',
-    fileExtension: '.md',
-    filenamePattern: 'clavix-{name}',
-    features: { ...DEFAULT_MD_FEATURES },
-    detection: { type: 'directory', path: '.cline' },
-  },
-  {
-    name: 'droid',
-    displayName: 'Droid',
-    directory: '.droid/rules',
-    fileExtension: '.md',
-    filenamePattern: 'clavix-{name}',
-    features: { ...DEFAULT_MD_FEATURES },
-    detection: { type: 'directory', path: '.droid' },
-  },
-  {
-    name: 'opencode',
-    displayName: 'OpenCode',
-    directory: '.opencode/rules',
-    fileExtension: '.md',
-    filenamePattern: 'clavix-{name}',
-    features: { ...DEFAULT_MD_FEATURES },
-    detection: { type: 'directory', path: '.opencode' },
-  },
-  {
-    name: 'crush',
-    displayName: 'Crush',
-    directory: '.crush/rules',
-    fileExtension: '.md',
-    filenamePattern: 'clavix-{name}',
-    features: { ...DEFAULT_MD_FEATURES },
-    detection: { type: 'directory', path: '.crush' },
-  },
-  {
-    name: 'codex',
-    displayName: 'Codex CLI',
-    directory: '.codex/instructions',
-    fileExtension: '.md',
-    filenamePattern: 'clavix-{name}',
-    features: { ...DEFAULT_MD_FEATURES },
-    detection: { type: 'directory', path: '.codex' },
-  },
-  {
-    name: 'codebuddy',
-    displayName: 'CodeBuddy',
-    directory: '.codebuddy/rules',
-    fileExtension: '.md',
-    filenamePattern: 'clavix-{name}',
-    features: { ...DEFAULT_MD_FEATURES },
-    detection: { type: 'directory', path: '.codebuddy' },
-  },
-  {
-    name: 'amp',
-    displayName: 'Amp',
-    directory: '.amp/rules',
-    fileExtension: '.md',
-    filenamePattern: 'clavix-{name}',
-    features: { ...DEFAULT_MD_FEATURES },
-    detection: { type: 'directory', path: '.amp' },
-  },
-  {
-    name: 'augment',
-    displayName: 'Augment Code',
-    directory: '.augment/rules',
-    fileExtension: '.md',
-    filenamePattern: 'clavix-{name}',
-    features: { ...DEFAULT_MD_FEATURES },
-    detection: { type: 'directory', path: '.augment' },
-  },
-
-  // Claude Code (requires doc injection - special adapter kept)
-  {
-    name: 'claude-code',
-    displayName: 'Claude Code',
-    directory: '.claude/commands/clavix',
-    fileExtension: '.md',
-    filenamePattern: '{name}',
-    features: {
-      ...DEFAULT_MD_FEATURES,
-      supportsSubdirectories: true,
-      supportsFrontmatter: true,
-      supportsDocInjection: true,
-      commandSeparator: ':',
-    },
-    detection: { type: 'directory', path: '.claude' },
-    specialAdapter: 'doc-injection',
-  },
-
-  // TOML-based adapters (require special formatting - special adapter kept)
-  {
-    name: 'gemini',
-    displayName: 'Gemini CLI',
-    directory: '.gemini/commands/clavix',
-    fileExtension: '.toml',
-    filenamePattern: '{name}',
-    features: { ...DEFAULT_TOML_FEATURES },
-    detection: { type: 'directory', path: '.gemini' },
-    specialAdapter: 'toml',
-    rootDir: '.gemini',
-  },
-  {
-    name: 'qwen',
-    displayName: 'Qwen CLI',
-    directory: '.qwen/commands/clavix',
-    fileExtension: '.toml',
-    filenamePattern: '{name}',
-    features: { ...DEFAULT_TOML_FEATURES },
-    detection: { type: 'directory', path: '.qwen' },
-    specialAdapter: 'toml',
-    rootDir: '.qwen',
-  },
-  {
-    name: 'llxprt',
-    displayName: 'LLXpert',
-    directory: '.llxprt/commands/clavix',
-    fileExtension: '.toml',
-    filenamePattern: '{name}',
-    features: { ...DEFAULT_TOML_FEATURES },
-    detection: { type: 'directory', path: '.llxprt' },
-    specialAdapter: 'toml',
-    rootDir: '.llxprt',
-  },
-];
+export const ADAPTER_CONFIGS: AdapterConfig[] = (
+  integrations.integrations as IntegrationConfig[]
+).map(transformConfig);
 
 /**
  * Get adapter configuration by name

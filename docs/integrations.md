@@ -8,10 +8,10 @@ Clavix can generate slash commands and documentation snippets for a wide range o
 
 | Tool Type | Separator | Example |
 |-----------|-----------|---------|
-| **CLI agents** (Claude Code, Gemini, Qwen, Crush, LLXPRT, Augment) | Colon (`:`) | `/clavix:improve` |
-| **IDE extensions** (Cursor, Windsurf, Cline, Kilocode, Roocode, Droid, etc.) | Hyphen (`-`) | `/clavix-improve` |
+| **TOML-based CLI agents** (Claude Code, Gemini, Qwen, LLXPRT) | Colon (`:`) | `/clavix:improve` |
+| **Markdown-based tools** (Cursor, Windsurf, Cline, Kilocode, Roocode, Amp, Crush, Droid, etc.) | Hyphen (`-`) | `/clavix-improve` |
 
-**Rule of thumb:** CLI tools use colon, IDE extensions use hyphen.
+**Rule of thumb:** TOML/folderized tools use colon, flat markdown tools use hyphen.
 
 ## Template architecture
 
@@ -33,27 +33,27 @@ For detailed information on template customization and override options, see [Ge
 
 | Integration | Format | Command location | Subdirectories | Placeholder |
 | --- | --- | --- | --- | --- |
-| Cursor | `-` | `.cursor/commands/` | No | *(implicit)* |
-| Windsurf | `-` | `.windsurf/workflows/` | Yes | *(implicit)* |
-| Kilocode | `-` | `.kilocode/workflows/` | No | *(implicit)* |
-| Roocode | `-` | `.roo/commands/` | No | *(implicit)* |
-| Cline | `-` | `.clinerules/workflows/` (falls back to `.cline/`) | No | *(implicit)* |
+| Cursor | `-` | `.cursor/rules/` | No | *(implicit)* |
+| Windsurf | `-` | `.windsurf/rules/` | No | *(implicit)* |
+| Kilocode | `-` | `.kilocode/rules/` | No | *(implicit)* |
+| Roo-Code | `-` | `.roo/rules/` | No | *(implicit)* |
+| Cline | `-` | `.clinerules/` | No | *(implicit)* |
 
 ## CLI agents and toolchains
 
 | Integration | Format | Command location | Subdirectories | Placeholder |
 | --- | --- | --- | --- | --- |
 | Claude Code | `:` | `.claude/commands/clavix/` | Yes | *(implicit)* |
-| Droid CLI | `-` | `.factory/commands/` | No | `$ARGUMENTS` |
-| CodeBuddy CLI | `-` | `.codebuddy/commands/` (or `~/.codebuddy/commands/`) | No | `$1`, `$2`, … |
+| Droid (Factory AI) | `-` | `.factory/commands/` | No | `$ARGUMENTS` |
+| CodeBuddy | `-` | `.codebuddy/rules/` | No | *(implicit)* |
 | OpenCode | `-` | `.opencode/command/` | No | `$ARGUMENTS` |
 | Gemini CLI | `:` | `.gemini/commands/clavix/` | Yes | `{{args}}` |
-| Qwen Code | `:` | `.qwen/commands/clavix/` | Yes | `{{args}}` |
-| LLXPRT | `:` | `.llxprt/commands/clavix/` | Yes | `{{args}}` |
-| Amp | `-` | `.agents/commands/` | No | *(raw prompt)* |
-| Crush CLI | `:` | `.crush/commands/clavix/` | Yes | `$PROMPT` |
-| Codex CLI | `-` | `~/.codex/prompts` | No | `$ARGUMENTS` |
-| Augment CLI | `:` | `.augment/commands/clavix/` (or `~/.augment/commands/clavix/`) | Yes | *(implicit)* |
+| Qwen CLI | `:` | `.qwen/commands/clavix/` | Yes | `{{args}}` |
+| LLXpert | `:` | `.llxprt/commands/clavix/` | Yes | `{{args}}` |
+| Amp | `-` | `.agents/commands/` | No | *(implicit)* |
+| Crush | `-` | `.crush/commands/` | No | *(implicit)* |
+| Codex CLI | `-` | `~/.codex/prompts/` (global) | No | `$ARGUMENTS` |
+| Augment Code | `-` | `.augment/rules/` | No | *(implicit)* |
 
 ## Universal adapters
 

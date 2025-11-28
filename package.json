@@ -1,6 +1,6 @@
 {
   "name": "clavix",
-  "version": "5.6.0",
+  "version": "5.6.1",
   "description": "Agentic-first prompt workflows. Markdown templates that teach AI agents how to optimize prompts, create PRDs, and manage implementation.\n\nSLASH COMMANDS (in your AI assistant):\n  /clavix:improve    Optimize prompts with auto-depth\n  /clavix:prd        Generate PRD through questions\n  /clavix:plan       Create task breakdown from PRD\n  /clavix:implement  Execute tasks with progress tracking\n  /clavix:start      Begin conversational session\n  /clavix:summarize  Extract requirements from conversation\n\nWorks with Claude Code, Cursor, Windsurf, and 19+ other AI coding tools.",
   "type": "module",
   "main": "dist/index.js",

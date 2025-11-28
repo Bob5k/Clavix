@@ -18,8 +18,10 @@ export type CommandSeparator = ':' | '-';
  * - '{name}' - Just the command name (e.g., 'improve.md')
  * - 'clavix-{name}' - Prefixed (e.g., 'clavix-improve.md')
  * - 'clavix/{name}' - In subdirectory (e.g., 'clavix/improve.md')
+ *
+ * The pattern should contain '{name}' which will be replaced with the command name.
  */
-export type FilenamePattern = '{name}' | 'clavix-{name}' | 'clavix/{name}';
+export type FilenamePattern = string;
 
 /**
  * Detection method for project environment
@@ -67,6 +69,8 @@ export interface AdapterConfig {
   specialAdapter?: 'toml' | 'doc-injection';
   /** For TOML adapters: root directory (e.g., '.gemini') */
   rootDir?: string;
+  /** Whether commands should be written to home directory (global installation) */
+  global?: boolean;
 }
 
 /**

@@ -129,7 +129,7 @@ describe('Multi-Integration Workflow Integration', () => {
     it('should detect multiple integrations in same project', async () => {
       await fs.ensureDir('.claude');
       await fs.ensureDir('.cursor');
-      await fs.ensureDir('.amp');
+      await fs.ensureDir('.agents'); // amp detection directory
 
       const detected = await agentManager.detectAgents();
 
@@ -141,16 +141,16 @@ describe('Multi-Integration Workflow Integration', () => {
     });
 
     it('should detect all integrations when all markers present', async () => {
-      // Create directories for all 16 adapters
+      // Create directories for all 16 adapters (using correct detection paths)
       await fs.ensureDir('.claude'); // claude-code
       await fs.ensureDir('.cursor'); // cursor
-      await fs.ensureDir('.droid'); // droid
+      await fs.ensureDir('.factory'); // droid (detection: .factory)
       await fs.ensureDir('.opencode'); // opencode
-      await fs.ensureDir('.amp'); // amp
+      await fs.ensureDir('.agents'); // amp (detection: .agents)
       await fs.ensureDir('.crush'); // crush
       await fs.ensureDir('.windsurf'); // windsurf
       await fs.ensureDir('.kilocode'); // kilocode
-      await fs.ensureDir('.cline'); // cline
+      await fs.ensureDir('.clinerules'); // cline (detection: .clinerules)
       await fs.ensureDir('.roo'); // roocode
       await fs.ensureDir('.codebuddy'); // codebuddy
       await fs.ensureDir('.gemini'); // gemini
@@ -423,7 +423,7 @@ describe('Multi-Integration Workflow Integration', () => {
 
       expect(claudeChoice?.name).toContain('.claude/commands/clavix');
       expect(cursorChoice?.name).toContain('.cursor/rules');
-      expect(droidChoice?.name).toContain('.droid/rules');
+      expect(droidChoice?.name).toContain('.factory/commands');
     });
   });
 

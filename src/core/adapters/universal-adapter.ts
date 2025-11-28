@@ -15,6 +15,7 @@ import { BaseAdapter } from './base-adapter.js';
 import { AdapterConfig } from '../../types/adapter-config.js';
 import { IntegrationFeatures } from '../../types/agent.js';
 import * as path from 'path';
+import * as os from 'os';
 
 export class UniversalAdapter extends BaseAdapter {
   private config: AdapterConfig;
@@ -42,7 +43,18 @@ export class UniversalAdapter extends BaseAdapter {
   }
 
   get directory(): string {
+    // Expand ~ to home directory for global adapters
+    if (this.config.directory.startsWith('~/')) {
+      return this.config.directory.replace('~', os.homedir());
+    }
     return this.config.directory;
+  }
+
+  /**
+   * Check if this adapter uses global (home directory) installation
+   */
+  get isGlobal(): boolean {
+    return this.config.global ?? false;
   }
 
   get fileExtension(): string {
@@ -73,6 +85,10 @@ export class UniversalAdapter extends BaseAdapter {
    * Get full command path
    */
   getCommandPath(): string {
+    // For global adapters, use expanded directory path directly
+    if (this.isGlobal || this.config.directory.startsWith('~/')) {
+      return this.directory; // directory getter already expands ~
+    }
     return path.join(process.cwd(), this.config.directory);
   }
 

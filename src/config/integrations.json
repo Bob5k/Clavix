@@ -1,0 +1,161 @@
+{
+  "$schema": "./integrations.schema.json",
+  "version": "1.0.0",
+  "integrations": [
+    {
+      "name": "cursor",
+      "displayName": "Cursor",
+      "directory": ".cursor/rules",
+      "filenamePattern": "clavix-{name}",
+      "extension": ".md",
+      "separator": "-",
+      "detection": ".cursor"
+    },
+    {
+      "name": "windsurf",
+      "displayName": "Windsurf",
+      "directory": ".windsurf/rules",
+      "filenamePattern": "clavix-{name}",
+      "extension": ".md",
+      "separator": "-",
+      "detection": ".windsurf"
+    },
+    {
+      "name": "kilocode",
+      "displayName": "Kilocode",
+      "directory": ".kilocode/rules",
+      "filenamePattern": "clavix-{name}",
+      "extension": ".md",
+      "separator": "-",
+      "detection": ".kilocode"
+    },
+    {
+      "name": "roocode",
+      "displayName": "Roo-Code",
+      "directory": ".roo/rules",
+      "filenamePattern": "clavix-{name}",
+      "extension": ".md",
+      "separator": "-",
+      "detection": ".roo"
+    },
+    {
+      "name": "cline",
+      "displayName": "Cline",
+      "directory": ".clinerules",
+      "filenamePattern": "clavix-{name}",
+      "extension": ".md",
+      "separator": "-",
+      "detection": ".clinerules"
+    },
+    {
+      "name": "droid",
+      "displayName": "Droid",
+      "directory": ".factory/commands",
+      "filenamePattern": "clavix-{name}",
+      "extension": ".md",
+      "separator": "-",
+      "detection": ".factory",
+      "placeholder": "$ARGUMENTS"
+    },
+    {
+      "name": "opencode",
+      "displayName": "OpenCode",
+      "directory": ".opencode/command",
+      "filenamePattern": "clavix-{name}",
+      "extension": ".md",
+      "separator": "-",
+      "detection": ".opencode",
+      "placeholder": "$ARGUMENTS"
+    },
+    {
+      "name": "codebuddy",
+      "displayName": "CodeBuddy",
+      "directory": ".codebuddy/rules",
+      "filenamePattern": "clavix-{name}",
+      "extension": ".md",
+      "separator": "-",
+      "detection": ".codebuddy"
+    },
+    {
+      "name": "amp",
+      "displayName": "Amp",
+      "directory": ".agents/commands",
+      "filenamePattern": "clavix-{name}",
+      "extension": ".md",
+      "separator": "-",
+      "detection": ".agents"
+    },
+    {
+      "name": "crush",
+      "displayName": "Crush",
+      "directory": ".crush/commands",
+      "filenamePattern": "clavix-{name}",
+      "extension": ".md",
+      "separator": "-",
+      "detection": ".crush"
+    },
+    {
+      "name": "codex",
+      "displayName": "Codex CLI",
+      "directory": "~/.codex/prompts",
+      "filenamePattern": "clavix-{name}",
+      "extension": ".md",
+      "separator": "-",
+      "detection": ".codex",
+      "global": true,
+      "placeholder": "$ARGUMENTS"
+    },
+    {
+      "name": "augment",
+      "displayName": "Augment Code",
+      "directory": ".augment/rules",
+      "filenamePattern": "clavix-{name}",
+      "extension": ".md",
+      "separator": "-",
+      "detection": ".augment"
+    },
+    {
+      "name": "claude-code",
+      "displayName": "Claude Code",
+      "directory": ".claude/commands/clavix",
+      "filenamePattern": "{name}",
+      "extension": ".md",
+      "separator": ":",
+      "detection": ".claude",
+      "specialAdapter": "doc-injection"
+    },
+    {
+      "name": "gemini",
+      "displayName": "Gemini CLI",
+      "directory": ".gemini/commands/clavix",
+      "filenamePattern": "{name}",
+      "extension": ".toml",
+      "separator": ":",
+      "detection": ".gemini",
+      "specialAdapter": "toml",
+      "rootDir": ".gemini"
+    },
+    {
+      "name": "qwen",
+      "displayName": "Qwen CLI",
+      "directory": ".qwen/commands/clavix",
+      "filenamePattern": "{name}",
+      "extension": ".toml",
+      "separator": ":",
+      "detection": ".qwen",
+      "specialAdapter": "toml",
+      "rootDir": ".qwen"
+    },
+    {
+      "name": "llxprt",
+      "displayName": "LLXpert",
+      "directory": ".llxprt/commands/clavix",
+      "filenamePattern": "{name}",
+      "extension": ".toml",
+      "separator": ":",
+      "detection": ".llxprt",
+      "specialAdapter": "toml",
+      "rootDir": ".llxprt"
+    }
+  ]
+}
