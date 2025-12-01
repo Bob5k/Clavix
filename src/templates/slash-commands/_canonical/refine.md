@@ -3,46 +3,44 @@ name: "Clavix: Refine"
 description: Refine existing PRD or prompt through continued discussion
 ---
 
-# Clavix: Refine Your Requirements
+# Clavix: Update Your Work
 
-Need to update your PRD or improve a saved prompt? This command lets you refine existing work without starting over.
+Want to tweak your PRD or improve a saved prompt? Let's update what you already have without starting from scratch.
 
 ---
 
 ## What This Does
 
 When you run `/clavix:refine`, I:
-1. **Detect available targets** - Find PRDs and saved prompts in your project
-2. **Ask what to refine** - PRD project or saved prompt?
-3. **Load existing content** - Read and understand current state
-4. **Enter refinement mode** - Discuss what you want to change
-5. **Update the files** - Save refined version with change history
+1. **Find what you've got** - Look for your PRDs and saved prompts
+2. **Ask what to update** - Which one do you want to refine?
+3. **Load it up** - Read what's there now
+4. **Talk through changes** - What do you want to add, change, or remove?
+5. **Save the update** - Keep track of what changed
 
-**I'm refining existing work, not creating new content from scratch.**
+**We're improving what exists, not starting over.**
 
 ---
 
 ## CLAVIX MODE: Refinement
 
-**I'm in refinement mode. Updating existing requirements or prompts.**
+**I'm in refinement mode. Updating existing stuff, not building new things.**
 
 **What I'll do:**
-- Check for existing PRDs and prompts
-- Ask you what you want to refine
-- Load and display current content
-- Discuss changes with you
-- Update files with tracked changes
-- Flag what changed vs. what stayed the same
+- Find your existing PRDs and prompts
+- Ask which one to update
+- Show you what's there now
+- Talk through what you want to change
+- Save the updated version
+- Track what changed and what stayed the same
 
 **What I won't do:**
-- Write implementation code
-- Create new PRDs from scratch (use `/clavix:prd` for that)
-- Create new prompts from scratch (use `/clavix:improve` for that)
-- Make changes without user approval
+- Write code
+- Create brand new PRDs (use `/clavix:prd` for that)
+- Create brand new prompts (use `/clavix:improve` for that)
+- Change things without asking you first
 
-**I'm improving what exists, not building from scratch.**
-
-For complete mode documentation, see: `.clavix/instructions/core/clavix-mode.md`
+**We're tweaking what exists, not starting fresh.**
 
 ---
 
@@ -62,9 +60,9 @@ For complete mode documentation, see: `.clavix/instructions/core/clavix-mode.md`
 **STOP**: Immediately halt the incorrect action
 
 **CORRECT**: Output:
-"I apologize - I was [describe mistake]. Let me return to refinement mode."
+"I apologize - I was [describe mistake]. Let me get back to refining your existing work."
 
-**RESUME**: Return to the refinement workflow with proper mode selection and content loading.
+**RESUME**: Return to refinement mode - load content and discuss changes.
 
 ---
 
@@ -74,359 +72,223 @@ For complete mode documentation, see: `.clavix/instructions/core/clavix-mode.md`
 ```
 **CLAVIX MODE: Refinement**
 Mode: planning
-Purpose: Refining existing PRD or prompt
-Implementation: BLOCKED - I will refine requirements, not implement them
+Purpose: Updating existing PRD or prompt
+Implementation: BLOCKED - I'll update requirements, not build them
 ```
 
 ---
 
 ## Instructions
 
-### Step 0: Detect Available Refinement Targets
+### Step 1: Find What You Have
 
-**CHECKPOINT:** Starting detection of refinement targets
+I'll check what's available to refine:
 
-Use file system tools to check for:
+**Looking for PRDs:**
+- Check `.clavix/outputs/*/mini-prd.md`
+- Check `.clavix/outputs/*/quick-prd.md`
+- Check `.clavix/outputs/*/full-prd.md`
 
-**PRD Projects:**
-```bash
-# Look for PRD files
-ls .clavix/outputs/*/mini-prd.md 2>/dev/null
-ls .clavix/outputs/*/quick-prd.md 2>/dev/null
-ls .clavix/outputs/*/full-prd.md 2>/dev/null
+**Looking for saved prompts:**
+- Check `.clavix/outputs/prompts/*.md`
+
+**What you'll see:**
 ```
-
-**Saved Prompts:**
-```bash
-# Look for saved prompts
-ls .clavix/outputs/prompts/*.md 2>/dev/null
+Found 2 PRD projects and 3 saved prompts.
+Which would you like to refine?
 ```
-
-**Record what was found:**
-- PRD projects found: [list project names]
-- Saved prompts found: [list prompt files]
-
-**CHECKPOINT:** Detection complete - found [N] PRD projects, [M] saved prompts
 
 ---
 
-### Step 1: Ask User What to Refine
+### Step 2: Ask What to Update
 
-Based on what was found, ask the user:
+**If you have both PRDs and prompts:**
 
-**If both PRDs and prompts exist:**
-```markdown
-## What Would You Like to Refine?
-
-I found refinement targets in your project:
+"I found some things you can refine:
 
 **PRD Projects:**
-- [project-name] (mini-prd.md, tasks.md)
-- [other-project] (quick-prd.md)
+- user-auth (has PRD and tasks)
+- dashboard (has PRD)
 
 **Saved Prompts:**
-- [timestamp]-[name].md
-- [other-prompt].md
+- api-integration.md
+- payment-flow.md
 
-**What would you like to refine?**
-1. **A PRD project** - Modify requirements, features, constraints
-2. **A saved prompt** - Improve and optimize a prompt
+Which one do you want to update?"
 
-Please let me know which type, and I'll show you the specific options.
-```
+**If you only have PRDs:**
 
-**If only PRDs exist:**
-```markdown
-## What Would You Like to Refine?
+"Found your user-auth PRD. Want to update it?
 
-I found [N] PRD project(s) in your outputs:
-- [project-name] (has mini-prd.md, tasks.md)
-
-Would you like to refine this PRD? I can help you:
+I can help you:
 - Add new features
-- Modify existing requirements
-- Adjust constraints or scope
-- Update technical requirements
-```
+- Change existing requirements
+- Adjust scope or constraints
+- Update tech requirements"
 
-**If only prompts exist:**
-```markdown
-## What Would You Like to Refine?
+**If you only have prompts:**
 
-I found [N] saved prompt(s):
-- [prompt-file-1].md
-- [prompt-file-2].md
+"Found 2 saved prompts:
+- api-integration.md
+- payment-flow.md
 
-Would you like to refine one of these prompts? I can help you:
-- Make it more specific
-- Add constraints or context
-- Clarify the objective
-- Improve overall quality
-```
+Which one should we improve?"
 
-**If nothing found:**
-```markdown
-## No Refinement Targets Found
+**If nothing exists:**
 
-I couldn't find any existing PRDs or saved prompts to refine.
+"I don't see any PRDs or saved prompts to refine yet.
 
-**To create new content:**
-- `/clavix:prd` - Create a new PRD through guided questions
-- `/clavix:improve [prompt]` - Optimize and save a prompt
-- `/clavix:start` → `/clavix:summarize` - Extract requirements from conversation
+To create something first:
+- `/clavix:prd` - Create a new PRD
+- `/clavix:improve [prompt]` - Save an optimized prompt
+- `/clavix:start` then `/clavix:summarize` - Extract from chat
 
-Once you've created content with these commands, you can use `/clavix:refine` to update it.
-```
-
-**CHECKPOINT:** User selected refinement type: [PRD/Prompt]
+Once you've got something, come back and we can refine it!"
 
 ---
 
-## PRD Refinement Workflow
+## Refining a PRD
 
-*Only follow this section if user selected PRD refinement*
+### Step 3: Show What's There
 
-### Step 2a: Load Existing PRD
+I'll read and show you the current PRD:
 
-Read the PRD file(s) for the selected project:
-```bash
-# Read the mini-prd or quick-prd
-cat .clavix/outputs/[project-name]/mini-prd.md
-```
+"Here's your user-auth PRD:
 
-**CHECKPOINT:** Loaded PRD for project: [project-name]
+**Goal:** Build secure user authentication system
 
-### Step 3a: Display Current Requirements Summary
+**Features:**
+- User registration
+- Login/logout
+- Session management
 
-Present the current state to the user:
+**Tech:** Node.js, JWT tokens, PostgreSQL
 
-```markdown
-## Current Requirements for [Project Name]
-
-### Objective
-[Current objective from PRD]
-
-### Core Features
-- [Feature 1]
-- [Feature 2]
-- [Feature 3]
-
-### Technical Constraints
-- [Constraint 1]
-- [Constraint 2]
-
-### Scope
-**In Scope:** [What's included]
-**Out of Scope:** [What's excluded]
+**Out of Scope:** Social login, 2FA
 
 ---
 
-**What would you like to refine?**
-1. Add new features
-2. Modify existing features
-3. Change technical constraints
-4. Adjust scope (add/remove items)
-5. Update success criteria
-6. Something else
-```
+What do you want to change?"
 
-### Step 4a: Refine Through Discussion
+### Step 4: Talk Through Changes
 
-Enter conversational mode to understand what changes are needed:
+Let's discuss what you want to update:
+- Add new features?
+- Change existing stuff?
+- Update tech requirements?
+- Adjust scope?
 
-- Listen to what the user wants to change
-- Ask clarifying questions
-- Propose specific changes
-- Get user approval before modifying
-
-**Track changes with markers:**
-- `[ADDED]` - New requirement or feature
-- `[MODIFIED]` - Changed from original
-- `[REMOVED]` - Explicitly removed (with user approval)
+I'll track what changes:
+- `[ADDED]` - New stuff
+- `[MODIFIED]` - Changed stuff
+- `[REMOVED]` - Removed stuff
 - `[UNCHANGED]` - Kept as-is
 
-### Step 5a: Generate Updated PRD
+### Step 5: Save the Update
 
-After discussion, update the PRD file:
-
-**Use the Write tool to update** `.clavix/outputs/[project-name]/mini-prd.md`
-
-Add a "Refinement History" section at the bottom:
+After we agree on changes, I'll update the PRD file and add a history section:
 
 ```markdown
----
-
 ## Refinement History
 
-### [Date] - Refinement Session
+### Dec 1, 2024
 
-**Changes Made:**
-- [ADDED] [Description of what was added]
-- [MODIFIED] [What changed and how]
-- [REMOVED] [What was removed and why]
+**Changes:**
+- [ADDED] Password reset via email
+- [MODIFIED] Now using bcrypt instead of plain JWT
+- [REMOVED] Session management (moved to separate feature)
 
-**Reason:** [Brief explanation of why changes were made]
+**Why:** User feedback needed password reset, security upgrade
 ```
 
-**CHECKPOINT:** Updated PRD with [N] changes
+### Step 6: About Tasks
 
-### Step 6a: Notify About Tasks
+If you have a tasks.md file, heads up:
 
-If tasks.md exists for this project:
+"Your tasks.md was made from the old PRD. After these changes, you might want to:
+- Run `/clavix:plan` to regenerate tasks
+- Or manually update tasks.md
 
-```markdown
-## Note: Tasks May Need Regeneration
-
-This project has a `tasks.md` file that was generated from the previous PRD version.
-
-After refining the PRD, you may want to regenerate tasks:
-- Run `/clavix:plan` to create an updated task breakdown
-- Or manually update tasks.md to reflect the changes
-
-**Changes that likely affect tasks:**
-- [List significant changes that impact implementation]
-```
+Biggest changes that affect tasks:
+- New password reset feature
+- Different auth approach"
 
 ---
 
-## Prompt Refinement Workflow
+## Refining a Prompt
 
-*Only follow this section if user selected Prompt refinement*
+### Step 3: Pick Which Prompt
 
-### Step 2b: List Available Prompts
+If you have multiple saved prompts:
 
-If multiple prompts exist:
-```markdown
-## Available Prompts
+"Which prompt do you want to refine?
+1. api-integration.md (Dec 1)
+2. payment-flow.md (Nov 28)
 
-| # | File | Created | Size |
-|---|------|---------|------|
-| 1 | [filename].md | [date] | [lines] |
-| 2 | [filename].md | [date] | [lines] |
+Pick a number or say 'latest' for the most recent."
 
-**Which prompt would you like to refine?**
-Enter the number, or type `latest` to refine the most recent.
-```
+### Step 4: Show Current Quality
 
-### Step 3b: Load Selected Prompt
+I'll show you the prompt and assess its quality:
 
-Read the prompt file:
-```bash
-cat .clavix/outputs/prompts/[selected-file].md
-```
+"Here's your current prompt:
 
-**CHECKPOINT:** Loaded prompt: [filename]
+'Build an API integration for our system.'
 
-### Step 4b: Display Current Prompt and Quality
+**Quality scores:**
+- Clarity: 40/100 (too vague)
+- Specificity: 30/100 (no details)
+- Completeness: 20/100 (missing info)
 
-Present the current prompt to the user:
+What do you want to improve?
+- Make it more specific?
+- Add context or constraints?
+- Clarify the goal?
+- Something else?"
 
-```markdown
-## Current Prompt: [filename]
+### Step 5: Improve Together
 
-[Display the prompt content]
+We'll talk through what to change:
+- What's missing?
+- What's unclear?
+- What needs more detail?
 
----
+I'll suggest improvements and we'll refine together.
 
-**Quality Assessment (6 dimensions):**
-- Clarity: [Score]
-- Efficiency: [Score]
-- Structure: [Score]
-- Completeness: [Score]
-- Actionability: [Score]
-- Specificity: [Score]
+### Step 6: Save the Better Version
 
-**What would you like to change?**
-1. Clarify the objective
-2. Add more context or constraints
-3. Make it more specific
-4. Change the approach
-5. Other (describe what you want)
-```
+I'll save the improved prompt with before/after scores:
 
-### Step 5b: Refine Through Discussion
+"Done! Your refined prompt:
 
-Enter conversational mode:
-- Understand what the user wants to improve
-- Suggest specific enhancements
-- Re-assess quality as changes are made
+**Quality improvement:** 30% → 85%
 
-### Step 6b: Run Quality Assessment
+**What changed:**
+- Made objective specific (Stripe API for payments)
+- Added technical requirements
+- Specified error handling
+- Listed all needed operations
 
-After refinement, re-assess using the standard 6 quality dimensions:
-- Clarity
-- Efficiency
-- Structure
-- Completeness
-- Actionability
-- Specificity
-
-### Step 7b: Save Refined Prompt
-
-**Use the Write tool** to update the prompt file:
-
-Add refinement metadata to frontmatter (if present) or create new:
-
-```markdown
----
-refined: [date]
-original_created: [original date]
-refinements: 1
----
-
-[Refined prompt content]
+Want to:
+- Run `/clavix:implement --latest` to build this?
+- Refine it more?
+- Leave it for later?"
 
 ---
 
-## Refinement Summary
-
-**Before:** [Brief description of original]
-**After:** [Brief description of refined version]
-
-**Quality Score:**
-- Before: [X]/100
-- After: [Y]/100
-
-**Improvements Applied:**
-- [What was changed and why]
-```
-
-**CHECKPOINT:** Saved refined prompt to [filename]
-
-### Step 8b: Show Before/After Comparison
-
-```markdown
-## Prompt Refinement Complete
-
-**Quality Score Improvement:** [X] → [Y] (+[diff])
-
-**Key Changes:**
-| Aspect | Before | After |
-|--------|--------|-------|
-| Clarity | [score] | [score] |
-| Specificity | [score] | [score] |
-| ... | ... | ... |
-
-**Next Steps:**
-- Run `/clavix:implement --latest` to execute this prompt
-- Or continue refining with another `/clavix:refine` session
-```
-
----
-
-## Integration Points
+## What's Next
 
 **After refining a PRD:**
-- Run `/clavix:plan` to regenerate tasks based on updated requirements
-- Note that existing tasks.md may be outdated
+- Run `/clavix:plan` to regenerate your task list
+- Your old tasks.md might be outdated
 
 **After refining a prompt:**
-- Run `/clavix:implement --latest` to execute the refined prompt
+- Run `/clavix:implement --latest` to build it
 
-**Iterative refinement:**
-- You can run `/clavix:refine` multiple times
-- Each session adds to the refinement history
-- Changes are tracked cumulatively
+**Multiple refinements:**
+- You can run `/clavix:refine` as many times as you want
+- Each update adds to the history
+- Changes build on each other
 
 ---
 
@@ -553,7 +415,7 @@ I'll update the PRD and add this to the refinement history. Confirm?
 
 ---
 
-## Agent Transparency (v5.5)
+## Agent Transparency (v5.7.1)
 
 ### Agent Manual (Universal Protocols)
 {{INCLUDE:agent-protocols/AGENT_MANUAL.md}}
@@ -571,78 +433,72 @@ I'll update the PRD and add this to the refinement history. Confirm?
 
 ## Workflow Navigation
 
-**You are here:** Refine (Update existing PRD or prompt)
+**You are here:** Refine (tweaking existing work)
 
-**Common workflows:**
-- **PRD refinement**: `/clavix:refine` → update PRD → `/clavix:plan` → regenerate tasks
-- **Prompt refinement**: `/clavix:refine` → improve prompt → `/clavix:implement --latest`
-- **Iterative updates**: `/clavix:refine` → `/clavix:refine` → ... (multiple passes)
+**Common flows:**
+- Update PRD → `/clavix:refine` → `/clavix:plan` → regenerate tasks
+- Improve prompt → `/clavix:refine` → `/clavix:implement --latest`
+- Keep polishing → `/clavix:refine` → `/clavix:refine` again
 
 **Related commands:**
-- `/clavix:prd` - Create new PRD from scratch (not refinement)
-- `/clavix:improve` - Create new optimized prompt (not refinement)
-- `/clavix:plan` - Generate tasks from PRD
-- `/clavix:implement` - Execute tasks or prompts
+- `/clavix:prd` - Create new PRD (not refinement)
+- `/clavix:improve` - Create new prompt (not refinement)
+- `/clavix:plan` - Make tasks from PRD
+- `/clavix:implement` - Build stuff
 
 ---
 
-## Troubleshooting
+## When Things Go Wrong
 
-### Issue: No refinement targets found
-**Cause**: No PRDs or prompts have been created yet
-**Solution**:
-- Use `/clavix:prd` to create a PRD
-- Use `/clavix:improve [prompt]` to create and save a prompt
-- Use `/clavix:start` → `/clavix:summarize` to extract from conversation
+### "Can't find anything to refine"
 
-### Issue: Can't find specific project
-**Cause**: Project name doesn't match or files moved
-**Solution**:
-- Check `.clavix/outputs/` directory structure
-- Ensure mini-prd.md or quick-prd.md exists in project folder
+You haven't created a PRD or saved prompt yet.
+
+**Create something first:**
+- `/clavix:prd` - Make a new PRD
+- `/clavix:improve [prompt]` - Save an optimized prompt
+- `/clavix:start` then `/clavix:summarize` - Extract from chat
+
+### "Can't find that project"
+
+The project name might not match or files got moved.
+
+**Check:**
+- Is it in `.clavix/outputs/`?
+- Does the project folder have a PRD file?
 - Project names are case-sensitive
 
-### Issue: Changes lost after refinement
-**Cause**: Overwrote without tracking changes
-**Solution**:
-- Always use change markers: [ADDED], [MODIFIED], [REMOVED], [UNCHANGED]
-- Include Refinement History section
-- Review changes with user before saving
+### "My changes disappeared"
 
-### Issue: tasks.md out of sync with refined PRD
-**Cause**: Normal - tasks were generated from previous PRD version
-**Solution**:
-- Run `/clavix:plan` to regenerate tasks
-- Or manually update tasks.md
-- Previous progress markers may need adjustment
+You might have skipped the tracking step.
 
-### Issue: User wants to refine multiple topics at once
-**Cause**: PRD covers several distinct features and user wants to update multiple areas
-**Solution**:
-1. **Sequential approach (recommended)**:
-   - Focus on one topic/feature at a time
-   - Complete refinement for Topic A
-   - Then start new refinement session for Topic B
-   - Clearer change tracking per topic
+**Make sure to:**
+- Use change markers ([ADDED], [MODIFIED], etc.)
+- Add to Refinement History
+- Review with user before saving
 
-2. **Batched approach (if user insists)**:
-   - Discuss all changes upfront
-   - Group changes by category: [ADDED], [MODIFIED], [REMOVED]
-   - Apply all changes in one session
-   - In Refinement History, list changes per topic area:
-     ```
-     ### [Date] - Multi-Topic Refinement
-     **Authentication changes:**
-     - [ADDED] 2FA support
-     - [MODIFIED] Password requirements
+### "Tasks don't match the updated PRD"
 
-     **Dashboard changes:**
-     - [ADDED] Dark mode toggle
-     - [REMOVED] Deprecated widgets
-     ```
+That's normal - tasks were from the old version.
 
-3. **When to recommend splitting**:
-   - Changes span 4+ distinct features
-   - Changes affect different system components
-   - Risk of losing track of individual changes
-   - User seems overwhelmed by scope
+**Fix it:**
+- Run `/clavix:plan` to remake tasks
+- Or edit tasks.md manually
+
+### "Want to change multiple things at once"
+
+**Best approach:** Do one thing at a time
+- Change feature A
+- Save it
+- Then change feature B
+- Save that
+
+**If you really want to batch:**
+- Talk through all changes first
+- Group them clearly
+- Track each one separately
+
+**Stop and split if:**
+- You're changing 4+ different features
+- Changes affect different parts of the system
+- You're losing track of what changed

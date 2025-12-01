@@ -5,6 +5,24 @@ description: Analyze and improve prompts with auto-detected depth
 
 # Clavix: Improve Your Prompt
 
+---
+
+## What This Does
+
+When you run `/clavix:improve`, I:
+1. **Analyze your prompt quality** - 6-dimension assessment (Clarity, Efficiency, Structure, Completeness, Actionability, Specificity)
+2. **Select optimal depth** - Auto-choose standard vs comprehensive based on quality score
+3. **Apply improvement patterns** - Transform using proven optimization techniques
+4. **Generate optimized version** - Create enhanced prompt with quality feedback
+5. **Save for implementation** - Store in `.clavix/outputs/prompts/` for `/clavix:implement`
+
+**Smart Depth Selection:**
+- **Quality ≥ 75%**: Comprehensive depth (add polish and enhancements)
+- **Quality 60-74%**: User choice (borderline quality)
+- **Quality < 60%**: Standard depth (focus on basic fixes)
+
+---
+
 ## Important: This is Planning Mode
 
 This is a prompt improvement workflow. Your job is to ANALYZE and IMPROVE the prompt, then STOP.
@@ -504,7 +522,7 @@ Wait for the user to decide what to do next.
 
 ---
 
-## Agent Transparency (v5.1)
+## Agent Transparency (v5.7.1)
 
 ### Agent Manual (Universal Protocols)
 {{INCLUDE:agent-protocols/AGENT_MANUAL.md}}

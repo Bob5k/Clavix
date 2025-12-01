@@ -228,6 +228,161 @@ async function validateNoLegacyCommandReferences(): Promise<ValidationError[]> {
 }
 
 // ============================================================================
+// Validation: Version Number Consistency
+// ============================================================================
+
+/**
+ * Check that all canonical templates have consistent version numbers
+ * in their Agent Transparency sections
+ */
+async function validateVersionConsistency(): Promise<ValidationError[]> {
+  const errors: ValidationError[] = [];
+
+  // Get current version from package.json
+  const packageJsonPath = path.join(ROOT_DIR, 'package.json');
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+  const currentVersion = `v${packageJson.version}`;
+
+  // Get all canonical templates
+  const templateFiles = fs.readdirSync(PATHS.canonicalTemplates).filter((f) => f.endsWith('.md'));
+
+  for (const templateFile of templateFiles) {
+    const templatePath = path.join(PATHS.canonicalTemplates, templateFile);
+    const content = fs.readFileSync(templatePath, 'utf-8');
+    const lines = content.split('\n');
+
+    // Look for Agent Transparency section
+    let foundVersion = null;
+    let versionLine = null;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const versionMatch = line.match(/^## Agent Transparency \(([^)]+)\)$/);
+      if (versionMatch) {
+        foundVersion = versionMatch[1];
+        versionLine = i + 1;
+        break;
+      }
+    }
+
+    if (!foundVersion) {
+      errors.push({
+        type: 'outdated-version',
+        message: `${templateFile} missing Agent Transparency version section`,
+        file: `src/templates/slash-commands/_canonical/${templateFile}`,
+        expected: [currentVersion],
+        found: ['No version section found'],
+        missing: ['Agent Transparency section'],
+      });
+    } else if (foundVersion !== currentVersion) {
+      errors.push({
+        type: 'outdated-version',
+        message: `${templateFile} has inconsistent version`,
+        file: `src/templates/slash-commands/_canonical/${templateFile}`,
+        line: versionLine,
+        expected: [currentVersion],
+        found: [foundVersion],
+        missing: [],
+      });
+    }
+  }
+
+  return errors;
+}
+
+// ============================================================================
+// Validation: Component Include Verification
+// ============================================================================
+
+/**
+ * Check that all {{INCLUDE:}} directives reference existing component files
+ */
+async function validateComponentIncludes(): Promise<ValidationError[]> {
+  const errors: ValidationError[] = [];
+
+  // Get all canonical templates
+  const templateFiles = fs.readdirSync(PATHS.canonicalTemplates).filter((f) => f.endsWith('.md'));
+
+  for (const templateFile of templateFiles) {
+    const templatePath = path.join(PATHS.canonicalTemplates, templateFile);
+    const content = fs.readFileSync(templatePath, 'utf-8');
+    const lines = content.split('\n');
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const includeMatch = line.match(/\{\{INCLUDE:([^}]+)\}\}/);
+
+      if (includeMatch) {
+        const componentPath = includeMatch[1].trim();
+        const fullComponentPath = path.join(PATHS.componentsDir, componentPath);
+
+        if (!fs.existsSync(fullComponentPath)) {
+          errors.push({
+            type: 'outdated-version',
+            message: `${templateFile} references missing component`,
+            file: `src/templates/slash-commands/_canonical/${templateFile}`,
+            line: i + 1,
+            expected: [`Component exists: ${componentPath}`],
+            found: [`Missing component: ${componentPath}`],
+            missing: [componentPath],
+          });
+        }
+      }
+    }
+  }
+
+  return errors;
+}
+
+// ============================================================================
+// Validation: Required Section Structure
+// ============================================================================
+
+/**
+ * Check that templates follow the 10-section structure
+ */
+async function validateSectionStructure(): Promise<ValidationError[]> {
+  const errors: ValidationError[] = [];
+
+  // Required sections in order (simplified detection)
+  const requiredSections = [
+    '## What This Does',
+    '## CLAVIX MODE',
+    '## Self-Correction Protocol',
+    '## State Assertion',
+    '## Agent Transparency',
+  ];
+
+  const templateFiles = fs.readdirSync(PATHS.canonicalTemplates).filter((f) => f.endsWith('.md'));
+
+  for (const templateFile of templateFiles) {
+    const templatePath = path.join(PATHS.canonicalTemplates, templateFile);
+    const content = fs.readFileSync(templatePath, 'utf-8');
+
+    const missingSections: string[] = [];
+
+    for (const requiredSection of requiredSections) {
+      if (!content.includes(requiredSection)) {
+        missingSections.push(requiredSection);
+      }
+    }
+
+    if (missingSections.length > 0) {
+      errors.push({
+        type: 'outdated-version',
+        message: `${templateFile} missing required sections`,
+        file: `src/templates/slash-commands/_canonical/${templateFile}`,
+        expected: requiredSections,
+        found: requiredSections.filter((section) => content.includes(section)),
+        missing: missingSections,
+      });
+    }
+  }
+
+  return errors;
+}
+
+// ============================================================================
 // Validation: Outdated Version References
 // ============================================================================
 
@@ -324,6 +479,36 @@ export async function validateConsistency(): Promise<ValidationResult> {
     );
   } catch (e) {
     console.log(`  Legacy Commands: ⚠️ Could not validate (${e})`);
+  }
+
+  try {
+    const versionConsistencyErrors = await validateVersionConsistency();
+    errors.push(...versionConsistencyErrors);
+    console.log(
+      `  Version Consistency: ${versionConsistencyErrors.length === 0 ? '✅ OK' : `❌ ${versionConsistencyErrors.length} issues`}`
+    );
+  } catch (e) {
+    console.log(`  Version Consistency: ⚠️ Could not validate (${e})`);
+  }
+
+  try {
+    const componentIncludeErrors = await validateComponentIncludes();
+    errors.push(...componentIncludeErrors);
+    console.log(
+      `  Component Includes: ${componentIncludeErrors.length === 0 ? '✅ OK' : `❌ ${componentIncludeErrors.length} issues`}`
+    );
+  } catch (e) {
+    console.log(`  Component Includes: ⚠️ Could not validate (${e})`);
+  }
+
+  try {
+    const sectionStructureErrors = await validateSectionStructure();
+    errors.push(...sectionStructureErrors);
+    console.log(
+      `  Section Structure: ${sectionStructureErrors.length === 0 ? '✅ OK' : `❌ ${sectionStructureErrors.length} issues`}`
+    );
+  } catch (e) {
+    console.log(`  Section Structure: ⚠️ Could not validate (${e})`);
   }
 
   console.log('');

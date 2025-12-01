@@ -1,6 +1,6 @@
 {
   "name": "clavix",
-  "version": "5.7.0",
+  "version": "5.7.1",
   "description": "Agentic-first prompt workflows. Markdown templates that teach AI agents how to optimize prompts, create PRDs, and manage implementation.\n\nSLASH COMMANDS (in your AI assistant):\n  /clavix:improve    Optimize prompts with auto-depth\n  /clavix:prd        Generate PRD through questions\n  /clavix:plan       Create task breakdown from PRD\n  /clavix:implement  Execute tasks with progress tracking\n  /clavix:start      Begin conversational session\n  /clavix:summarize  Extract requirements from conversation\n  /clavix:refine     Refine existing PRD or prompt\n  /clavix:verify     Verify implementation against requirements\n  /clavix:archive    Archive completed projects\n\nWorks with Claude Code, Cursor, Windsurf, and 20 AI coding tools.",
   "type": "module",
   "main": "dist/index.js",
@@ -14,7 +14,7 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "validate:consistency": "node --loader ts-node/esm scripts/validate-consistency.ts",
+    "validate:consistency": "tsx scripts/validate-consistency.ts",
     "prebuild": "npm run clean && npm run validate:consistency",
     "build": "tsc && npm run copy-templates",
     "build:prod": "npm run build && npm run remove-sourcemaps",
@@ -91,6 +91,7 @@
     "prettier": "^3.6.2",
     "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.4"
   },
