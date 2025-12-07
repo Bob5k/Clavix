@@ -36,7 +36,7 @@ export const COLON_SEPARATOR_INTEGRATIONS = [
  * Check if an integration is a doc generator (not a regular adapter)
  */
 export function isDocGeneratorIntegration(integrationName: string): boolean {
-  return DOC_GENERATOR_INTEGRATIONS.includes(integrationName as any);
+  return (DOC_GENERATOR_INTEGRATIONS as readonly string[]).includes(integrationName);
 }
 
 /**
@@ -110,8 +110,9 @@ export function determineCommandSeparator(integrations: string[]): {
   primary: string;
   alternate?: string;
 } {
-  const usesColon = integrations.some((i) => COLON_SEPARATOR_INTEGRATIONS.includes(i as any));
-  const usesHyphen = integrations.some((i) => !COLON_SEPARATOR_INTEGRATIONS.includes(i as any));
+  const colonList = COLON_SEPARATOR_INTEGRATIONS as readonly string[];
+  const usesColon = integrations.some((i) => colonList.includes(i));
+  const usesHyphen = integrations.some((i) => !colonList.includes(i));
 
   if (usesColon && !usesHyphen) {
     return { primary: ':' };
