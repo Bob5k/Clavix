@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.9.0] - 2025-12-23
+
+### Added
+
+- **Architecture & Design Support** - Integrated architectural decision-making into core workflows:
+  - `/clavix:start`: Added explicit probing for architectural patterns and design choices during conversation
+  - `/clavix:summarize`: Added "Architecture & Design" section to requirements extraction and Mini-PRD template
+  - `/clavix:prd`: Added dedicated Question 3.5 to structured Q&A for capturing design patterns (Monolith vs Microservices, Clean Architecture, etc.)
+  - `/clavix:plan`: Added "Architecture First" principle to task generation, prioritizing structural setup tasks
+
+### Changed
+
+- **Agentic Template Improvements**:
+  - Simplified optional questions in `/clavix:prd` by removing "Press Enter to skip" instructions (agents handle optionality natively)
+  - Updated Plan template to enforce architectural setup before implementation tasks
+
 ## [5.8.2] - 2025-12-07
 
 ### Added

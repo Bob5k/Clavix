@@ -107,30 +107,37 @@ Implementation: BLOCKED - I will create the plan, not the code
    - Check `.clavix/outputs/<project-name>/` for `full-prd.md`, `quick-prd.md`, etc.
    - If missing, check legacy `.clavix/outputs/summarize/`.
 2. **Read PRD**: Ingest the requirements.
+3. **Extract Architecture**: Look for the "Architecture & Design" section. Note any specific patterns (e.g., Clean Architecture, Feature-Sliced Design) or structural decisions.
 
 #### **Phase 3: Task Generation**
-1. **Synthesize**: Combine [PRD Requirements] + [Codebase Patterns].
-2. **Draft Tasks**: Create tasks that specify *exactly* what to change in the code.
-3. **Create `tasks.md`**: Use the format in "Task Format Reference".
-4. **Save to**: `.clavix/outputs/[project-name]/tasks.md`.
+1. **Synthesize**: Combine [PRD Requirements] + [Codebase Patterns] + [Architecture Decisions].
+2. **Prioritize Structure**: Ensure initial tasks cover any necessary architectural setup (e.g., creating folders for new layers, setting up base classes).
+3. **Draft Tasks**: Create tasks that specify *exactly* what to change in the code.
+4. **Create `tasks.md`**: Use the format in "Task Format Reference".
+5. **Save to**: `.clavix/outputs/[project-name]/tasks.md`.
 
 ### Part B: Behavioral Guidance (Technical Specificity)
 
 **Your goal is "Low-Level Engineering Plans", not "High-Level Management Plans".**
 
-1. **Specific File Paths**:
+1. **Architecture First**:
+   - If the PRD specifies a pattern (e.g., Repository), the first tasks MUST set up that structure.
+   - **Bad**: "Implement user feature."
+   - **Good**: "Create `src/repositories/UserRepository.ts` interface first, then implementation."
+
+2. **Specific File Paths**:
    - **Bad**: "Create a user profile component."
    - **Good**: "Create `src/components/user/UserProfile.tsx`. Export as default."
 
-2. **Technical Constraints**:
+3. **Technical Constraints**:
    - **Bad**: "Add validation."
    - **Good**: "Use `zod` schema in `src/schemas/user.ts`. Integrate with `react-hook-form`."
 
-3. **Respect Existing Architecture**:
+4. **Respect Existing Architecture**:
    - If the project uses a `services/` folder for API calls, do **not** put `fetch` calls directly in components.
    - If the project uses `shadcn/ui`, instruct to use those primitives, not raw HTML.
 
-4. **Granularity**:
+5. **Granularity**:
    - Each task should be a single logical unit of work (approx. 20-40 mins).
    - Separate "Backend API" from "Frontend UI" tasks.
    - Separate "Type Definition" from "Implementation" if complex.
@@ -150,6 +157,7 @@ Implementation: BLOCKED - I will create the plan, not the code
 
 ## Technical Context & Standards
 *Detected Stack & Patterns*
+- **Architecture**: {e.g., Feature-Sliced Design, Monolith}
 - **Framework**: {e.g., Next.js 14 App Router}
 - **Styling**: {e.g., Tailwind CSS + shadcn/ui}
 - **State**: {e.g., Zustand (stores in /src/store)}
@@ -221,7 +229,7 @@ Present the plan and ask:
 
 ---
 
-## Agent Transparency (v5.8.2)
+## Agent Transparency (v5.9.0)
 
 ### Agent Manual (Universal Protocols)
 {{INCLUDE:agent-protocols/AGENT_MANUAL.md}}

@@ -115,6 +115,7 @@ Implementation: BLOCKED - I will extract requirements, not implement them
    - **Problem/Goal** [confidence]: What is the user trying to build or solve?
    - **Key Requirements** [confidence per requirement]: What features and functionality were discussed?
    - **Technical Constraints** [confidence]: Any technologies, integrations, or performance needs?
+   - **Architecture & Design** [confidence]: Any specific patterns, structures, or design choices?
    - **User Needs** [confidence]: Who are the end users and what do they need?
    - **Success Criteria** [confidence]: How will success be measured?
    - **Context** [confidence]: Any important background or constraints?
@@ -196,6 +197,11 @@ Implementation: BLOCKED - I will extract requirements, not implement them
    - **Scale:** [Expected load/users]
    - **Integrations:** [External systems]
    - **Other:** [Any other technical constraints]
+
+   ## Architecture & Design
+   - **Pattern:** [e.g. Monolith, Microservices, Serverless]
+   - **Structure:** [e.g. Feature-based, Layered, Clean Architecture]
+   - **Key Decisions:** [Specific design choices made]
 
    ## User Context
    **Target Users:** [Who will use this?]
@@ -403,7 +409,7 @@ The `/clavix:summarize` command extracts requirements from exploratory conversat
 
 ---
 
-## Agent Transparency (v5.8.2)
+## Agent Transparency (v5.9.0)
 
 ### Agent Manual (Universal Protocols)
 {{INCLUDE:agent-protocols/AGENT_MANUAL.md}}

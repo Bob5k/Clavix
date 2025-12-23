@@ -125,6 +125,11 @@ Both documents are automatically validated for quality (Clarity, Structure, Comp
      - "Are there performance requirements (load time, concurrent users)?"
    - **If "I don't know"**: Suggest common stacks based on project type or skip
 
+   **Question 3.5**: Any specific architectural patterns or design choices?
+
+   - **Optional**
+   - **Prompt**: "Do you have preferences for folder structure, design patterns (e.g., Repository, Adapter), or architectural style (Monolith vs Microservices)?"
+
    **Question 4**: What is explicitly OUT of scope? (What are we NOT building?)
 
    - **Validation**: At least 1 explicit exclusion
@@ -136,7 +141,7 @@ Both documents are automatically validated for quality (Clarity, Structure, Comp
 
    **Question 5**: Any additional context or requirements?
 
-   - **Optional**: Press Enter to skip
+   - **Optional**
    - **Helpful areas**: Compliance needs, accessibility, localization, deadlines, team constraints
 
 2. **Before proceeding to document generation**, verify minimum viable answers:
@@ -160,6 +165,9 @@ Both documents are automatically validated for quality (Clarity, Structure, Comp
 
    ### Technical Requirements
    [User's answer to Q3, detailed]
+
+   ### Architecture & Design
+   [User's answer to Q3.5 if provided]
 
    ## Out of Scope
    [User's answer to Q4]
@@ -346,7 +354,7 @@ The validation ensures generated PRDs are immediately usable for AI consumption 
 
 ---
 
-## Agent Transparency (v5.8.2)
+## Agent Transparency (v5.9.0)
 
 ### Agent Manual (Universal Protocols)
 {{INCLUDE:agent-protocols/AGENT_MANUAL.md}}

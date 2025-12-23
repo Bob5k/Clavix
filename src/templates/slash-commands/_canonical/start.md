@@ -98,6 +98,7 @@ Implementation: BLOCKED - I will ask questions and explore needs, not implement
 2. As the user describes their needs:
    - Ask clarifying questions about unclear points
    - Probe for technical constraints
+   - Probe for architectural preferences (e.g., 'Do you need a specific structure like Clean Architecture, Microservices, or Feature-Sliced Design?')
    - Explore edge cases and requirements
    - Help them think through user needs
    - Identify potential challenges
@@ -117,6 +118,7 @@ Implementation: BLOCKED - I will ask questions and explore needs, not implement
    - Target users
    - Core features
    - Technical requirements
+   - Architecture & Design
    - Success criteria
    - Constraints and scope
 
@@ -228,7 +230,7 @@ The goal is natural exploration of requirements, not a rigid questionnaire. Foll
 
 ---
 
-## Agent Transparency (v5.8.2)
+## Agent Transparency (v5.9.0)
 
 ### Agent Manual (Universal Protocols)
 {{INCLUDE:agent-protocols/AGENT_MANUAL.md}}
