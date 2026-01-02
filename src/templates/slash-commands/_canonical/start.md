@@ -230,7 +230,7 @@ The goal is natural exploration of requirements, not a rigid questionnaire. Foll
 
 ---
 
-## Agent Transparency (v5.10.0)
+## Agent Transparency (v5.10.1)
 
 ### Agent Manual (Universal Protocols)
 {{INCLUDE:agent-protocols/AGENT_MANUAL.md}}
